@@ -82,9 +82,21 @@ class PackageManager {
             if (activeOnly) {
                 packageIds = await upstashRequest('smembers', [this.activePackagesKey]);
             } else {
-                // Get all package IDs from hash keys
-                const allKeys = await upstashRequest('keys', [`${this.packagesKey}:*`]);
-                packageIds = allKeys.map(key => key.replace(`${this.packagesKey}:`, ''));
+                // Get all package IDs from hash keys using HGETALL
+                const allPackages = await upstashRequest('hgetall', [this.packagesKey]);
+                packageIds = [];
+                
+                // Handle the array format from Upstash HGETALL
+                if (Array.isArray(allPackages)) {
+                    for (let i = 0; i < allPackages.length; i += 2) {
+                        const key = allPackages[i];
+                        if (key) {
+                            packageIds.push(key);
+                        }
+                    }
+                } else if (typeof allPackages === 'object' && allPackages !== null) {
+                    packageIds = Object.keys(allPackages);
+                }
             }
             
             const packages = [];

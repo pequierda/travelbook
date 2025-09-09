@@ -128,13 +128,16 @@ async function loadPackages() {
         console.log('Admin: Loading packages from Upstash...');
         const result = await window.packageManager.getAllPackages(false);
         console.log('Admin: Package manager result:', result);
+        console.log('Admin: Result success:', result.success);
+        console.log('Admin: Result packages:', result.packages);
+        console.log('Admin: Packages length:', result.packages ? result.packages.length : 'undefined');
         
-        if (result.success && result.packages) {
+        if (result.success && result.packages && result.packages.length > 0) {
             displayPackagesTable(result.packages);
             console.log(`Admin: Displayed ${result.packages.length} packages`);
         } else {
             console.log('Admin: No packages found or error:', result);
-            showAdminNotification('Error loading packages: ' + (result.message || 'Unknown error'), 'error');
+            showAdminNotification('Error loading packages: ' + (result.message || 'No packages found'), 'error');
         }
         
     } catch (error) {
