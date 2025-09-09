@@ -7,7 +7,10 @@ let currentEditingPackage = null;
 
 // Wait for DOM to be fully loaded
 document.addEventListener('DOMContentLoaded', function() {
-    initializeAdmin();
+    // Delay initialization to ensure all scripts are loaded
+    setTimeout(() => {
+        initializeAdmin();
+    }, 100);
 });
 
 /**
@@ -115,16 +118,27 @@ async function loadPackageStats() {
  */
 async function loadPackages() {
     try {
-        const result = await window.packageManager.getAllPackages(false);
+        // Check if package manager is available
+        if (!window.packageManager) {
+            console.error('Package manager not available in admin panel');
+            showAdminNotification('Package manager not available', 'error');
+            return;
+        }
         
-        if (result.success) {
+        console.log('Admin: Loading packages from Upstash...');
+        const result = await window.packageManager.getAllPackages(false);
+        console.log('Admin: Package manager result:', result);
+        
+        if (result.success && result.packages) {
             displayPackagesTable(result.packages);
+            console.log(`Admin: Displayed ${result.packages.length} packages`);
         } else {
-            showAdminNotification('Error loading packages: ' + result.message, 'error');
+            console.log('Admin: No packages found or error:', result);
+            showAdminNotification('Error loading packages: ' + (result.message || 'Unknown error'), 'error');
         }
         
     } catch (error) {
-        console.error('Error loading packages:', error);
+        console.error('Admin: Error loading packages:', error);
         showAdminNotification('Error loading packages: ' + error.message, 'error');
     }
 }
