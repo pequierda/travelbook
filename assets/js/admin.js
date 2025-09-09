@@ -95,15 +95,19 @@ function initEventListeners() {
  */
 async function loadPackageStats() {
     try {
+        console.log('Admin: Loading package stats...');
         const result = await window.packageManager.getPackageStats();
+        console.log('Admin: Stats result:', result);
         
         if (result.success) {
             const stats = result.stats;
+            console.log('Admin: Stats data:', stats);
             document.getElementById('total-packages').textContent = stats.total_packages;
             document.getElementById('active-packages').textContent = stats.active_packages;
             document.getElementById('inactive-packages').textContent = stats.inactive_packages;
             document.getElementById('average-price').textContent = '$' + stats.average_price.toLocaleString();
         } else {
+            console.log('Admin: Stats error:', result.message);
             showAdminNotification('Error loading statistics: ' + result.message, 'error');
         }
         
@@ -131,6 +135,7 @@ async function loadPackages() {
         console.log('Admin: Result success:', result.success);
         console.log('Admin: Result packages:', result.packages);
         console.log('Admin: Packages length:', result.packages ? result.packages.length : 'undefined');
+        console.log('Admin: Full result object:', JSON.stringify(result, null, 2));
         
         if (result.success && result.packages && result.packages.length > 0) {
             displayPackagesTable(result.packages);
