@@ -4,6 +4,16 @@
  */
 
 module.exports = async function handler(req, res) {
+    // Set CORS headers
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    
+    if (req.method === 'OPTIONS') {
+        res.status(200).end();
+        return;
+    }
+
     // Only allow POST requests
     if (req.method !== 'POST') {
         return res.status(405).json({ 
@@ -34,17 +44,12 @@ module.exports = async function handler(req, res) {
             });
         }
 
-        // Make request to Upstash
-        const response = await fetch(`${upstashUrl}/keys`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${upstashToken}`,
-                'Content-Type': 'application/json'
+        // Make request to Upstash (using the correct REST API format)
+        const response = await fetch(`${upstashUrl}/keys/${args[0]}`, {
+            headers: { 
+                'Authorization': `Bearer ${upstashToken}` 
             },
-            body: JSON.stringify({
-                command: command.toUpperCase(),
-                args: args
-            })
+            cache: 'no-store'
         });
 
         if (!response.ok) {
