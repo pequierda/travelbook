@@ -132,9 +132,9 @@ class AuthManager {
                 throw new Error('Invalid username or password');
             }
             
-            // Verify password
+            // Verify password (support both hashed and plain text for backward compatibility)
             const hashedPassword = this.hashPassword(password);
-            if (user.password !== hashedPassword) {
+            if (user.password !== hashedPassword && user.password !== password) {
                 this.recordFailedAttempt(username);
                 throw new Error('Invalid username or password');
             }
