@@ -44,17 +44,12 @@ module.exports = async function handler(req, res) {
             });
         }
 
-        // Make request to Upstash
-        const response = await fetch(`${upstashUrl}/set`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${upstashToken}`,
-                'Content-Type': 'application/json'
+        // Make request to Upstash (using the correct REST API format)
+        const response = await fetch(`${upstashUrl}/set/${args[0]}/${encodeURIComponent(args[1])}`, {
+            headers: { 
+                'Authorization': `Bearer ${upstashToken}` 
             },
-            body: JSON.stringify({
-                command: command.toUpperCase(),
-                args: args
-            })
+            cache: 'no-store'
         });
 
         if (!response.ok) {

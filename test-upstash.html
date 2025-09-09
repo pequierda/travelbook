@@ -42,12 +42,12 @@
             resultsDiv.innerHTML = '<p class="text-blue-600">Testing Upstash connection...</p>';
 
             try {
-                // Test basic connection
-                const testResult = await upstashRequest('set', ['test_key', 'test_value']);
+                // Test basic connection using HGETALL (which we know works)
+                const testResult = await upstashRequest('hgetall', ['travelbook:admin_users']);
                 resultsDiv.innerHTML = `
                     <div class="text-green-600">
                         <p>✅ Upstash connection successful!</p>
-                        <p>Test result: ${JSON.stringify(testResult)}</p>
+                        <p>Found user data: ${Object.keys(testResult || {}).length} field(s)</p>
                     </div>
                 `;
             } catch (error) {
