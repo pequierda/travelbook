@@ -763,13 +763,39 @@
         }
         
         // Call enhancement function when packages are loaded
-        if (typeof updatePackagesDisplay === 'function') {
-            const originalUpdatePackagesDisplay = updatePackagesDisplay;
-            updatePackagesDisplay = function() {
-                originalUpdatePackagesDisplay();
-                setTimeout(enhancePackageCards, 100);
-            };
-        }
+        setTimeout(() => {
+            enhancePackageCards();
+        }, 1000);
+        
+        // Debug function to check package loading
+        window.debugPackages = function() {
+            console.log('=== Package Debug Info ===');
+            console.log('Upstash Config:', window.UPSTASH_CONFIG);
+            console.log('Package Manager:', window.packageManager);
+            console.log('Currency Converter:', window.currencyConverter);
+            
+            // Check if packages container exists
+            const container = document.getElementById('packages-container');
+            console.log('Packages Container:', container);
+            console.log('Container HTML:', container ? container.innerHTML : 'Not found');
+            
+            // Try to load packages manually
+            if (window.packageManager) {
+                window.packageManager.getAllPackages(true).then(result => {
+                    console.log('Package Manager Result:', result);
+                }).catch(error => {
+                    console.error('Package Manager Error:', error);
+                });
+            }
+        };
+        
+        // Auto-debug after 3 seconds
+        setTimeout(() => {
+            if (document.getElementById('packages-container').innerHTML.includes('Loading Packages')) {
+                console.log('Packages still loading after 3 seconds, running debug...');
+                window.debugPackages();
+            }
+        }, 3000);
     </script>
 </body>
 </html>
