@@ -38,100 +38,199 @@
 </head>
 <body class="bg-gray-50">
     <!-- Navigation -->
-    <nav class="bg-white shadow-lg fixed w-full z-50">
+    <nav id="navbar" class="bg-white/95 backdrop-blur-md shadow-lg fixed w-full z-50 transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
-                        <h1 class="text-2xl font-bold text-primary-600">
-                            <i class="fas fa-plane mr-2"></i>Travelbooks
+                        <h1 class="text-2xl font-bold text-primary-600 hover:text-primary-700 transition-colors cursor-pointer">
+                            <i class="fas fa-plane mr-2 transform hover:rotate-12 transition-transform"></i>Travelbooks
                         </h1>
                     </div>
                 </div>
                 <div class="hidden md:block">
-                    <div class="ml-10 flex items-baseline space-x-4">
-                        <a href="#home" class="text-gray-900 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">Home</a>
-                        <a href="#packages" class="text-gray-500 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">Packages</a>
-                        <a href="#about" class="text-gray-500 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">About</a>
-                        <a href="#contact" class="text-gray-500 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">Contact</a>
+                    <div class="ml-10 flex items-baseline space-x-1">
+                        <a href="#home" class="nav-link text-gray-900 hover:text-primary-600 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:bg-primary-50 relative group">
+                            <span class="relative z-10">Home</span>
+                            <div class="absolute inset-0 bg-primary-100 rounded-lg scale-0 group-hover:scale-100 transition-transform duration-300"></div>
+                        </a>
+                        <a href="#packages" class="nav-link text-gray-500 hover:text-primary-600 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:bg-primary-50 relative group">
+                            <span class="relative z-10">Packages</span>
+                            <div class="absolute inset-0 bg-primary-100 rounded-lg scale-0 group-hover:scale-100 transition-transform duration-300"></div>
+                        </a>
+                        <a href="#about" class="nav-link text-gray-500 hover:text-primary-600 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:bg-primary-50 relative group">
+                            <span class="relative z-10">About</span>
+                            <div class="absolute inset-0 bg-primary-100 rounded-lg scale-0 group-hover:scale-100 transition-transform duration-300"></div>
+                        </a>
+                        <a href="#contact" class="nav-link text-gray-500 hover:text-primary-600 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:bg-primary-50 relative group">
+                            <span class="relative z-10">Contact</span>
+                            <div class="absolute inset-0 bg-primary-100 rounded-lg scale-0 group-hover:scale-100 transition-transform duration-300"></div>
+                        </a>
                     </div>
                 </div>
                 <div class="md:hidden">
-                    <button type="button" class="text-gray-500 hover:text-gray-600 focus:outline-none focus:text-gray-600" aria-label="Open menu">
-                        <i class="fas fa-bars text-xl"></i>
+                    <button id="mobile-menu-btn" type="button" class="text-gray-500 hover:text-primary-600 focus:outline-none focus:text-primary-600 transition-colors p-2" aria-label="Open menu">
+                        <i class="fas fa-bars text-xl transform transition-transform duration-300"></i>
                     </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="mobile-menu fixed inset-0 bg-white z-40 md:hidden">
+            <div class="flex flex-col h-full">
+                <div class="flex justify-between items-center p-4 border-b">
+                    <h1 class="text-xl font-bold text-primary-600">Travelbooks</h1>
+                    <button id="close-mobile-menu" class="text-gray-500 hover:text-primary-600 p-2">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                <div class="flex-1 flex flex-col justify-center items-center space-y-8">
+                    <a href="#home" class="mobile-nav-link text-2xl font-medium text-gray-700 hover:text-primary-600 transition-colors">Home</a>
+                    <a href="#packages" class="mobile-nav-link text-2xl font-medium text-gray-700 hover:text-primary-600 transition-colors">Packages</a>
+                    <a href="#about" class="mobile-nav-link text-2xl font-medium text-gray-700 hover:text-primary-600 transition-colors">About</a>
+                    <a href="#contact" class="mobile-nav-link text-2xl font-medium text-gray-700 hover:text-primary-600 transition-colors">Contact</a>
                 </div>
             </div>
         </div>
     </nav>
 
     <!-- Hero Section -->
-    <section id="home" class="relative h-screen flex items-center justify-center bg-gradient-to-r from-primary-600 to-blue-800">
-        <div class="absolute inset-0 bg-black opacity-40"></div>
-        <div class="relative z-10 text-center text-white px-4">
-            <h1 class="hero-title text-5xl md:text-7xl font-bold mb-6 leading-tight">
-                Your Dream Destination
-                <span class="block text-yellow-300">Awaits</span>
-            </h1>
-            <p class="hero-subtitle text-xl md:text-2xl mb-8 max-w-3xl mx-auto">
-                Discover breathtaking destinations, luxury accommodations, and unforgettable experiences with our expertly crafted travel packages.
-            </p>
-           
+    <section id="home" class="relative h-screen flex items-center justify-center bg-gradient-to-br from-primary-600 via-blue-700 to-blue-900 overflow-hidden">
+        <!-- Animated Background Elements -->
+        <div class="absolute inset-0">
+            <div class="floating-shapes">
+                <div class="shape shape-1"></div>
+                <div class="shape shape-2"></div>
+                <div class="shape shape-3"></div>
+                <div class="shape shape-4"></div>
+                <div class="shape shape-5"></div>
+            </div>
         </div>
-        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-            <i class="fas fa-chevron-down text-white text-2xl"></i>
+        
+        <div class="absolute inset-0 bg-black opacity-30"></div>
+        
+        <div class="relative z-10 text-center text-white px-4 max-w-6xl mx-auto">
+            <div class="hero-content">
+                <h1 class="hero-title text-5xl md:text-7xl font-bold mb-6 leading-tight">
+                    Your Dream Destination
+                    <span class="block text-yellow-300 bg-gradient-to-r from-yellow-300 to-yellow-400 bg-clip-text text-transparent animate-pulse">Awaits</span>
+                </h1>
+                <p class="hero-subtitle text-xl md:text-2xl mb-8 max-w-3xl mx-auto leading-relaxed">
+                    Discover breathtaking destinations, luxury accommodations, and unforgettable experiences with our expertly crafted travel packages.
+                </p>
+                
+                <!-- Interactive CTA Buttons -->
+                <div class="hero-buttons flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
+                    <button class="btn-primary bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-4 px-8 rounded-xl text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl shadow-lg group">
+                        <i class="fas fa-calendar-check mr-2 group-hover:rotate-12 transition-transform"></i>
+                        <span>Explore Packages</span>
+                        <div class="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 rounded-xl transition-opacity"></div>
+                    </button>
+                    <button class="btn-secondary border-2 border-white text-white hover:bg-white hover:text-primary-600 font-bold py-4 px-8 rounded-xl text-lg transition-all duration-300 transform hover:scale-105 group">
+                        <i class="fas fa-play mr-2 group-hover:scale-110 transition-transform"></i>
+                        <span>Watch Video</span>
+                    </button>
+                </div>
+                
+                <!-- Interactive Stats -->
+                <div class="hero-stats grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+                    <div class="stat-item text-center group cursor-pointer">
+                        <div class="stat-number text-3xl md:text-4xl font-bold text-yellow-300 group-hover:scale-110 transition-transform duration-300">500+</div>
+                        <div class="stat-label text-sm md:text-base opacity-90">Happy Travelers</div>
+                    </div>
+                    <div class="stat-item text-center group cursor-pointer">
+                        <div class="stat-number text-3xl md:text-4xl font-bold text-yellow-300 group-hover:scale-110 transition-transform duration-300">50+</div>
+                        <div class="stat-label text-sm md:text-base opacity-90">Destinations</div>
+                    </div>
+                    <div class="stat-item text-center group cursor-pointer">
+                        <div class="stat-number text-3xl md:text-4xl font-bold text-yellow-300 group-hover:scale-110 transition-transform duration-300">24/7</div>
+                        <div class="stat-label text-sm md:text-base opacity-90">Support</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Enhanced Scroll Indicator -->
+        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce cursor-pointer group" onclick="document.getElementById('packages').scrollIntoView({behavior: 'smooth'})">
+            <div class="flex flex-col items-center text-white group-hover:text-yellow-300 transition-colors">
+                <span class="text-sm mb-2 opacity-70">Scroll to explore</span>
+                <i class="fas fa-chevron-down text-2xl group-hover:scale-110 transition-transform"></i>
+            </div>
         </div>
     </section>
 
     <!-- Features Section -->
-    <section class="py-20 bg-white">
+    <section id="about" class="py-20 bg-gradient-to-b from-white to-gray-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16">
-                <h2 class="text-4xl font-bold text-gray-900 mb-4">Why Choose TravelBook?</h2>
-                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+                    Why Choose <span class="text-primary-600">TravelBook</span>?
+                </h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
                     We provide exceptional travel experiences with unmatched service and attention to detail.
                 </p>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="text-center p-6">
-                    <div class="feature-icon bg-primary-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-shield-alt text-primary-600 text-2xl"></i>
+                <div class="feature-card group text-center p-8 bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100">
+                    <div class="feature-icon bg-gradient-to-br from-primary-100 to-primary-200 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-shield-alt text-primary-600 text-3xl group-hover:rotate-12 transition-transform duration-300"></i>
                     </div>
-                    <h3 class="text-xl font-semibold mb-2">Safe & Secure</h3>
-                    <p class="text-gray-600">Your safety is our priority. All packages include comprehensive travel insurance and 24/7 support.</p>
+                    <h3 class="text-2xl font-bold mb-4 text-gray-900 group-hover:text-primary-600 transition-colors">Safe & Secure</h3>
+                    <p class="text-gray-600 leading-relaxed">Your safety is our priority. All packages include comprehensive travel insurance and 24/7 support.</p>
+                    <div class="mt-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <button class="text-primary-600 font-semibold hover:text-primary-700 transition-colors">
+                            Learn More <i class="fas fa-arrow-right ml-1"></i>
+                        </button>
+                    </div>
                 </div>
-                <div class="text-center p-6">
-                    <div class="feature-icon bg-primary-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-star text-primary-600 text-2xl"></i>
+                <div class="feature-card group text-center p-8 bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100">
+                    <div class="feature-icon bg-gradient-to-br from-yellow-100 to-yellow-200 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-star text-yellow-600 text-3xl group-hover:rotate-12 transition-transform duration-300"></i>
                     </div>
-                    <h3 class="text-xl font-semibold mb-2">Premium Quality</h3>
-                    <p class="text-gray-600">Handpicked accommodations, expert guides, and exclusive experiences for the ultimate luxury.</p>
+                    <h3 class="text-2xl font-bold mb-4 text-gray-900 group-hover:text-primary-600 transition-colors">Premium Quality</h3>
+                    <p class="text-gray-600 leading-relaxed">Handpicked accommodations, expert guides, and exclusive experiences for the ultimate luxury.</p>
+                    <div class="mt-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <button class="text-primary-600 font-semibold hover:text-primary-700 transition-colors">
+                            Learn More <i class="fas fa-arrow-right ml-1"></i>
+                        </button>
+                    </div>
                 </div>
-                <div class="text-center p-6">
-                    <div class="feature-icon bg-primary-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-heart text-primary-600 text-2xl"></i>
+                <div class="feature-card group text-center p-8 bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100">
+                    <div class="feature-icon bg-gradient-to-br from-pink-100 to-pink-200 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-heart text-pink-600 text-3xl group-hover:rotate-12 transition-transform duration-300"></i>
                     </div>
-                    <h3 class="text-xl font-semibold mb-2">Memorable Experiences</h3>
-                    <p class="text-gray-600">Create lasting memories with our carefully curated itineraries and personalized service.</p>
+                    <h3 class="text-2xl font-bold mb-4 text-gray-900 group-hover:text-primary-600 transition-colors">Memorable Experiences</h3>
+                    <p class="text-gray-600 leading-relaxed">Create lasting memories with our carefully curated itineraries and personalized service.</p>
+                    <div class="mt-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <button class="text-primary-600 font-semibold hover:text-primary-700 transition-colors">
+                            Learn More <i class="fas fa-arrow-right ml-1"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Packages Section -->
-    <section id="packages" class="py-20 bg-gray-50">
+    <section id="packages" class="py-20 bg-gradient-to-b from-gray-50 to-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16">
-                <h2 class="text-4xl font-bold text-gray-900 mb-4">Featured Travel Packages</h2>
-                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+                    Featured <span class="text-primary-600">Travel Packages</span>
+                </h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
                     Discover our most popular destinations and exclusive travel experiences.
                 </p>
                 
-                <!-- Currency Converter -->
+                <!-- Enhanced Currency Converter -->
                 <div class="mt-8 flex justify-center">
-                    <div class="bg-white rounded-lg shadow-md p-4 inline-flex items-center space-x-4">
-                        <span class="text-gray-700 font-medium">View prices in:</span>
-                        <select id="currency-selector" class="border border-gray-300 rounded-md px-3 py-2 focus:ring-primary-500 focus:border-primary-500">
+                    <div class="bg-white rounded-2xl shadow-lg p-6 inline-flex items-center space-x-6 border border-gray-100 hover:shadow-xl transition-shadow duration-300">
+                        <div class="flex items-center space-x-2">
+                            <i class="fas fa-exchange-alt text-primary-600"></i>
+                            <span class="text-gray-700 font-semibold">View prices in:</span>
+                        </div>
+                        <select id="currency-selector" class="border-2 border-gray-200 rounded-xl px-4 py-2 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-300 bg-white hover:border-primary-300">
                             <option value="USD">USD - US Dollar</option>
                             <option value="EUR">EUR - Euro</option>
                             <option value="GBP">GBP - British Pound</option>
@@ -141,9 +240,30 @@
                             <option value="AUD">AUD - Australian Dollar</option>
                             <option value="SGD">SGD - Singapore Dollar</option>
                         </select>
-                        <div id="conversion-status" class="text-sm text-gray-500">
-                            <i class="fas fa-sync-alt animate-spin"></i> Loading rates...
+                        <div id="conversion-status" class="text-sm text-gray-500 flex items-center space-x-2">
+                            <i class="fas fa-sync-alt animate-spin"></i>
+                            <span>Loading rates...</span>
                         </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Package Filter Tabs -->
+            <div class="flex justify-center mb-12">
+                <div class="bg-white rounded-2xl p-2 shadow-lg border border-gray-100">
+                    <div class="flex space-x-2">
+                        <button class="filter-tab active px-6 py-3 rounded-xl font-semibold transition-all duration-300 bg-primary-600 text-white" data-filter="all">
+                            All Packages
+                        </button>
+                        <button class="filter-tab px-6 py-3 rounded-xl font-semibold transition-all duration-300 text-gray-600 hover:text-primary-600 hover:bg-primary-50" data-filter="popular">
+                            Popular
+                        </button>
+                        <button class="filter-tab px-6 py-3 rounded-xl font-semibold transition-all duration-300 text-gray-600 hover:text-primary-600 hover:bg-primary-50" data-filter="luxury">
+                            Luxury
+                        </button>
+                        <button class="filter-tab px-6 py-3 rounded-xl font-semibold transition-all duration-300 text-gray-600 hover:text-primary-600 hover:bg-primary-50" data-filter="budget">
+                            Budget
+                        </button>
                     </div>
                 </div>
             </div>
@@ -152,11 +272,11 @@
                 <!-- Packages will be loaded dynamically from Upstash -->
                 <div class="col-span-full text-center py-12">
                     <div class="animate-pulse">
-                        <div class="mx-auto w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mb-4">
-                            <i class="fas fa-plane text-primary-600 text-2xl"></i>
+                        <div class="mx-auto w-20 h-20 bg-gradient-to-br from-primary-100 to-primary-200 rounded-2xl flex items-center justify-center mb-6">
+                            <i class="fas fa-plane text-primary-600 text-3xl"></i>
                         </div>
-                        <h3 class="text-xl font-semibold text-gray-600 mb-2">Loading Packages...</h3>
-                        <p class="text-gray-500">Fetching your travel packages from the database</p>
+                        <h3 class="text-2xl font-semibold text-gray-600 mb-3">Loading Packages...</h3>
+                        <p class="text-gray-500 text-lg">Fetching your travel packages from the database</p>
                     </div>
                 </div>
             </div>
@@ -165,19 +285,148 @@
 
 
     <!-- CTA Section -->
-    <section class="py-20 cta-gradient bg-primary-600">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 class="text-4xl font-bold text-white mb-4">Ready for Your Next Adventure?</h2>
-            <p class="text-xl text-blue-100 mb-8 max-w-3xl mx-auto">
+    <section class="py-20 cta-gradient bg-gradient-to-br from-primary-600 via-blue-700 to-blue-900 relative overflow-hidden">
+        <!-- Background Elements -->
+        <div class="absolute inset-0">
+            <div class="floating-shapes">
+                <div class="shape shape-1 opacity-20"></div>
+                <div class="shape shape-2 opacity-20"></div>
+                <div class="shape shape-3 opacity-20"></div>
+            </div>
+        </div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+            <h2 class="text-4xl md:text-5xl font-bold text-white mb-6">
+                Ready for Your Next <span class="text-yellow-300">Adventure</span>?
+            </h2>
+            <p class="text-xl text-blue-100 mb-12 max-w-3xl mx-auto leading-relaxed">
                 Join thousands of satisfied travelers who have discovered the world with TravelBook. Your dream destination is just a click away.
             </p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <button class="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-4 px-8 rounded-lg text-lg transition-colors transform hover:scale-105">
-                    <i class="fas fa-calendar mr-2"></i>Book Your Trip
+            <div class="flex flex-col sm:flex-row gap-6 justify-center items-center">
+                <button class="btn-primary bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-5 px-10 rounded-2xl text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl shadow-lg group">
+                    <i class="fas fa-calendar-check mr-3 group-hover:rotate-12 transition-transform"></i>
+                    <span>Book Your Trip</span>
+                    <div class="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 rounded-2xl transition-opacity"></div>
                 </button>
-                <button class="border-2 border-white text-white hover:bg-white hover:text-primary-600 font-bold py-4 px-8 rounded-lg text-lg transition-colors">
-                    <i class="fas fa-phone mr-2"></i>Call Us Now
+                <button class="btn-secondary border-2 border-white text-white hover:bg-white hover:text-primary-600 font-bold py-5 px-10 rounded-2xl text-lg transition-all duration-300 transform hover:scale-105 group">
+                    <i class="fas fa-phone mr-3 group-hover:scale-110 transition-transform"></i>
+                    <span>Call Us Now</span>
                 </button>
+            </div>
+            
+            <!-- Trust Indicators -->
+            <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+                <div class="text-center group cursor-pointer">
+                    <div class="text-3xl font-bold text-yellow-300 group-hover:scale-110 transition-transform duration-300">500+</div>
+                    <div class="text-blue-100 text-sm">Happy Customers</div>
+                </div>
+                <div class="text-center group cursor-pointer">
+                    <div class="text-3xl font-bold text-yellow-300 group-hover:scale-110 transition-transform duration-300">4.9★</div>
+                    <div class="text-blue-100 text-sm">Average Rating</div>
+                </div>
+                <div class="text-center group cursor-pointer">
+                    <div class="text-3xl font-bold text-yellow-300 group-hover:scale-110 transition-transform duration-300">50+</div>
+                    <div class="text-blue-100 text-sm">Destinations</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+                    Get in <span class="text-primary-600">Touch</span>
+                </h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+                    Have questions about our packages? We're here to help you plan your perfect trip.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <!-- Contact Form -->
+                <div class="bg-gray-50 rounded-3xl p-8 shadow-lg">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-6">Send us a Message</h3>
+                    <form class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">First Name</label>
+                                <input type="text" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-300" placeholder="Your first name">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Last Name</label>
+                                <input type="text" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-300" placeholder="Your last name">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Email</label>
+                            <input type="email" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-300" placeholder="your@email.com">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Message</label>
+                            <textarea rows="4" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-300" placeholder="Tell us about your dream destination..."></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-4 px-6 rounded-xl text-lg transition-all duration-300 transform hover:scale-105 shadow-lg">
+                            <i class="fas fa-paper-plane mr-2"></i>Send Message
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- Contact Info -->
+                <div class="space-y-8">
+                    <div class="bg-gradient-to-br from-primary-50 to-primary-100 rounded-3xl p-8 shadow-lg">
+                        <h3 class="text-2xl font-bold text-gray-900 mb-6">Contact Information</h3>
+                        <div class="space-y-6">
+                            <div class="flex items-center space-x-4 group cursor-pointer">
+                                <div class="w-12 h-12 bg-primary-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                                    <i class="fas fa-phone text-white"></i>
+                                </div>
+                                <div>
+                                    <div class="font-semibold text-gray-900">Phone</div>
+                                    <div class="text-gray-600">+639555143738</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-4 group cursor-pointer">
+                                <div class="w-12 h-12 bg-primary-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                                    <i class="fas fa-envelope text-white"></i>
+                                </div>
+                                <div>
+                                    <div class="font-semibold text-gray-900">Email</div>
+                                    <div class="text-gray-600">info@travelbook.com</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-4 group cursor-pointer">
+                                <div class="w-12 h-12 bg-primary-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                                    <i class="fas fa-map-marker-alt text-white"></i>
+                                </div>
+                                <div>
+                                    <div class="font-semibold text-gray-900">Address</div>
+                                    <div class="text-gray-600">Puerto Princesa, Palawan</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Social Media -->
+                    <div class="bg-white rounded-3xl p-8 shadow-lg border border-gray-100">
+                        <h3 class="text-2xl font-bold text-gray-900 mb-6">Follow Us</h3>
+                        <div class="flex space-x-4">
+                            <a href="#" class="social-icon w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center text-white hover:bg-blue-700 transition-all duration-300 transform hover:scale-110 hover:-translate-y-1">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                            <a href="#" class="social-icon w-12 h-12 bg-blue-400 rounded-xl flex items-center justify-center text-white hover:bg-blue-500 transition-all duration-300 transform hover:scale-110 hover:-translate-y-1">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="#" class="social-icon w-12 h-12 bg-pink-600 rounded-xl flex items-center justify-center text-white hover:bg-pink-700 transition-all duration-300 transform hover:scale-110 hover:-translate-y-1">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            <a href="#" class="social-icon w-12 h-12 bg-blue-700 rounded-xl flex items-center justify-center text-white hover:bg-blue-800 transition-all duration-300 transform hover:scale-110 hover:-translate-y-1">
+                                <i class="fab fa-linkedin-in"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -250,5 +499,277 @@
     
     <!-- Custom JavaScript -->
     <script src="assets/js/script.js"></script>
+    
+    <!-- Enhanced Interactive JavaScript -->
+    <script>
+        // Enhanced Navigation and Mobile Menu
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const closeMobileMenu = document.getElementById('close-mobile-menu');
+            const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+            
+            // Mobile menu toggle
+            mobileMenuBtn.addEventListener('click', function() {
+                mobileMenu.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+            
+            closeMobileMenu.addEventListener('click', function() {
+                mobileMenu.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            });
+            
+            // Close mobile menu when clicking on links
+            mobileNavLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    mobileMenu.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                });
+            });
+            
+            // Close mobile menu when clicking outside
+            mobileMenu.addEventListener('click', function(e) {
+                if (e.target === mobileMenu) {
+                    mobileMenu.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                }
+            });
+            
+            // Enhanced scroll navigation
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('section[id]');
+            
+            // Smooth scrolling for navigation links
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const targetSection = document.querySelector(targetId);
+                    
+                    if (targetSection) {
+                        targetSection.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+            
+            // Active navigation highlighting
+            function updateActiveNav() {
+                const scrollPos = window.scrollY + 100;
+                
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.offsetHeight;
+                    const sectionId = section.getAttribute('id');
+                    
+                    if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
+                        navLinks.forEach(link => {
+                            link.classList.remove('text-primary-600', 'bg-primary-50');
+                            link.classList.add('text-gray-500');
+                        });
+                        
+                        const activeLink = document.querySelector(`.nav-link[href="#${sectionId}"]`);
+                        if (activeLink) {
+                            activeLink.classList.remove('text-gray-500');
+                            activeLink.classList.add('text-primary-600', 'bg-primary-50');
+                        }
+                    }
+                });
+            }
+            
+            // Navbar scroll effect
+            const navbar = document.getElementById('navbar');
+            function updateNavbar() {
+                if (window.scrollY > 50) {
+                    navbar.classList.add('bg-white/98', 'shadow-xl');
+                    navbar.classList.remove('bg-white/95');
+                } else {
+                    navbar.classList.remove('bg-white/98', 'shadow-xl');
+                    navbar.classList.add('bg-white/95');
+                }
+            }
+            
+            // Package filter tabs
+            const filterTabs = document.querySelectorAll('.filter-tab');
+            filterTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Remove active class from all tabs
+                    filterTabs.forEach(t => {
+                        t.classList.remove('active', 'bg-primary-600', 'text-white');
+                        t.classList.add('text-gray-600', 'hover:text-primary-600', 'hover:bg-primary-50');
+                    });
+                    
+                    // Add active class to clicked tab
+                    this.classList.add('active', 'bg-primary-600', 'text-white');
+                    this.classList.remove('text-gray-600', 'hover:text-primary-600', 'hover:bg-primary-50');
+                    
+                    // Filter packages (this would integrate with your existing package system)
+                    const filter = this.getAttribute('data-filter');
+                    filterPackages(filter);
+                });
+            });
+            
+            // Package filtering function
+            function filterPackages(filter) {
+                const packages = document.querySelectorAll('.package-card');
+                packages.forEach(package => {
+                    if (filter === 'all') {
+                        package.style.display = 'block';
+                    } else {
+                        // Add your filtering logic here based on package data
+                        package.style.display = 'block'; // Placeholder
+                    }
+                });
+            }
+            
+            // Enhanced scroll events
+            window.addEventListener('scroll', function() {
+                updateActiveNav();
+                updateNavbar();
+            });
+            
+            // Intersection Observer for animations
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate-fadeInUp');
+                    }
+                });
+            }, observerOptions);
+            
+            // Observe elements for animation
+            const animateElements = document.querySelectorAll('.feature-card, .package-card, .stat-item');
+            animateElements.forEach(el => {
+                observer.observe(el);
+            });
+            
+            // Enhanced button interactions
+            const buttons = document.querySelectorAll('.btn-primary, .btn-secondary');
+            buttons.forEach(button => {
+                button.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-2px) scale(1.05)';
+                });
+                
+                button.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+            
+            // Enhanced form interactions
+            const formInputs = document.querySelectorAll('input, textarea, select');
+            formInputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.parentElement.classList.add('focused');
+                });
+                
+                input.addEventListener('blur', function() {
+                    this.parentElement.classList.remove('focused');
+                });
+            });
+            
+            // Parallax effect for hero section
+            const heroSection = document.getElementById('home');
+            const shapes = document.querySelectorAll('.shape');
+            
+            window.addEventListener('scroll', function() {
+                const scrolled = window.pageYOffset;
+                const rate = scrolled * -0.5;
+                
+                shapes.forEach((shape, index) => {
+                    const speed = (index + 1) * 0.1;
+                    shape.style.transform = `translateY(${rate * speed}px)`;
+                });
+            });
+            
+            // Enhanced contact form
+            const contactForm = document.querySelector('#contact form');
+            if (contactForm) {
+                contactForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    // Add loading state
+                    const submitBtn = this.querySelector('button[type="submit"]');
+                    const originalText = submitBtn.innerHTML;
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Sending...';
+                    submitBtn.disabled = true;
+                    
+                    // Simulate form submission
+                    setTimeout(() => {
+                        submitBtn.innerHTML = '<i class="fas fa-check mr-2"></i>Message Sent!';
+                        submitBtn.classList.add('bg-green-600');
+                        
+                        setTimeout(() => {
+                            submitBtn.innerHTML = originalText;
+                            submitBtn.disabled = false;
+                            submitBtn.classList.remove('bg-green-600');
+                            this.reset();
+                        }, 2000);
+                    }, 1500);
+                });
+            }
+            
+            // Enhanced CTA buttons
+            const ctaButtons = document.querySelectorAll('.cta-gradient button');
+            ctaButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    if (this.textContent.includes('Book Your Trip')) {
+                        // Scroll to packages section
+                        document.getElementById('packages').scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    } else if (this.textContent.includes('Call Us Now')) {
+                        // Simulate phone call
+                        window.location.href = 'tel:+15551234567';
+                    }
+                });
+            });
+            
+            // Enhanced hero buttons
+            const heroButtons = document.querySelectorAll('.hero-buttons button');
+            heroButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    if (this.textContent.includes('Explore Packages')) {
+                        document.getElementById('packages').scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    } else if (this.textContent.includes('Watch Video')) {
+                        // Simulate video modal
+                        alert('Video player would open here!');
+                    }
+                });
+            });
+        });
+        
+        // Enhanced package card interactions
+        function enhancePackageCards() {
+            const packageCards = document.querySelectorAll('.package-card');
+            packageCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-12px) scale(1.02)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+        }
+        
+        // Call enhancement function when packages are loaded
+        if (typeof updatePackagesDisplay === 'function') {
+            const originalUpdatePackagesDisplay = updatePackagesDisplay;
+            updatePackagesDisplay = function() {
+                originalUpdatePackagesDisplay();
+                setTimeout(enhancePackageCards, 100);
+            };
+        }
+    </script>
 </body>
 </html>
