@@ -20,57 +20,16 @@ class AuthManager {
      * Initialize default admin user
      */
     async initializeDefaultAdmin() {
-        try {
-            // Check if Upstash is available
-            if (!window.UPSTASH_CONFIG || !window.UPSTASH_CONFIG.apiBase || window.UPSTASH_CONFIG.apiBase === 'your-endpoint') {
-                console.log('Upstash not configured, using localStorage fallback');
-                this.initializeLocalStorageFallback();
-                return;
-            }
-            
-            const existingUsers = await this.getStoredUsers();
-            if (existingUsers.length === 0) {
-                const defaultAdmin = {
-                    id: 'admin_001',
-                    username: 'admin',
-                    password: this.hashPassword('admin123'), // Default password
-                    email: 'admin@travelbooks.com',
-                    role: 'admin',
-                    created_at: new Date().toISOString(),
-                    last_login: null,
-                    is_active: true
-                };
-                
-                await this.saveUsers([defaultAdmin]);
-                console.log('Default admin user created: username=admin, password=admin123');
-            }
-        } catch (error) {
-            console.error('Error initializing default admin:', error);
-            // Fallback to localStorage
-            this.initializeLocalStorageFallback();
-        }
+        // No default admin creation - users must be created manually for security
+        console.log('No default admin user created - users must be added manually');
     }
     
     /**
      * Initialize localStorage fallback for when Upstash is not available
      */
     initializeLocalStorageFallback() {
-        const existingUsers = this.getLocalStorageUsers();
-        if (existingUsers.length === 0) {
-            const defaultAdmin = {
-                id: 'admin_001',
-                username: 'admin',
-                password: this.hashPassword('admin123'),
-                email: 'admin@travelbooks.com',
-                role: 'admin',
-                created_at: new Date().toISOString(),
-                last_login: null,
-                is_active: true
-            };
-            
-            this.saveLocalStorageUsers([defaultAdmin]);
-            console.log('Default admin user created in localStorage: username=admin, password=admin123');
-        }
+        // No default admin creation - users must be created manually for security
+        console.log('No default admin user created in localStorage - users must be added manually');
     }
     
     /**
@@ -342,16 +301,23 @@ class AuthManager {
                 }).filter(user => user !== null);
             }
             
-            // If result is already an array
+            // If result is already an array (Upstash HGETALL format)
             if (Array.isArray(result)) {
-                return result.map(userStr => {
-                    try {
-                        return typeof userStr === 'string' ? JSON.parse(userStr) : userStr;
-                    } catch (e) {
-                        console.error('Error parsing user data:', e);
-                        return null;
+                // Upstash HGETALL returns [key1, value1, key2, value2, ...]
+                const users = [];
+                for (let i = 0; i < result.length; i += 2) {
+                    const key = result[i];
+                    const value = result[i + 1];
+                    if (key && value) {
+                        try {
+                            const userData = typeof value === 'string' ? JSON.parse(value) : value;
+                            users.push(userData);
+                        } catch (e) {
+                            console.error('Error parsing user data:', e);
+                        }
                     }
-                }).filter(user => user !== null);
+                }
+                return users;
             }
             
             return [];
