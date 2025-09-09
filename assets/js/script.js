@@ -552,7 +552,7 @@ function createPackageCard(packageData) {
         </div>
         <div class="p-6">
             <h3 class="text-xl font-bold mb-2">${packageData.title}</h3>
-            <p class="text-gray-600 mb-4">${packageData.description}</p>
+            <div class="text-gray-600 mb-4 whitespace-pre-line">${formatDescription(packageData.description)}</div>
             <div class="flex items-center mb-4">
                 ${ratingStars}
                 <span class="ml-2 text-gray-600">(${packageData.rating}/5)</span>
@@ -575,6 +575,29 @@ function createPackageCard(packageData) {
     `;
     
     return card;
+}
+
+/**
+ * Format description with proper line breaks after emojis
+ */
+function formatDescription(description) {
+    if (!description) return '';
+    
+    // Split the description by emojis and add line breaks
+    // This regex matches common emoji patterns
+    const emojiRegex = /([\u{1F600}-\u{1F64F}]|[\u{1F300}-\u{1F5FF}]|[\u{1F680}-\u{1F6FF}]|[\u{1F1E0}-\u{1F1FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}])/gu;
+    
+    return description
+        .split(emojiRegex)
+        .map((part, index, array) => {
+            // If this part is an emoji and there's text after it
+            if (emojiRegex.test(part) && index < array.length - 1 && array[index + 1].trim()) {
+                return part + '\n';
+            }
+            return part;
+        })
+        .join('')
+        .trim();
 }
 
 /**
