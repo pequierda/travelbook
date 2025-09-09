@@ -428,7 +428,7 @@ document.addEventListener('DOMContentLoaded', updateFooterYear);
 async function initUpstashIntegration() {
     try {
         // Check if Upstash is configured
-        if (!window.UPSTASH_CONFIG || !window.UPSTASH_CONFIG.url || window.UPSTASH_CONFIG.url.includes('your-endpoint')) {
+        if (!window.UPSTASH_CONFIG || !window.UPSTASH_CONFIG.apiBase) {
             console.warn('Upstash not configured. Using static packages.');
             return;
         }
