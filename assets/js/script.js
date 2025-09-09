@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initFormHandling();
     initAnimations();
     initLazyLoading();
+    initUpstashIntegration();
     
     console.log('TravelBook website initialized successfully!');
 });
@@ -420,3 +421,227 @@ function updateFooterYear() {
 
 // Initialize footer year on load
 document.addEventListener('DOMContentLoaded', updateFooterYear);
+
+/**
+ * Initialize Upstash integration
+ */
+async function initUpstashIntegration() {
+    try {
+        // Check if Upstash is configured
+        if (!window.UPSTASH_CONFIG || !window.UPSTASH_CONFIG.url || window.UPSTASH_CONFIG.url.includes('your-endpoint')) {
+            console.warn('Upstash not configured. Using static packages.');
+            return;
+        }
+        
+        // Test connection
+        const isConnected = await testUpstashConnection();
+        if (!isConnected) {
+            console.warn('Upstash connection failed. Using static packages.');
+            return;
+        }
+        
+        // Load packages from Upstash
+        await loadPackagesFromUpstash();
+        
+        console.log('Upstash integration initialized successfully!');
+        
+    } catch (error) {
+        console.error('Error initializing Upstash integration:', error);
+    }
+}
+
+/**
+ * Test Upstash connection
+ */
+async function testUpstashConnection() {
+    try {
+        // Simple ping test
+        await upstashRequest('ping');
+        return true;
+    } catch (error) {
+        console.error('Upstash connection test failed:', error);
+        return false;
+    }
+}
+
+/**
+ * Load packages from Upstash and update the page
+ */
+async function loadPackagesFromUpstash() {
+    try {
+        const result = await window.packageManager.getAllPackages(true);
+        
+        if (result.success && result.packages.length > 0) {
+            // Replace static packages with dynamic ones
+            updatePackagesDisplay(result.packages);
+            console.log(`Loaded ${result.packages.length} packages from Upstash`);
+        } else {
+            console.log('No packages found in Upstash, using static packages');
+        }
+        
+    } catch (error) {
+        console.error('Error loading packages from Upstash:', error);
+    }
+}
+
+/**
+ * Update packages display with dynamic data
+ */
+function updatePackagesDisplay(packages) {
+    const packagesContainer = document.querySelector('#packages .grid');
+    if (!packagesContainer) return;
+    
+    // Clear existing packages
+    packagesContainer.innerHTML = '';
+    
+    // Create package cards
+    packages.forEach(packageData => {
+        const packageCard = createPackageCard(packageData);
+        packagesContainer.appendChild(packageCard);
+    });
+    
+    // Re-initialize package card interactions
+    initPackageCards();
+}
+
+/**
+ * Create a package card element
+ */
+function createPackageCard(packageData) {
+    const card = document.createElement('div');
+    card.className = 'package-card bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300';
+    
+    const badgeHtml = packageData.badge ? 
+        `<div class="package-badge absolute top-4 right-4 ${packageData.badge_color} text-white px-3 py-1 rounded-full text-sm font-semibold">
+            ${packageData.badge}
+        </div>` : '';
+    
+    const ratingStars = generateStarRating(packageData.rating);
+    
+    card.innerHTML = `
+        <div class="relative">
+            <img src="${packageData.image_url}" 
+                 alt="${packageData.title}" 
+                 class="w-full h-48 object-cover"
+                 loading="lazy">
+            ${badgeHtml}
+        </div>
+        <div class="p-6">
+            <h3 class="text-xl font-bold mb-2">${packageData.title}</h3>
+            <p class="text-gray-600 mb-4">${packageData.description}</p>
+            <div class="flex items-center mb-4">
+                ${ratingStars}
+                <span class="ml-2 text-gray-600">(${packageData.rating}/5)</span>
+            </div>
+            <div class="flex justify-between items-center">
+                <div>
+                    <span class="text-2xl font-bold text-primary-600">$${packageData.price.toLocaleString()}</span>
+                    <span class="text-gray-500">/${packageData.currency}</span>
+                </div>
+                <button class="btn-primary bg-primary-600 hover:bg-primary-700 text-white px-6 py-2 rounded-lg transition-colors" 
+                        data-package-id="${packageData.id}">
+                    Book Now
+                </button>
+            </div>
+        </div>
+    `;
+    
+    return card;
+}
+
+/**
+ * Generate star rating HTML
+ */
+function generateStarRating(rating) {
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 !== 0;
+    const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+    
+    let starsHtml = '';
+    
+    // Full stars
+    for (let i = 0; i < fullStars; i++) {
+        starsHtml += '<i class="fas fa-star"></i>';
+    }
+    
+    // Half star
+    if (hasHalfStar) {
+        starsHtml += '<i class="fas fa-star-half-alt"></i>';
+    }
+    
+    // Empty stars
+    for (let i = 0; i < emptyStars; i++) {
+        starsHtml += '<i class="far fa-star"></i>';
+    }
+    
+    return `<div class="flex text-yellow-400">${starsHtml}</div>`;
+}
+
+/**
+ * Add package management functions to global scope
+ */
+window.addPackage = async function(packageData) {
+    try {
+        const result = await window.packageManager.createPackage(packageData);
+        if (result.success) {
+            showNotification('Package added successfully!', 'success');
+            await loadPackagesFromUpstash(); // Refresh display
+        } else {
+            showNotification('Error adding package: ' + result.message, 'error');
+        }
+        return result;
+    } catch (error) {
+        showNotification('Error adding package: ' + error.message, 'error');
+        return { success: false, message: error.message };
+    }
+};
+
+window.updatePackage = async function(packageId, packageData) {
+    try {
+        const result = await window.packageManager.updatePackage(packageId, packageData);
+        if (result.success) {
+            showNotification('Package updated successfully!', 'success');
+            await loadPackagesFromUpstash(); // Refresh display
+        } else {
+            showNotification('Error updating package: ' + result.message, 'error');
+        }
+        return result;
+    } catch (error) {
+        showNotification('Error updating package: ' + error.message, 'error');
+        return { success: false, message: error.message };
+    }
+};
+
+window.deletePackage = async function(packageId) {
+    try {
+        if (confirm('Are you sure you want to delete this package?')) {
+            const result = await window.packageManager.deletePackage(packageId);
+            if (result.success) {
+                showNotification('Package deleted successfully!', 'success');
+                await loadPackagesFromUpstash(); // Refresh display
+            } else {
+                showNotification('Error deleting package: ' + result.message, 'error');
+            }
+            return result;
+        }
+    } catch (error) {
+        showNotification('Error deleting package: ' + error.message, 'error');
+        return { success: false, message: error.message };
+    }
+};
+
+window.initializeSamplePackages = async function() {
+    try {
+        const result = await window.packageManager.initializeSamplePackages();
+        if (result.success) {
+            showNotification('Sample packages initialized!', 'success');
+            await loadPackagesFromUpstash(); // Refresh display
+        } else {
+            showNotification('Error initializing packages: ' + result.message, 'error');
+        }
+        return result;
+    } catch (error) {
+        showNotification('Error initializing packages: ' + error.message, 'error');
+        return { success: false, message: error.message };
+    }
+};

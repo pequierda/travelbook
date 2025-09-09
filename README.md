@@ -32,6 +32,8 @@ travelbook/
 - **Flowbite**: UI component library for enhanced components
 - **Font Awesome**: Icon library
 - **Vanilla JavaScript**: Custom interactions and functionality
+- **Upstash Redis**: Serverless Redis database for package management
+- **REST API**: Client-side database operations
 
 ## 🎨 Design Features
 
@@ -59,16 +61,29 @@ travelbook/
 
 ## 🚀 Getting Started
 
+### Option 1: Static Version (No Database)
 1. **Clone or download** the project files
 2. **Open** `index.html` in your web browser
 3. **Customize** the content, colors, and packages as needed
 
+### Option 2: Dynamic Version with Upstash Database
+1. **Set up Upstash account** (see [UPSTASH_SETUP.md](UPSTASH_SETUP.md))
+2. **Configure credentials** in `assets/js/upstash-config.js`
+3. **Open** `index.html` for the main site or `admin.html` for package management
+4. **Initialize sample packages** from the admin panel
+
 ## 📝 Customization
 
-### Adding New Packages
+### Adding New Packages (Static Version)
 1. Copy an existing package card in `index.html`
 2. Update the image, title, description, and price
 3. Add any special badges (New, Best Seller, Limited)
+
+### Adding New Packages (Dynamic Version)
+1. Open `admin.html` in your browser
+2. Click "Add New Package" button
+3. Fill in the package details
+4. Save to automatically update the main site
 
 ### Modifying Styles
 1. Edit `assets/css/style.css` for custom styles
