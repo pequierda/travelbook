@@ -262,6 +262,7 @@ function openPackageModal(packageData = null) {
     
     if (packageData) {
         // Edit mode
+        showAdminNotification(`Opening edit modal for package: ${packageData.id}`, 'info');
         title.textContent = 'Edit Package';
         currentEditingPackage = packageData;
         
@@ -278,8 +279,11 @@ function openPackageModal(packageData = null) {
         document.getElementById('badge').value = packageData.badge || '';
         document.getElementById('badge_color').value = packageData.badge_color || 'bg-blue-500';
         document.getElementById('is_active').checked = packageData.is_active;
+        
+        showAdminNotification(`Edit mode activated. Package ID: ${packageData.id}`, 'success');
     } else {
         // Add mode - ensure all fields are clear
+        showAdminNotification('Opening add new package modal', 'info');
         title.textContent = 'Add New Package';
         document.getElementById('package-id').value = '';
         document.getElementById('title').value = '';
@@ -293,6 +297,8 @@ function openPackageModal(packageData = null) {
         document.getElementById('badge').value = '';
         document.getElementById('badge_color').value = 'bg-blue-500';
         document.getElementById('is_active').checked = true;
+        
+        showAdminNotification('Add mode activated', 'success');
     }
     
     modal.classList.remove('hidden');
@@ -360,9 +366,12 @@ async function handlePackageSubmit(e) {
  */
 async function editPackage(packageId) {
     try {
+        showAdminNotification(`Loading package for editing: ${packageId}`, 'info');
+        
         const result = await window.packageManager.getPackage(packageId);
         
         if (result.success) {
+            showAdminNotification(`Package loaded successfully. Opening edit modal...`, 'info');
             openPackageModal(result.package);
         } else {
             showAdminNotification('Error loading package: ' + result.message, 'error');
