@@ -253,9 +253,12 @@ function openPackageModal(packageData = null) {
     const form = document.getElementById('package-form');
     const title = document.getElementById('modal-title');
     
-    // Reset form
+    // Reset form and clear all fields
     form.reset();
     currentEditingPackage = null;
+    
+    // Clear the package ID field completely
+    document.getElementById('package-id').value = '';
     
     if (packageData) {
         // Edit mode
@@ -276,8 +279,19 @@ function openPackageModal(packageData = null) {
         document.getElementById('badge_color').value = packageData.badge_color || 'bg-blue-500';
         document.getElementById('is_active').checked = packageData.is_active;
     } else {
-        // Add mode
+        // Add mode - ensure all fields are clear
         title.textContent = 'Add New Package';
+        document.getElementById('package-id').value = '';
+        document.getElementById('title').value = '';
+        document.getElementById('description').value = '';
+        document.getElementById('price').value = '';
+        document.getElementById('currency').value = 'USD';
+        document.getElementById('image_url').value = '';
+        document.getElementById('destination').value = '';
+        document.getElementById('duration').value = '';
+        document.getElementById('rating').value = '5';
+        document.getElementById('badge').value = '';
+        document.getElementById('badge_color').value = 'bg-blue-500';
         document.getElementById('is_active').checked = true;
     }
     
@@ -307,14 +321,20 @@ async function handlePackageSubmit(e) {
     packageData.rating = parseFloat(packageData.rating);
     packageData.is_active = packageData.is_active === 'on';
     
+    // Debug: Check if we're in edit mode
+    const isEditMode = currentEditingPackage !== null;
+    const packageId = document.getElementById('package-id').value;
+    
     try {
         let result;
         
-        if (currentEditingPackage) {
+        if (isEditMode && packageId) {
             // Update existing package
+            showAdminNotification(`Updating package: ${packageId}`, 'info');
             result = await window.packageManager.updatePackage(currentEditingPackage.id, packageData);
         } else {
             // Create new package
+            showAdminNotification('Creating new package...', 'info');
             result = await window.packageManager.createPackage(packageData);
         }
         
