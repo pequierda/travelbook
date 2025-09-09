@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Login Issue</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+    <div class="bg-white p-8 rounded-lg shadow-lg max-w-4xl w-full">
+        <h1 class="text-2xl font-bold text-gray-800 mb-6">Debug Login Issue</h1>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Test Connection -->
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <h2 class="text-lg font-semibold text-gray-700 mb-3">1. Test Upstash Connection</h2>
+                <button onclick="testConnection()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 mb-3">
+                    Test Connection
+                </button>
+                <div id="connection-result" class="text-sm"></div>
+            </div>
+
+            <!-- Test User Data -->
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <h2 class="text-lg font-semibold text-gray-700 mb-3">2. Test User Data</h2>
+                <button onclick="testUserData()" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 mb-3">
+                    Test User Data
+                </button>
+                <div id="userdata-result" class="text-sm"></div>
+            </div>
+
+            <!-- Test Authentication -->
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <h2 class="text-lg font-semibold text-gray-700 mb-3">3. Test Authentication</h2>
+                <div class="mb-3">
+                    <input type="text" id="test-username" placeholder="Username" value="admin" class="w-full p-2 border rounded mb-2">
+                    <input type="password" id="test-password" placeholder="Password" value="pequierda123" class="w-full p-2 border rounded mb-2">
+                </div>
+                <button onclick="testAuth()" class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 mb-3">
+                    Test Authentication
+                </button>
+                <div id="auth-result" class="text-sm"></div>
+            </div>
+
+            <!-- Debug Info -->
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <h2 class="text-lg font-semibold text-gray-700 mb-3">4. Debug Information</h2>
+                <button onclick="showDebugInfo()" class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 mb-3">
+                    Show Debug Info
+                </button>
+                <div id="debug-info" class="text-sm"></div>
+            </div>
+        </div>
+
+        <div class="mt-6">
+            <a href="login.html" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
+                Back to Login
+            </a>
+        </div>
+    </div>
+
+    <!-- Include the required scripts -->
+    <script src="assets/js/upstash-config.js"></script>
+    <script src="assets/js/auth.js"></script>
+
+    <script>
+        async function testConnection() {
+            const resultDiv = document.getElementById('connection-result');
+            resultDiv.innerHTML = '<p class="text-blue-600">Testing...</p>';
+
+            try {
+                const testResult = await upstashRequest('set', ['debug_test', 'connection_ok']);
+                resultDiv.innerHTML = '<p class="text-green-600">✅ Connection successful!</p>';
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="text-red-600">❌ Connection failed: ${error.message}</p>`;
+            }
+        }
+
+        async function testUserData() {
+            const resultDiv = document.getElementById('userdata-result');
+            resultDiv.innerHTML = '<p class="text-blue-600">Testing...</p>';
+
+            try {
+                const users = await window.authManager.getStoredUsers();
+                resultDiv.innerHTML = `
+                    <p class="text-green-600">✅ Found ${users.length} user(s)</p>
+                    <details class="mt-2">
+                        <summary class="cursor-pointer text-blue-600">View user data</summary>
+                        <pre class="bg-white p-2 rounded text-xs mt-1 overflow-x-auto">${JSON.stringify(users, null, 2)}</pre>
+                    </details>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="text-red-600">❌ Failed: ${error.message}</p>`;
+            }
+        }
+
+        async function testAuth() {
+            const resultDiv = document.getElementById('auth-result');
+            const username = document.getElementById('test-username').value;
+            const password = document.getElementById('test-password').value;
+            
+            resultDiv.innerHTML = '<p class="text-blue-600">Testing authentication...</p>';
+
+            try {
+                const authResult = await window.authManager.authenticate(username, password);
+                if (authResult.success) {
+                    resultDiv.innerHTML = '<p class="text-green-600">✅ Authentication successful!</p>';
+                } else {
+                    resultDiv.innerHTML = `<p class="text-red-600">❌ Authentication failed: ${authResult.message}</p>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="text-red-600">❌ Error: ${error.message}</p>`;
+            }
+        }
+
+        function showDebugInfo() {
+            const resultDiv = document.getElementById('debug-info');
+            
+            const debugInfo = {
+                upstashConfig: window.UPSTASH_CONFIG,
+                authManager: {
+                    usersKey: window.authManager.usersKey,
+                    sessionKey: window.authManager.sessionKey
+                },
+                localStorage: {
+                    session: localStorage.getItem('travelbook_admin_session'),
+                    fallback: localStorage.getItem('travelbook_admin_users_fallback')
+                }
+            };
+
+            resultDiv.innerHTML = `
+                <details class="mt-2">
+                    <summary class="cursor-pointer text-blue-600">View debug info</summary>
+                    <pre class="bg-white p-2 rounded text-xs mt-1 overflow-x-auto">${JSON.stringify(debugInfo, null, 2)}</pre>
+                </details>
+            `;
+        }
+    </script>
+</body>
+</html>
