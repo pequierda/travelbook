@@ -9,7 +9,9 @@ class AuthManager {
         this.usersKey = 'travelbook:admin_users';
         this.loginAttemptsKey = 'travelbook:login_attempts';
         this.maxLoginAttempts = 5;
-        this.lockoutDuration = 15 * 60 * 1000; // 15 minutes
+        this.maxLoginAttemptsExtended = 10;
+        this.lockoutDuration = 1 * 60 * 1000; // 1 minute
+        this.extendedLockoutDuration = 15 * 60 * 1000; // 15 minutes
         this.sessionDuration = 24 * 60 * 60 * 1000; // 24 hours
         
         // Initialize default admin user if none exists
@@ -72,7 +74,18 @@ class AuthManager {
         try {
             // Check for lockout
             if (this.isAccountLocked(username)) {
-                throw new Error('Account is temporarily locked due to too many failed login attempts. Please try again later.');
+                const attempts = this.getFailedAttempts();
+                const userAttempts = attempts[username] || [];
+                const now = Date.now();
+                const extendedRecentAttempts = userAttempts.filter(
+                    attempt => now - attempt < this.extendedLockoutDuration
+                );
+                
+                if (extendedRecentAttempts.length >= this.maxLoginAttemptsExtended) {
+                    throw new Error('Account is locked for 15 minutes due to excessive failed login attempts. Please try again later.');
+                } else {
+                    throw new Error('Account is temporarily locked for 1 minute due to failed login attempts. Please try again later.');
+                }
             }
             
             // Get users
@@ -242,12 +255,27 @@ class AuthManager {
         const userAttempts = attempts[username] || [];
         const now = Date.now();
         
-        // Filter recent attempts
+        // Filter recent attempts (within 1 minute)
         const recentAttempts = userAttempts.filter(
             attempt => now - attempt < this.lockoutDuration
         );
         
-        return recentAttempts.length >= this.maxLoginAttempts;
+        // Filter extended recent attempts (within 15 minutes)
+        const extendedRecentAttempts = userAttempts.filter(
+            attempt => now - attempt < this.extendedLockoutDuration
+        );
+        
+        // Progressive lockout:
+        // 1-5 attempts: 1 minute lockout
+        // 6-10 attempts: 1 minute lockout
+        // 10+ attempts: 15 minute lockout
+        if (extendedRecentAttempts.length >= this.maxLoginAttemptsExtended) {
+            return true; // 15 minute lockout
+        } else if (recentAttempts.length >= this.maxLoginAttempts) {
+            return true; // 1 minute lockout
+        }
+        
+        return false;
     }
     
     /**
