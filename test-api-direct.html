@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test API Direct</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+    <div class="bg-white p-8 rounded-lg shadow-lg max-w-2xl w-full">
+        <h1 class="text-2xl font-bold text-gray-800 mb-6">Test API Routes Directly</h1>
+        
+        <div class="space-y-4">
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <h2 class="text-lg font-semibold text-gray-700 mb-3">Test SET Command</h2>
+                <button onclick="testSet()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 mb-3">
+                    Test SET
+                </button>
+                <div id="set-result" class="text-sm"></div>
+            </div>
+
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <h2 class="text-lg font-semibold text-gray-700 mb-3">Test GET Command</h2>
+                <button onclick="testGet()" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 mb-3">
+                    Test GET
+                </button>
+                <div id="get-result" class="text-sm"></div>
+            </div>
+
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <h2 class="text-lg font-semibold text-gray-700 mb-3">Test HGETALL Command</h2>
+                <button onclick="testHgetall()" class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 mb-3">
+                    Test HGETALL
+                </button>
+                <div id="hgetall-result" class="text-sm"></div>
+            </div>
+        </div>
+
+        <div class="mt-6">
+            <a href="debug-login.html" class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700">
+                Back to Debug
+            </a>
+        </div>
+    </div>
+
+    <script>
+        async function testSet() {
+            const resultDiv = document.getElementById('set-result');
+            resultDiv.innerHTML = '<p class="text-blue-600">Testing SET...</p>';
+
+            try {
+                const response = await fetch('/api/upstash/set', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        command: 'SET',
+                        args: ['test_key', 'test_value']
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `<p class="text-green-600">✅ SET successful: ${JSON.stringify(data)}</p>`;
+                } else {
+                    resultDiv.innerHTML = `<p class="text-red-600">❌ SET failed: ${response.status} - ${JSON.stringify(data)}</p>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="text-red-600">❌ Error: ${error.message}</p>`;
+            }
+        }
+
+        async function testGet() {
+            const resultDiv = document.getElementById('get-result');
+            resultDiv.innerHTML = '<p class="text-blue-600">Testing GET...</p>';
+
+            try {
+                const response = await fetch('/api/upstash/get', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        command: 'GET',
+                        args: ['test_key']
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `<p class="text-green-600">✅ GET successful: ${JSON.stringify(data)}</p>`;
+                } else {
+                    resultDiv.innerHTML = `<p class="text-red-600">❌ GET failed: ${response.status} - ${JSON.stringify(data)}</p>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="text-red-600">❌ Error: ${error.message}</p>`;
+            }
+        }
+
+        async function testHgetall() {
+            const resultDiv = document.getElementById('hgetall-result');
+            resultDiv.innerHTML = '<p class="text-blue-600">Testing HGETALL...</p>';
+
+            try {
+                const response = await fetch('/api/upstash/hgetall', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        command: 'HGETALL',
+                        args: ['travelbook:admin_users']
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `<p class="text-green-600">✅ HGETALL successful: ${JSON.stringify(data)}</p>`;
+                } else {
+                    resultDiv.innerHTML = `<p class="text-red-600">❌ HGETALL failed: ${response.status} - ${JSON.stringify(data)}</p>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="text-red-600">❌ Error: ${error.message}</p>`;
+            }
+        }
+    </script>
+</body>
+</html>
