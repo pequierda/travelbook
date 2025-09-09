@@ -277,7 +277,7 @@ class AuthManager {
     async getStoredUsers() {
         try {
             // Check if Upstash is available
-            if (!window.UPSTASH_CONFIG || !window.UPSTASH_CONFIG.apiBase || window.UPSTASH_CONFIG.apiBase === 'your-endpoint') {
+            if (!window.UPSTASH_CONFIG || !window.UPSTASH_CONFIG.apiBase) {
                 console.log('Using localStorage fallback for users');
                 return this.getLocalStorageUsers();
             }
