@@ -23,7 +23,6 @@ class AuthManager {
      */
     async initializeDefaultAdmin() {
         // No default admin creation - users must be created manually for security
-        console.log('No default admin user created - users must be added manually');
     }
     
     /**
@@ -31,7 +30,6 @@ class AuthManager {
      */
     initializeLocalStorageFallback() {
         // No default admin creation - users must be created manually for security
-        console.log('No default admin user created in localStorage - users must be added manually');
     }
     
     /**
@@ -93,7 +91,6 @@ class AuthManager {
             
             // Ensure users is an array
             if (!Array.isArray(users)) {
-                console.error('Users data is not an array:', users);
                 throw new Error('User data format error. Please contact administrator.');
             }
             
@@ -133,7 +130,6 @@ class AuthManager {
             };
             
         } catch (error) {
-            console.error('Authentication error:', error);
             return {
                 success: false,
                 message: error.message
@@ -179,7 +175,6 @@ class AuthManager {
             
             return true;
         } catch (error) {
-            console.error('Error checking authentication:', error);
             return false;
         }
     }
@@ -202,7 +197,6 @@ class AuthManager {
             
             return session;
         } catch (error) {
-            console.error('Error getting session:', error);
             return null;
         }
     }
@@ -306,7 +300,6 @@ class AuthManager {
         try {
             // Check if Upstash is available
             if (!window.UPSTASH_CONFIG || !window.UPSTASH_CONFIG.apiBase) {
-                console.log('Using localStorage fallback for users');
                 return this.getLocalStorageUsers();
             }
             
@@ -323,7 +316,6 @@ class AuthManager {
                     try {
                         return typeof userStr === 'string' ? JSON.parse(userStr) : userStr;
                     } catch (e) {
-                        console.error('Error parsing user data:', e);
                         return null;
                     }
                 }).filter(user => user !== null);
@@ -341,7 +333,6 @@ class AuthManager {
                             const userData = typeof value === 'string' ? JSON.parse(value) : value;
                             users.push(userData);
                         } catch (e) {
-                            console.error('Error parsing user data:', e);
                         }
                     }
                 }
@@ -350,7 +341,6 @@ class AuthManager {
             
             return [];
         } catch (error) {
-            console.error('Error getting users from Upstash, using localStorage fallback:', error);
             return this.getLocalStorageUsers();
         }
     }
@@ -368,7 +358,6 @@ class AuthManager {
                 await upstashRequest('hset', [this.usersKey, user.id, JSON.stringify(user)]);
             }
         } catch (error) {
-            console.error('Error saving users to Upstash:', error);
             throw error;
         }
     }
@@ -476,7 +465,6 @@ class AuthManager {
                 is_active: user.is_active
             }));
         } catch (error) {
-            console.error('Error getting all users:', error);
             return [];
         }
     }

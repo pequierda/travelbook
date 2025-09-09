@@ -21,7 +21,6 @@ document.addEventListener('DOMContentLoaded', function() {
         initCurrencyConversion();
     }, 100);
     
-    console.log('TravelBook website initialized successfully!');
 });
 
 /**
@@ -434,24 +433,20 @@ async function initUpstashIntegration() {
     try {
         // Check if Upstash is configured
         if (!window.UPSTASH_CONFIG || !window.UPSTASH_CONFIG.apiBase) {
-            console.warn('Upstash not configured. Using static packages.');
             return;
         }
         
         // Test connection
         const isConnected = await testUpstashConnection();
         if (!isConnected) {
-            console.warn('Upstash connection failed. Using static packages.');
             return;
         }
         
         // Load packages from Upstash
         await loadPackagesFromUpstash();
         
-        console.log('Upstash integration initialized successfully!');
-        
     } catch (error) {
-        console.error('Error initializing Upstash integration:', error);
+        // Silent error handling for production
     }
 }
 
@@ -464,7 +459,6 @@ async function testUpstashConnection() {
         await upstashRequest('keys', ['*']);
         return true;
     } catch (error) {
-        console.error('Upstash connection test failed:', error);
         return false;
     }
 }
@@ -476,24 +470,18 @@ async function loadPackagesFromUpstash() {
     try {
         // Check if package manager is available
         if (!window.packageManager) {
-            console.error('Package manager not available');
             return;
         }
         
-        console.log('Loading packages from Upstash...');
         const result = await window.packageManager.getAllPackages(true);
-        console.log('Package manager result:', result);
         
         if (result.success && result.packages && result.packages.length > 0) {
             // Replace static packages with dynamic ones
             updatePackagesDisplay(result.packages);
-            console.log(`Loaded ${result.packages.length} packages from Upstash`);
-        } else {
-            console.log('No packages found in Upstash, using static packages');
         }
         
     } catch (error) {
-        console.error('Error loading packages from Upstash:', error);
+        // Silent error handling for production
     }
 }
 
@@ -651,7 +639,6 @@ class CurrencyConverter {
             
             return this.exchangeRates;
         } catch (error) {
-            console.error('Error fetching exchange rates:', error);
             // Fallback to static rates if API fails
             return this.getFallbackRates();
         }
@@ -751,7 +738,6 @@ async function initCurrencyConversion() {
         await convertAllPackagePrices(savedCurrency);
         
     } catch (error) {
-        console.error('Error initializing currency conversion:', error);
         const statusElement = document.getElementById('conversion-status');
         if (statusElement) {
             statusElement.innerHTML = '<i class="fas fa-exclamation-triangle text-yellow-500"></i> Using fallback rates';
@@ -792,7 +778,7 @@ async function convertAllPackagePrices(targetCurrency) {
         localStorage.setItem('preferred-currency', targetCurrency);
         
     } catch (error) {
-        console.error('Error converting package prices:', error);
+        // Silent error handling for production
     }
 }
 

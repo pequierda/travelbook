@@ -39,10 +39,8 @@ async function initializeAdmin() {
         await loadPackageStats();
         await loadPackages();
         
-        console.log('Admin panel initialized successfully!');
         
     } catch (error) {
-        console.error('Error initializing admin panel:', error);
         showAdminNotification('Error initializing admin panel: ' + error.message, 'error');
     }
 }
@@ -95,24 +93,19 @@ function initEventListeners() {
  */
 async function loadPackageStats() {
     try {
-        console.log('Admin: Loading package stats...');
         const result = await window.packageManager.getPackageStats();
-        console.log('Admin: Stats result:', result);
         
         if (result.success) {
             const stats = result.stats;
-            console.log('Admin: Stats data:', stats);
             document.getElementById('total-packages').textContent = stats.total_packages;
             document.getElementById('active-packages').textContent = stats.active_packages;
             document.getElementById('inactive-packages').textContent = stats.inactive_packages;
             document.getElementById('average-price').textContent = '$' + stats.average_price.toLocaleString();
         } else {
-            console.log('Admin: Stats error:', result.message);
             showAdminNotification('Error loading statistics: ' + result.message, 'error');
         }
         
     } catch (error) {
-        console.error('Error loading package stats:', error);
         showAdminNotification('Error loading statistics: ' + error.message, 'error');
     }
 }
@@ -124,29 +117,19 @@ async function loadPackages() {
     try {
         // Check if package manager is available
         if (!window.packageManager) {
-            console.error('Package manager not available in admin panel');
             showAdminNotification('Package manager not available', 'error');
             return;
         }
         
-        console.log('Admin: Loading packages from Upstash...');
         const result = await window.packageManager.getAllPackages(false);
-        console.log('Admin: Package manager result:', result);
-        console.log('Admin: Result success:', result.success);
-        console.log('Admin: Result packages:', result.packages);
-        console.log('Admin: Packages length:', result.packages ? result.packages.length : 'undefined');
-        console.log('Admin: Full result object:', JSON.stringify(result, null, 2));
         
         if (result.success && result.packages && result.packages.length > 0) {
             displayPackagesTable(result.packages);
-            console.log(`Admin: Displayed ${result.packages.length} packages`);
         } else {
-            console.log('Admin: No packages found or error:', result);
             showAdminNotification('Error loading packages: ' + (result.message || 'No packages found'), 'error');
         }
         
     } catch (error) {
-        console.error('Admin: Error loading packages:', error);
         showAdminNotification('Error loading packages: ' + error.message, 'error');
     }
 }
@@ -348,7 +331,6 @@ async function handlePackageSubmit(e) {
         }
         
     } catch (error) {
-        console.error('Error saving package:', error);
         showAdminNotification('Error saving package: ' + error.message, 'error');
     }
 }
@@ -367,7 +349,6 @@ async function editPackage(packageId) {
         }
         
     } catch (error) {
-        console.error('Error loading package:', error);
         showAdminNotification('Error loading package: ' + error.message, 'error');
     }
 }
@@ -388,7 +369,6 @@ async function togglePackageStatus(packageId) {
         }
         
     } catch (error) {
-        console.error('Error toggling package status:', error);
         showAdminNotification('Error updating status: ' + error.message, 'error');
     }
 }
@@ -410,7 +390,6 @@ async function deletePackage(packageId) {
             }
             
         } catch (error) {
-            console.error('Error deleting package:', error);
             showAdminNotification('Error deleting package: ' + error.message, 'error');
         }
     }
@@ -432,7 +411,6 @@ async function initializeSamplePackages() {
         }
         
     } catch (error) {
-        console.error('Error initializing sample packages:', error);
         showAdminNotification('Error initializing packages: ' + error.message, 'error');
     }
 }
@@ -459,7 +437,6 @@ async function exportPackages() {
         }
         
     } catch (error) {
-        console.error('Error exporting packages:', error);
         showAdminNotification('Error exporting packages: ' + error.message, 'error');
     }
 }

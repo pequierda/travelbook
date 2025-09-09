@@ -64,7 +64,6 @@ class PackageManager {
             };
             
         } catch (error) {
-            console.error('Error creating package:', error);
             return {
                 success: false,
                 message: 'Error creating package: ' + error.message
@@ -122,7 +121,6 @@ class PackageManager {
             };
             
         } catch (error) {
-            console.error('Error fetching packages:', error);
             return {
                 success: false,
                 message: 'Error fetching packages: ' + error.message,
@@ -151,7 +149,6 @@ class PackageManager {
             };
             
         } catch (error) {
-            console.error('Error fetching package:', error);
             return {
                 success: false,
                 message: 'Error fetching package: ' + error.message
@@ -197,7 +194,6 @@ class PackageManager {
             };
             
         } catch (error) {
-            console.error('Error updating package:', error);
             return {
                 success: false,
                 message: 'Error updating package: ' + error.message
@@ -229,7 +225,6 @@ class PackageManager {
             };
             
         } catch (error) {
-            console.error('Error deleting package:', error);
             return {
                 success: false,
                 message: 'Error deleting package: ' + error.message
@@ -269,7 +264,6 @@ class PackageManager {
             };
             
         } catch (error) {
-            console.error('Error updating package status:', error);
             return {
                 success: false,
                 message: 'Error updating package status: ' + error.message
@@ -316,7 +310,6 @@ class PackageManager {
             };
             
         } catch (error) {
-            console.error('Error searching packages:', error);
             return {
                 success: false,
                 message: 'Error searching packages: ' + error.message,
@@ -351,7 +344,6 @@ class PackageManager {
             };
             
         } catch (error) {
-            console.error('Error fetching statistics:', error);
             return {
                 success: false,
                 message: 'Error fetching statistics: ' + error.message
