@@ -356,13 +356,23 @@ class PackageManager {
      */
     async generatePackageId() {
         try {
-            const counter = await upstashRequest('get', [this.packageCounterKey]) || 0;
-            const newCounter = parseInt(counter) + 1;
+            // Get current counter
+            const counter = await upstashRequest('get', [this.packageCounterKey]);
+            const currentCounter = counter ? parseInt(counter) : 0;
+            const newCounter = currentCounter + 1;
+            
+            // Update counter
             await upstashRequest('set', [this.packageCounterKey, newCounter.toString()]);
-            return 'pkg_' + newCounter.toString().padStart(6, '0');
+            
+            // Generate unique ID with timestamp and counter
+            const timestamp = Date.now();
+            const random = Math.random().toString(36).substr(2, 5);
+            return `pkg_${timestamp}_${newCounter}_${random}`;
         } catch (error) {
-            // Fallback to timestamp-based ID
-            return 'pkg_' + Date.now();
+            // Fallback to timestamp-based ID with random component
+            const timestamp = Date.now();
+            const random = Math.random().toString(36).substr(2, 9);
+            return `pkg_${timestamp}_${random}`;
         }
     }
     

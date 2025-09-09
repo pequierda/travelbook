@@ -320,7 +320,7 @@ async function handlePackageSubmit(e) {
         
         if (result.success) {
             showAdminNotification(
-                currentEditingPackage ? 'Package updated successfully!' : 'Package created successfully!', 
+                currentEditingPackage ? 'Package updated successfully!' : `Package created successfully! ID: ${result.package_id}`, 
                 'success'
             );
             closePackageModal();
