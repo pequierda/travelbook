@@ -33,9 +33,18 @@
                     <a href="index.html" class="text-gray-500 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
                         <i class="fas fa-home mr-1"></i>View Site
                     </a>
+                    <a href="users.html" class="text-gray-500 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                        <i class="fas fa-users mr-1"></i>Users
+                    </a>
                     <button id="refresh-packages" class="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
                         <i class="fas fa-sync-alt mr-1"></i>Refresh
                     </button>
+                    <div class="flex items-center space-x-2">
+                        <span id="user-info" class="text-sm text-gray-600"></span>
+                        <button id="logout-btn" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
+                            <i class="fas fa-sign-out-alt mr-1"></i>Logout
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -246,6 +255,7 @@
 
     <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.js"></script>
+    <script src="assets/js/auth.js"></script>
     <script src="assets/js/upstash-config.js"></script>
     <script src="assets/js/package-manager.js"></script>
     <script src="assets/js/admin.js"></script>

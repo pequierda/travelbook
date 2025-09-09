@@ -15,6 +15,14 @@ document.addEventListener('DOMContentLoaded', function() {
  */
 async function initializeAdmin() {
     try {
+        // Check authentication first
+        if (!window.authManager.requireAuth()) {
+            return; // Will redirect to login page
+        }
+        
+        // Display user info
+        displayUserInfo();
+        
         // Check if Upstash is configured
         if (!window.UPSTASH_CONFIG || !window.UPSTASH_CONFIG.url || window.UPSTASH_CONFIG.url.includes('your-endpoint')) {
             showAdminNotification('Upstash not configured. Please update your credentials in upstash-config.js', 'warning');
@@ -67,6 +75,9 @@ function initEventListeners() {
     
     // Package form submission
     document.getElementById('package-form').addEventListener('submit', handlePackageSubmit);
+    
+    // Logout button
+    document.getElementById('logout-btn').addEventListener('click', handleLogout);
     
     // Close modal on outside click
     document.getElementById('package-modal').addEventListener('click', (e) => {
@@ -473,4 +484,27 @@ function showAdminNotification(message, type = 'info') {
             }
         }, 300);
     }, 5000);
+}
+
+/**
+ * Display user information
+ */
+function displayUserInfo() {
+    const session = window.authManager.getCurrentSession();
+    if (session) {
+        const userInfoElement = document.getElementById('user-info');
+        userInfoElement.innerHTML = `
+            <i class="fas fa-user mr-1"></i>
+            Welcome, <strong>${session.username}</strong>
+        `;
+    }
+}
+
+/**
+ * Handle logout
+ */
+function handleLogout() {
+    if (confirm('Are you sure you want to logout?')) {
+        window.authManager.logout();
+    }
 }
