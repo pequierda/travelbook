@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add User Data</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+    <div class="bg-white p-8 rounded-lg shadow-lg max-w-2xl w-full">
+        <h1 class="text-2xl font-bold text-gray-800 mb-6">Add User Data to Upstash</h1>
+        
+        <div class="space-y-4">
+            <button onclick="addUserData()" class="w-full bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+                Add Admin User to Upstash
+            </button>
+            
+            <button onclick="verifyUserData()" class="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                Verify User Data
+            </button>
+            
+            <div id="result" class="p-4 bg-gray-50 rounded text-sm"></div>
+        </div>
+    </div>
+
+    <script>
+        async function addUserData() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = 'Adding user data to Upstash...';
+            
+            try {
+                // Add the admin user data to Upstash
+                const userData = {
+                    id: "admin_001",
+                    username: "admin",
+                    password: "admin123",
+                    email: "admin@travelbooks.com",
+                    role: "admin",
+                    created_at: "2024-01-01T00:00:00.000Z",
+                    last_login: null,
+                    is_active: true
+                };
+                
+                const response = await fetch('/api/upstash/hset', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        command: 'HSET',
+                        args: ['travelbook:admin_users', 'admin_001', JSON.stringify(userData)]
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    resultDiv.innerHTML = `
+                        <div class="text-green-600">
+                            ✅ User data added successfully!<br>
+                            <pre class="bg-white p-2 rounded text-xs mt-2 overflow-x-auto">${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="text-red-600">
+                            ❌ Failed to add user data:<br>
+                            <pre class="bg-white p-2 rounded text-xs mt-2 overflow-x-auto">${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="text-red-600">
+                        ❌ Error: ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        async function verifyUserData() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = 'Verifying user data...';
+            
+            try {
+                const response = await fetch('/api/upstash/hgetall', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        command: 'HGETALL',
+                        args: ['travelbook:admin_users']
+                    })
+                });
+                
+                const data = await response.json();
+                
+                resultDiv.innerHTML = `
+                    <div class="text-blue-600">
+                        <h3 class="font-bold">User Data Verification:</h3>
+                        <p><strong>Response Status:</strong> ${response.status}</p>
+                        <p><strong>Success:</strong> ${data.success}</p>
+                        <p><strong>Number of users:</strong> ${data.result ? Object.keys(data.result).length : 0}</p>
+                        <pre class="bg-white p-2 rounded text-xs mt-2 overflow-x-auto">${JSON.stringify(data, null, 2)}</pre>
+                    </div>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="text-red-600">
+                        ❌ Error: ${error.message}
+                    </div>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>
