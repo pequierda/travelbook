@@ -97,9 +97,9 @@ function displayUserInfo() {
 /**
  * Load and display users
  */
-function loadUsers() {
+async function loadUsers() {
     try {
-        const users = window.authManager.getAllUsers();
+        const users = await window.authManager.getAllUsers();
         displayUsersTable(users);
     } catch (error) {
         console.error('Error loading users:', error);
@@ -348,14 +348,14 @@ async function handlePasswordSubmit(e) {
 /**
  * Toggle user status
  */
-function toggleUserStatus(userId) {
+async function toggleUserStatus(userId) {
     if (confirm('Are you sure you want to change this user\'s status?')) {
         try {
-            const result = window.authManager.toggleUserStatus(userId);
+            const result = await window.authManager.toggleUserStatus(userId);
             
             if (result.success) {
                 showUserNotification('User status updated!', 'success');
-                loadUsers();
+                await loadUsers();
             } else {
                 showUserNotification('Error updating status: ' + result.message, 'error');
             }

@@ -6,8 +6,8 @@
 class AuthManager {
     constructor() {
         this.sessionKey = 'travelbook_admin_session';
-        this.usersKey = 'travelbook_admin_users';
-        this.loginAttemptsKey = 'travelbook_login_attempts';
+        this.usersKey = 'travelbook:admin_users';
+        this.loginAttemptsKey = 'travelbook:login_attempts';
         this.maxLoginAttempts = 5;
         this.lockoutDuration = 15 * 60 * 1000; // 15 minutes
         this.sessionDuration = 24 * 60 * 60 * 1000; // 24 hours
@@ -19,22 +19,26 @@ class AuthManager {
     /**
      * Initialize default admin user
      */
-    initializeDefaultAdmin() {
-        const existingUsers = this.getStoredUsers();
-        if (existingUsers.length === 0) {
-            const defaultAdmin = {
-                id: 'admin_001',
-                username: 'admin',
-                password: this.hashPassword('admin123'), // Default password
-                email: 'admin@travelbooks.com',
-                role: 'admin',
-                created_at: new Date().toISOString(),
-                last_login: null,
-                is_active: true
-            };
-            
-            this.saveUsers([defaultAdmin]);
-            console.log('Default admin user created: username=admin, password=admin123');
+    async initializeDefaultAdmin() {
+        try {
+            const existingUsers = await this.getStoredUsers();
+            if (existingUsers.length === 0) {
+                const defaultAdmin = {
+                    id: 'admin_001',
+                    username: 'admin',
+                    password: this.hashPassword('admin123'), // Default password
+                    email: 'admin@travelbooks.com',
+                    role: 'admin',
+                    created_at: new Date().toISOString(),
+                    last_login: null,
+                    is_active: true
+                };
+                
+                await this.saveUsers([defaultAdmin]);
+                console.log('Default admin user created: username=admin, password=admin123');
+            }
+        } catch (error) {
+            console.error('Error initializing default admin:', error);
         }
     }
     
@@ -251,22 +255,34 @@ class AuthManager {
     }
     
     /**
-     * Get stored users
+     * Get stored users from Upstash
      */
-    getStoredUsers() {
+    async getStoredUsers() {
         try {
-            const users = localStorage.getItem(this.usersKey);
-            return users ? JSON.parse(users) : [];
+            const result = await upstashRequest('hgetall', [this.usersKey]);
+            return Object.values(result || {});
         } catch (error) {
+            console.error('Error getting users from Upstash:', error);
             return [];
         }
     }
     
     /**
-     * Save users
+     * Save users to Upstash
      */
-    saveUsers(users) {
-        localStorage.setItem(this.usersKey, JSON.stringify(users));
+    async saveUsers(users) {
+        try {
+            // Clear existing users
+            await upstashRequest('del', [this.usersKey]);
+            
+            // Add each user
+            for (const user of users) {
+                await upstashRequest('hset', [this.usersKey, user.id, JSON.stringify(user)]);
+            }
+        } catch (error) {
+            console.error('Error saving users to Upstash:', error);
+            throw error;
+        }
     }
     
     /**
@@ -279,105 +295,131 @@ class AuthManager {
     /**
      * Create new admin user
      */
-    createUser(userData) {
-        const users = this.getStoredUsers();
-        
-        // Check if username already exists
-        if (users.find(u => u.username === userData.username)) {
-            throw new Error('Username already exists');
-        }
-        
-        const newUser = {
-            id: 'user_' + Date.now(),
-            username: userData.username,
-            password: this.hashPassword(userData.password),
-            email: userData.email,
-            role: userData.role || 'admin',
-            created_at: new Date().toISOString(),
-            last_login: null,
-            is_active: true
-        };
-        
-        users.push(newUser);
-        this.saveUsers(users);
-        
-        return {
-            success: true,
-            user: {
-                id: newUser.id,
-                username: newUser.username,
-                email: newUser.email,
-                role: newUser.role
+    async createUser(userData) {
+        try {
+            const users = await this.getStoredUsers();
+            
+            // Check if username already exists
+            if (users.find(u => u.username === userData.username)) {
+                throw new Error('Username already exists');
             }
-        };
+            
+            const newUser = {
+                id: 'user_' + Date.now(),
+                username: userData.username,
+                password: this.hashPassword(userData.password),
+                email: userData.email,
+                role: userData.role || 'admin',
+                created_at: new Date().toISOString(),
+                last_login: null,
+                is_active: true
+            };
+            
+            users.push(newUser);
+            await this.saveUsers(users);
+            
+            return {
+                success: true,
+                user: {
+                    id: newUser.id,
+                    username: newUser.username,
+                    email: newUser.email,
+                    role: newUser.role
+                }
+            };
+        } catch (error) {
+            return {
+                success: false,
+                message: error.message
+            };
+        }
     }
     
     /**
      * Update user password
      */
-    updatePassword(username, currentPassword, newPassword) {
-        const users = this.getStoredUsers();
-        const userIndex = users.findIndex(u => u.username === username);
-        
-        if (userIndex === -1) {
-            throw new Error('User not found');
+    async updatePassword(username, currentPassword, newPassword) {
+        try {
+            const users = await this.getStoredUsers();
+            const userIndex = users.findIndex(u => u.username === username);
+            
+            if (userIndex === -1) {
+                throw new Error('User not found');
+            }
+            
+            const user = users[userIndex];
+            
+            // Verify current password
+            if (user.password !== this.hashPassword(currentPassword)) {
+                throw new Error('Current password is incorrect');
+            }
+            
+            // Update password
+            user.password = this.hashPassword(newPassword);
+            user.updated_at = new Date().toISOString();
+            
+            await this.saveUsers(users);
+            
+            return {
+                success: true,
+                message: 'Password updated successfully'
+            };
+        } catch (error) {
+            return {
+                success: false,
+                message: error.message
+            };
         }
-        
-        const user = users[userIndex];
-        
-        // Verify current password
-        if (user.password !== this.hashPassword(currentPassword)) {
-            throw new Error('Current password is incorrect');
-        }
-        
-        // Update password
-        user.password = this.hashPassword(newPassword);
-        user.updated_at = new Date().toISOString();
-        
-        this.saveUsers(users);
-        
-        return {
-            success: true,
-            message: 'Password updated successfully'
-        };
     }
     
     /**
      * Get all users (admin only)
      */
-    getAllUsers() {
-        const users = this.getStoredUsers();
-        return users.map(user => ({
-            id: user.id,
-            username: user.username,
-            email: user.email,
-            role: user.role,
-            created_at: user.created_at,
-            last_login: user.last_login,
-            is_active: user.is_active
-        }));
+    async getAllUsers() {
+        try {
+            const users = await this.getStoredUsers();
+            return users.map(user => ({
+                id: user.id,
+                username: user.username,
+                email: user.email,
+                role: user.role,
+                created_at: user.created_at,
+                last_login: user.last_login,
+                is_active: user.is_active
+            }));
+        } catch (error) {
+            console.error('Error getting all users:', error);
+            return [];
+        }
     }
     
     /**
      * Toggle user status
      */
-    toggleUserStatus(userId) {
-        const users = this.getStoredUsers();
-        const userIndex = users.findIndex(u => u.id === userId);
-        
-        if (userIndex === -1) {
-            throw new Error('User not found');
+    async toggleUserStatus(userId) {
+        try {
+            const users = await this.getStoredUsers();
+            const userIndex = users.findIndex(u => u.id === userId);
+            
+            if (userIndex === -1) {
+                throw new Error('User not found');
+            }
+            
+            users[userIndex].is_active = !users[userIndex].is_active;
+            users[userIndex].updated_at = new Date().toISOString();
+            
+            await this.saveUsers(users);
+            
+            return {
+                success: true,
+                is_active: users[userIndex].is_active
+            };
+        } catch (error) {
+            return {
+                success: false,
+                message: error.message
+            };
         }
-        
-        users[userIndex].is_active = !users[userIndex].is_active;
-        users[userIndex].updated_at = new Date().toISOString();
-        
-        this.saveUsers(users);
-        
-        return {
-            success: true,
-            is_active: users[userIndex].is_active
-        };
     }
 }
 
