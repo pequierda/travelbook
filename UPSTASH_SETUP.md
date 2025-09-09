@@ -16,28 +16,25 @@ This guide will help you set up Upstash Redis database for your TravelBook trave
    - **REST URL**: `https://your-endpoint.upstash.io`
    - **REST Token**: `your-upstash-token`
 
-### 3. Configure Your Website
-1. Open `assets/js/upstash-config.js`
-2. Replace the placeholder values:
+### 3. Configure Vercel Environment Variables
+1. In your Vercel dashboard, go to your project settings
+2. Navigate to "Environment Variables"
+3. Add these two variables:
+   - **Name**: `UPSTASH_REDIS_REST_URL`
+     **Value**: `https://your-endpoint.upstash.io`
+   - **Name**: `UPSTASH_REDIS_REST_TOKEN`
+     **Value**: `your-upstash-token`
+4. Redeploy your project for changes to take effect
 
-```javascript
-const UPSTASH_CONFIG = {
-    // Replace with your actual Upstash Redis REST API URL
-    url: 'https://your-actual-endpoint.upstash.io',
-    
-    // Replace with your actual Upstash Redis REST API Token
-    token: 'your-actual-upstash-token',
-    
-    // ... rest of the config stays the same
-};
-```
+**Note**: The `upstash-config.js` file now automatically uses these environment variables - no manual configuration needed!
 
 ### 4. Test Your Setup
-1. Open your website in a browser
-2. Open the browser's Developer Tools (F12)
-3. Go to the Console tab
-4. Look for "Upstash integration initialized successfully!" message
-5. If you see connection errors, double-check your credentials
+1. Deploy your project to Vercel
+2. Open your deployed website in a browser
+3. Open the browser's Developer Tools (F12)
+4. Go to the Console tab
+5. Look for "Upstash integration initialized successfully!" message
+6. If you see connection errors, double-check your environment variables in Vercel
 
 ## 📊 Admin Panel
 

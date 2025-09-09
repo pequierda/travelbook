@@ -1,14 +1,11 @@
 /**
  * Upstash Configuration
- * Replace these with your actual Upstash credentials
+ * Uses Vercel API routes for secure database access
  */
 
 const UPSTASH_CONFIG = {
-    // Your Upstash Redis REST API URL
-    url: 'https://your-endpoint.upstash.io',
-    
-    // Your Upstash Redis REST API Token
-    token: 'your-upstash-token',
+    // Use Vercel API routes instead of direct Upstash calls
+    apiBase: '/api/upstash',
     
     // API endpoints
     endpoints: {
@@ -26,19 +23,18 @@ const UPSTASH_CONFIG = {
     }
 };
 
-// Helper function to make Upstash API calls
+// Helper function to make Upstash API calls through Vercel API routes
 async function upstashRequest(command, args = []) {
     const endpoint = UPSTASH_CONFIG.endpoints[command.toLowerCase()];
     if (!endpoint) {
         throw new Error(`Unknown command: ${command}`);
     }
     
-    const url = `${UPSTASH_CONFIG.url}${endpoint}`;
+    const url = `${UPSTASH_CONFIG.apiBase}${endpoint}`;
     
     const response = await fetch(url, {
         method: 'POST',
         headers: {
-            'Authorization': `Bearer ${UPSTASH_CONFIG.token}`,
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
@@ -48,10 +44,15 @@ async function upstashRequest(command, args = []) {
     });
     
     if (!response.ok) {
-        throw new Error(`Upstash API error: ${response.status} ${response.statusText}`);
+        throw new Error(`API error: ${response.status} ${response.statusText}`);
     }
     
     const data = await response.json();
+    
+    if (!data.success) {
+        throw new Error(data.message || 'API request failed');
+    }
+    
     return data.result;
 }
 

@@ -66,10 +66,10 @@ travelbook/
 2. **Open** `index.html` in your web browser
 3. **Customize** the content, colors, and packages as needed
 
-### Option 2: Dynamic Version with Upstash Database
+### Option 2: Dynamic Version with Upstash Database (Vercel)
 1. **Set up Upstash account** (see [UPSTASH_SETUP.md](UPSTASH_SETUP.md))
-2. **Configure credentials** in `assets/js/upstash-config.js`
-3. **Open** `index.html` for the main site or `admin.html` for package management
+2. **Deploy to Vercel** with environment variables configured
+3. **Access** your deployed site for the main site or admin panel
 4. **Initialize sample packages** from the admin panel
 
 ## 📝 Customization
