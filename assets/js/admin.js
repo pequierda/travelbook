@@ -24,7 +24,7 @@ async function initializeAdmin() {
         displayUserInfo();
         
         // Check if Upstash is configured
-        if (!window.UPSTASH_CONFIG || !window.UPSTASH_CONFIG.url || window.UPSTASH_CONFIG.url.includes('your-endpoint')) {
+        if (!window.UPSTASH_CONFIG || !window.UPSTASH_CONFIG.apiBase) {
             showAdminNotification('Upstash not configured. Please update your credentials in upstash-config.js', 'warning');
             return;
         }
