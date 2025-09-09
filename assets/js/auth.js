@@ -21,6 +21,13 @@ class AuthManager {
      */
     async initializeDefaultAdmin() {
         try {
+            // Check if Upstash is available
+            if (!window.UPSTASH_CONFIG || window.UPSTASH_CONFIG.apiBase.includes('your-endpoint')) {
+                console.log('Upstash not configured, using localStorage fallback');
+                this.initializeLocalStorageFallback();
+                return;
+            }
+            
             const existingUsers = await this.getStoredUsers();
             if (existingUsers.length === 0) {
                 const defaultAdmin = {
@@ -39,7 +46,50 @@ class AuthManager {
             }
         } catch (error) {
             console.error('Error initializing default admin:', error);
+            // Fallback to localStorage
+            this.initializeLocalStorageFallback();
         }
+    }
+    
+    /**
+     * Initialize localStorage fallback for when Upstash is not available
+     */
+    initializeLocalStorageFallback() {
+        const existingUsers = this.getLocalStorageUsers();
+        if (existingUsers.length === 0) {
+            const defaultAdmin = {
+                id: 'admin_001',
+                username: 'admin',
+                password: this.hashPassword('admin123'),
+                email: 'admin@travelbooks.com',
+                role: 'admin',
+                created_at: new Date().toISOString(),
+                last_login: null,
+                is_active: true
+            };
+            
+            this.saveLocalStorageUsers([defaultAdmin]);
+            console.log('Default admin user created in localStorage: username=admin, password=admin123');
+        }
+    }
+    
+    /**
+     * Get users from localStorage (fallback)
+     */
+    getLocalStorageUsers() {
+        try {
+            const users = localStorage.getItem('travelbook_admin_users_fallback');
+            return users ? JSON.parse(users) : [];
+        } catch (error) {
+            return [];
+        }
+    }
+    
+    /**
+     * Save users to localStorage (fallback)
+     */
+    saveLocalStorageUsers(users) {
+        localStorage.setItem('travelbook_admin_users_fallback', JSON.stringify(users));
     }
     
     /**
@@ -67,8 +117,15 @@ class AuthManager {
             }
             
             // Get users
-            const users = this.getStoredUsers();
-            const user = users.find(u => u.username === username && u.is_active);
+            const users = await this.getStoredUsers();
+            
+            // Ensure users is an array
+            if (!Array.isArray(users)) {
+                console.error('Users data is not an array:', users);
+                throw new Error('User data format error. Please contact administrator.');
+            }
+            
+            const user = users.find(u => u && u.username === username && u.is_active);
             
             if (!user) {
                 this.recordFailedAttempt(username);
@@ -90,7 +147,7 @@ class AuthManager {
             
             // Update last login
             user.last_login = new Date().toISOString();
-            this.saveUsers(users);
+            await this.saveUsers(users);
             
             return {
                 success: true,
@@ -104,6 +161,7 @@ class AuthManager {
             };
             
         } catch (error) {
+            console.error('Authentication error:', error);
             return {
                 success: false,
                 message: error.message
@@ -255,15 +313,51 @@ class AuthManager {
     }
     
     /**
-     * Get stored users from Upstash
+     * Get stored users from Upstash or localStorage fallback
      */
     async getStoredUsers() {
         try {
+            // Check if Upstash is available
+            if (!window.UPSTASH_CONFIG || window.UPSTASH_CONFIG.apiBase.includes('your-endpoint')) {
+                console.log('Using localStorage fallback for users');
+                return this.getLocalStorageUsers();
+            }
+            
             const result = await upstashRequest('hgetall', [this.usersKey]);
-            return Object.values(result || {});
-        } catch (error) {
-            console.error('Error getting users from Upstash:', error);
+            
+            // Handle different data structures from Upstash
+            if (!result) {
+                return [];
+            }
+            
+            // If result is an object, convert to array
+            if (typeof result === 'object' && !Array.isArray(result)) {
+                return Object.values(result).map(userStr => {
+                    try {
+                        return typeof userStr === 'string' ? JSON.parse(userStr) : userStr;
+                    } catch (e) {
+                        console.error('Error parsing user data:', e);
+                        return null;
+                    }
+                }).filter(user => user !== null);
+            }
+            
+            // If result is already an array
+            if (Array.isArray(result)) {
+                return result.map(userStr => {
+                    try {
+                        return typeof userStr === 'string' ? JSON.parse(userStr) : userStr;
+                    } catch (e) {
+                        console.error('Error parsing user data:', e);
+                        return null;
+                    }
+                }).filter(user => user !== null);
+            }
+            
             return [];
+        } catch (error) {
+            console.error('Error getting users from Upstash, using localStorage fallback:', error);
+            return this.getLocalStorageUsers();
         }
     }
     
