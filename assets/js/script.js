@@ -14,7 +14,11 @@ document.addEventListener('DOMContentLoaded', function() {
     initFormHandling();
     initAnimations();
     initLazyLoading();
-    initUpstashIntegration();
+    
+    // Delay Upstash integration to ensure all scripts are loaded
+    setTimeout(() => {
+        initUpstashIntegration();
+    }, 100);
     
     console.log('TravelBook website initialized successfully!');
 });
@@ -455,8 +459,8 @@ async function initUpstashIntegration() {
  */
 async function testUpstashConnection() {
     try {
-        // Simple ping test
-        await upstashRequest('ping');
+        // Simple test using keys command
+        await upstashRequest('keys', ['*']);
         return true;
     } catch (error) {
         console.error('Upstash connection test failed:', error);
@@ -469,9 +473,17 @@ async function testUpstashConnection() {
  */
 async function loadPackagesFromUpstash() {
     try {
-        const result = await window.packageManager.getAllPackages(true);
+        // Check if package manager is available
+        if (!window.packageManager) {
+            console.error('Package manager not available');
+            return;
+        }
         
-        if (result.success && result.packages.length > 0) {
+        console.log('Loading packages from Upstash...');
+        const result = await window.packageManager.getAllPackages(true);
+        console.log('Package manager result:', result);
+        
+        if (result.success && result.packages && result.packages.length > 0) {
             // Replace static packages with dynamic ones
             updatePackagesDisplay(result.packages);
             console.log(`Loaded ${result.packages.length} packages from Upstash`);
