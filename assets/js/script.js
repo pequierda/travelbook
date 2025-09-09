@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Delay Upstash integration to ensure all scripts are loaded
     setTimeout(() => {
         initUpstashIntegration();
+        initCurrencyConversion();
     }, 100);
     
     console.log('TravelBook website initialized successfully!');
@@ -531,6 +532,12 @@ function updatePackagesDisplay(packages) {
     
     // Re-initialize package card interactions
     initPackageCards();
+    
+    // Convert prices to user's preferred currency
+    const savedCurrency = localStorage.getItem('preferred-currency') || 'USD';
+    setTimeout(() => {
+        convertAllPackagePrices(savedCurrency);
+    }, 500);
 }
 
 /**
@@ -564,8 +571,12 @@ function createPackageCard(packageData) {
             </div>
             <div class="flex justify-between items-center">
                 <div>
-                    <span class="text-2xl font-bold text-primary-600">$${packageData.price.toLocaleString()}</span>
-                    <span class="text-gray-500">/${packageData.currency}</span>
+                    <span class="text-2xl font-bold text-primary-600 package-price" 
+                          data-original-price="${packageData.price}" 
+                          data-original-currency="${packageData.currency}">
+                        ${window.currencyConverter.formatCurrency(packageData.price, packageData.currency)}
+                    </span>
+                    <span class="text-gray-500 package-currency">/${packageData.currency}</span>
                 </div>
                 <button class="btn-primary bg-primary-600 hover:bg-primary-700 text-white px-6 py-2 rounded-lg transition-colors" 
                         data-package-id="${packageData.id}">
@@ -604,6 +615,185 @@ function generateStarRating(rating) {
     }
     
     return `<div class="flex text-yellow-400">${starsHtml}</div>`;
+}
+
+/**
+ * Currency Conversion Service
+ */
+class CurrencyConverter {
+    constructor() {
+        this.exchangeRates = {};
+        this.baseCurrency = 'USD';
+        this.lastUpdated = null;
+        this.cacheDuration = 60 * 60 * 1000; // 1 hour
+    }
+
+    /**
+     * Get exchange rates from API
+     */
+    async getExchangeRates() {
+        try {
+            // Check if we have cached rates that are still valid
+            if (this.exchangeRates.USD && this.lastUpdated && 
+                (Date.now() - this.lastUpdated) < this.cacheDuration) {
+                return this.exchangeRates;
+            }
+
+            // Use a free exchange rate API
+            const response = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
+            if (!response.ok) {
+                throw new Error('Failed to fetch exchange rates');
+            }
+            
+            const data = await response.json();
+            this.exchangeRates = data.rates;
+            this.lastUpdated = Date.now();
+            
+            return this.exchangeRates;
+        } catch (error) {
+            console.error('Error fetching exchange rates:', error);
+            // Fallback to static rates if API fails
+            return this.getFallbackRates();
+        }
+    }
+
+    /**
+     * Fallback exchange rates (approximate)
+     */
+    getFallbackRates() {
+        return {
+            USD: 1,
+            EUR: 0.85,
+            GBP: 0.73,
+            CAD: 1.25,
+            PHP: 55.5,
+            JPY: 110,
+            AUD: 1.35,
+            SGD: 1.35
+        };
+    }
+
+    /**
+     * Convert amount from one currency to another
+     */
+    async convert(amount, fromCurrency, toCurrency) {
+        if (fromCurrency === toCurrency) {
+            return amount;
+        }
+
+        const rates = await this.getExchangeRates();
+        
+        // Convert to USD first, then to target currency
+        const usdAmount = amount / (rates[fromCurrency] || 1);
+        const convertedAmount = usdAmount * (rates[toCurrency] || 1);
+        
+        return Math.round(convertedAmount * 100) / 100;
+    }
+
+    /**
+     * Format currency for display
+     */
+    formatCurrency(amount, currency) {
+        const symbols = {
+            USD: '$',
+            EUR: '€',
+            GBP: '£',
+            CAD: 'C$',
+            PHP: '₱',
+            JPY: '¥',
+            AUD: 'A$',
+            SGD: 'S$'
+        };
+
+        const symbol = symbols[currency] || currency;
+        
+        if (currency === 'JPY') {
+            return `${symbol}${Math.round(amount).toLocaleString()}`;
+        }
+        
+        return `${symbol}${amount.toLocaleString('en-US', { 
+            minimumFractionDigits: 2, 
+            maximumFractionDigits: 2 
+        })}`;
+    }
+}
+
+// Global currency converter instance
+window.currencyConverter = new CurrencyConverter();
+
+/**
+ * Initialize currency conversion
+ */
+async function initCurrencyConversion() {
+    try {
+        const statusElement = document.getElementById('conversion-status');
+        const selector = document.getElementById('currency-selector');
+        
+        if (!statusElement || !selector) return;
+
+        // Load exchange rates
+        await window.currencyConverter.getExchangeRates();
+        
+        // Update status
+        statusElement.innerHTML = '<i class="fas fa-check text-green-500"></i> Rates loaded';
+        
+        // Add event listener for currency changes
+        selector.addEventListener('change', async (e) => {
+            const selectedCurrency = e.target.value;
+            await convertAllPackagePrices(selectedCurrency);
+        });
+
+        // Set default currency based on user's location or preference
+        const savedCurrency = localStorage.getItem('preferred-currency') || 'USD';
+        selector.value = savedCurrency;
+        
+        // Convert prices to default currency
+        await convertAllPackagePrices(savedCurrency);
+        
+    } catch (error) {
+        console.error('Error initializing currency conversion:', error);
+        const statusElement = document.getElementById('conversion-status');
+        if (statusElement) {
+            statusElement.innerHTML = '<i class="fas fa-exclamation-triangle text-yellow-500"></i> Using fallback rates';
+        }
+    }
+}
+
+/**
+ * Convert all package prices to selected currency
+ */
+async function convertAllPackagePrices(targetCurrency) {
+    try {
+        const packageCards = document.querySelectorAll('.package-card');
+        
+        for (const card of packageCards) {
+            const priceElement = card.querySelector('.package-price');
+            const currencyElement = card.querySelector('.package-currency');
+            
+            if (priceElement && currencyElement) {
+                const originalPrice = parseFloat(priceElement.dataset.originalPrice);
+                const originalCurrency = priceElement.dataset.originalCurrency;
+                
+                if (originalPrice && originalCurrency) {
+                    const convertedPrice = await window.currencyConverter.convert(
+                        originalPrice, 
+                        originalCurrency, 
+                        targetCurrency
+                    );
+                    
+                    const formattedPrice = window.currencyConverter.formatCurrency(convertedPrice, targetCurrency);
+                    priceElement.textContent = formattedPrice;
+                    currencyElement.textContent = `/${targetCurrency}`;
+                }
+            }
+        }
+        
+        // Save user's preference
+        localStorage.setItem('preferred-currency', targetCurrency);
+        
+    } catch (error) {
+        console.error('Error converting package prices:', error);
+    }
 }
 
 /**
