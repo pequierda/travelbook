@@ -280,7 +280,7 @@ function showBookingModal(packageName) {
                 <p class="text-gray-600 mb-6">Ready to start your adventure? Contact us to book this amazing package!</p>
                 <div class="space-y-3">
                     <button class="w-full bg-primary-600 hover:bg-primary-700 text-white py-3 px-6 rounded-lg transition-colors">
-                        <i class="fas fa-phone mr-2"></i>Call Now: (555) 123-4567
+                        <i class="fas fa-phone mr-2"></i>Call Now: (+639)555-143-738
                     </button>
                     <button class="w-full border border-primary-600 text-primary-600 hover:bg-primary-600 hover:text-white py-3 px-6 rounded-lg transition-colors">
                         <i class="fas fa-envelope mr-2"></i>Email Us
