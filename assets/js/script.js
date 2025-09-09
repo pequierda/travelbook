@@ -488,11 +488,28 @@ async function loadPackagesFromUpstash() {
  * Update packages display with dynamic data
  */
 function updatePackagesDisplay(packages) {
-    const packagesContainer = document.querySelector('#packages .grid');
+    const packagesContainer = document.querySelector('#packages-container');
     if (!packagesContainer) return;
     
     // Clear existing packages
     packagesContainer.innerHTML = '';
+    
+    if (packages.length === 0) {
+        // Show no packages message
+        packagesContainer.innerHTML = `
+            <div class="col-span-full text-center py-12">
+                <div class="mx-auto w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                    <i class="fas fa-box-open text-gray-400 text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-600 mb-2">No Packages Available</h3>
+                <p class="text-gray-500 mb-4">No travel packages have been added yet.</p>
+                <a href="admin.html" class="inline-flex items-center px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors">
+                    <i class="fas fa-plus mr-2"></i>Add Your First Package
+                </a>
+            </div>
+        `;
+        return;
+    }
     
     // Create package cards
     packages.forEach(packageData => {
