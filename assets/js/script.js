@@ -744,8 +744,8 @@ async function initCurrencyConversion() {
         // Load exchange rates
         await window.currencyConverter.getExchangeRates();
         
-        // Update status
-        statusElement.innerHTML = '<i class="fas fa-check text-green-500"></i> Rates loaded';
+        // Update status - just show check icon
+        statusElement.innerHTML = '<i class="fas fa-check text-green-500"></i>';
         
         // Add event listener for currency changes
         selector.addEventListener('change', async (e) => {
@@ -763,7 +763,7 @@ async function initCurrencyConversion() {
     } catch (error) {
         const statusElement = document.getElementById('conversion-status');
         if (statusElement) {
-            statusElement.innerHTML = '<i class="fas fa-exclamation-triangle text-yellow-500"></i> Using fallback rates';
+            statusElement.innerHTML = '<i class="fas fa-exclamation-triangle text-yellow-500"></i>';
         }
     }
 }
