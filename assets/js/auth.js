@@ -600,7 +600,7 @@ class AuthManager {
         // Start periodic session validation
         this.startPeriodicSessionValidation();
         
-        console.log('Auto-logout system initialized - 1 minute inactivity timeout');
+        
     }
     
     /**
