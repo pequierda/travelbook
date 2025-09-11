@@ -888,13 +888,13 @@ function initPackageFilters() {
         tab.addEventListener('click', function() {
             // Remove active class from all tabs
             filterTabs.forEach(t => {
-                t.classList.remove('active', 'bg-primary-600', 'text-white');
-                t.classList.add('text-gray-600', 'hover:text-primary-600', 'hover:bg-primary-50');
+                t.classList.remove('active', 'bg-primary-600', 'text-secondary-500');
+                t.classList.add('text-primary-600', 'hover:text-secondary-500', 'hover:bg-secondary-50');
             });
             
             // Add active class to clicked tab
-            this.classList.add('active', 'bg-primary-600', 'text-white');
-            this.classList.remove('text-gray-600', 'hover:text-primary-600', 'hover:bg-primary-50');
+            this.classList.add('active', 'bg-primary-600', 'text-secondary-500');
+            this.classList.remove('text-primary-600', 'hover:text-secondary-500', 'hover:bg-secondary-50');
             
             // Filter packages
             const filter = this.getAttribute('data-filter');
@@ -952,7 +952,7 @@ function updatePackageCount(count, filter) {
     
     const filterText = filter === 'all' ? 'All' : filter.charAt(0).toUpperCase() + filter.slice(1);
     countDisplay.innerHTML = `
-        <div class="inline-flex items-center px-4 py-2 bg-primary-100 text-primary-800 rounded-full text-sm font-medium">
+        <div class="inline-flex items-center px-4 py-2 bg-secondary-100 text-primary-600 rounded-full text-sm font-medium">
             <i class="fas fa-${filter === 'popular' ? 'fire' : filter === 'luxury' ? 'crown' : filter === 'budget' ? 'dollar-sign' : 'list'} mr-2"></i>
             Showing ${count} ${filter === 'all' ? 'packages' : filter + ' packages'}
         </div>

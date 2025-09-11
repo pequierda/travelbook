@@ -19,10 +19,28 @@
                 extend: {
                     colors: {
                         primary: {
-                            50: '#eff6ff',
-                            500: '#3b82f6',
-                            600: '#2563eb',
-                            700: '#1d4ed8',
+                            50: '#f0f4ff',
+                            100: '#e0e9ff',
+                            200: '#c7d7ff',
+                            300: '#a5b8ff',
+                            400: '#8190ff',
+                            500: '#052858',
+                            600: '#052858',
+                            700: '#052858',
+                            800: '#052858',
+                            900: '#052858',
+                        },
+                        secondary: {
+                            50: '#fff7ed',
+                            100: '#ffedd5',
+                            200: '#fed7aa',
+                            300: '#fdba74',
+                            400: '#fb923c',
+                            500: '#ffa200',
+                            600: '#ffa200',
+                            700: '#ffa200',
+                            800: '#ffa200',
+                            900: '#ffa200',
                         }
                     }
                 }
@@ -43,7 +61,7 @@
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
-                        <h1 class="text-2xl font-bold text-primary-600 hover:text-primary-700 transition-colors cursor-pointer flex items-center">
+                        <h1 class="text-2xl font-bold text-primary-600 hover:text-secondary-500 transition-colors cursor-pointer flex items-center">
                             <img src="logo/logo123.png" alt="Travelbooks Logo" class="w-8 h-8 mr-2 transform hover:rotate-12 transition-transform">
                             Travelbooks
                         </h1>
@@ -51,26 +69,26 @@
                 </div>
                 <div class="hidden md:block">
                     <div class="ml-10 flex items-baseline space-x-1">
-                        <a href="#home" class="nav-link text-gray-900 hover:text-primary-600 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:bg-primary-50 relative group">
+                        <a href="#home" class="nav-link text-primary-600 hover:text-secondary-500 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:bg-secondary-50 relative group">
                             <span class="relative z-10">Home</span>
-                            <div class="absolute inset-0 bg-primary-100 rounded-lg scale-0 group-hover:scale-100 transition-transform duration-300"></div>
+                            <div class="absolute inset-0 bg-secondary-100 rounded-lg scale-0 group-hover:scale-100 transition-transform duration-300"></div>
                         </a>
-                        <a href="#packages" class="nav-link text-gray-500 hover:text-primary-600 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:bg-primary-50 relative group">
+                        <a href="#packages" class="nav-link text-primary-600 hover:text-secondary-500 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:bg-secondary-50 relative group">
                             <span class="relative z-10">Packages</span>
-                            <div class="absolute inset-0 bg-primary-100 rounded-lg scale-0 group-hover:scale-100 transition-transform duration-300"></div>
+                            <div class="absolute inset-0 bg-secondary-100 rounded-lg scale-0 group-hover:scale-100 transition-transform duration-300"></div>
                         </a>
-                        <a href="#about" class="nav-link text-gray-500 hover:text-primary-600 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:bg-primary-50 relative group">
+                        <a href="#about" class="nav-link text-primary-600 hover:text-secondary-500 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:bg-secondary-50 relative group">
                             <span class="relative z-10">About</span>
-                            <div class="absolute inset-0 bg-primary-100 rounded-lg scale-0 group-hover:scale-100 transition-transform duration-300"></div>
+                            <div class="absolute inset-0 bg-secondary-100 rounded-lg scale-0 group-hover:scale-100 transition-transform duration-300"></div>
                         </a>
-                        <a href="#contact" class="nav-link text-gray-500 hover:text-primary-600 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:bg-primary-50 relative group">
+                        <a href="#contact" class="nav-link text-primary-600 hover:text-secondary-500 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:bg-secondary-50 relative group">
                             <span class="relative z-10">Contact</span>
-                            <div class="absolute inset-0 bg-primary-100 rounded-lg scale-0 group-hover:scale-100 transition-transform duration-300"></div>
+                            <div class="absolute inset-0 bg-secondary-100 rounded-lg scale-0 group-hover:scale-100 transition-transform duration-300"></div>
                         </a>
                     </div>
                 </div>
                 <div class="md:hidden">
-                    <button id="mobile-menu-btn" type="button" class="text-gray-500 hover:text-primary-600 focus:outline-none focus:text-primary-600 transition-colors p-2" aria-label="Open menu">
+                    <button id="mobile-menu-btn" type="button" class="text-primary-600 hover:text-secondary-500 focus:outline-none focus:text-secondary-500 transition-colors p-2" aria-label="Open menu">
                         <i class="fas fa-bars text-xl transform transition-transform duration-300"></i>
                     </button>
                 </div>
@@ -85,22 +103,22 @@
                         <img src="logo/logo123.png" alt="Travelbooks Logo" class="w-6 h-6 mr-2">
                         Travelbooks
                     </h1>
-                    <button id="close-mobile-menu" class="text-gray-500 hover:text-primary-600 p-2">
+                    <button id="close-mobile-menu" class="text-primary-600 hover:text-secondary-500 p-2">
                         <i class="fas fa-times text-xl"></i>
                     </button>
                 </div>
                 <div class="flex-1 flex flex-col justify-center items-center space-y-8">
-                    <a href="#home" class="mobile-nav-link text-2xl font-medium text-gray-700 hover:text-primary-600 transition-colors">Home</a>
-                    <a href="#packages" class="mobile-nav-link text-2xl font-medium text-gray-700 hover:text-primary-600 transition-colors">Packages</a>
-                    <a href="#about" class="mobile-nav-link text-2xl font-medium text-gray-700 hover:text-primary-600 transition-colors">About</a>
-                    <a href="#contact" class="mobile-nav-link text-2xl font-medium text-gray-700 hover:text-primary-600 transition-colors">Contact</a>
+                    <a href="#home" class="mobile-nav-link text-2xl font-medium text-primary-600 hover:text-secondary-500 transition-colors">Home</a>
+                    <a href="#packages" class="mobile-nav-link text-2xl font-medium text-primary-600 hover:text-secondary-500 transition-colors">Packages</a>
+                    <a href="#about" class="mobile-nav-link text-2xl font-medium text-primary-600 hover:text-secondary-500 transition-colors">About</a>
+                    <a href="#contact" class="mobile-nav-link text-2xl font-medium text-primary-600 hover:text-secondary-500 transition-colors">Contact</a>
                 </div>
             </div>
         </div>
     </nav>
 
     <!-- Hero Section -->
-    <section id="home" class="relative h-screen flex items-center justify-center bg-gradient-to-br from-primary-600 via-blue-700 to-blue-900 overflow-hidden pt-16">
+    <section id="home" class="relative h-screen flex items-center justify-center bg-gradient-to-br from-primary-600 via-primary-700 to-primary-800 overflow-hidden pt-16">
         <!-- Animated Background Elements -->
         <div class="absolute inset-0">
             <div class="floating-shapes">
@@ -118,7 +136,7 @@
             <div class="hero-content">
                 <h1 class="hero-title text-5xl md:text-7xl font-bold mb-6 leading-tight">
                     Your Dream Destination
-                    <span class="block text-yellow-300 bg-gradient-to-r from-yellow-300 to-yellow-400 bg-clip-text text-transparent animate-pulse">Awaits</span>
+                    <span class="block text-secondary-500 bg-gradient-to-r from-secondary-400 to-secondary-500 bg-clip-text text-transparent animate-pulse">Awaits</span>
                 </h1>
                 <p class="hero-subtitle text-xl md:text-2xl mb-8 max-w-3xl mx-auto leading-relaxed">
                     Discover breathtaking destinations, luxury accommodations, and unforgettable experiences with our expertly crafted travel packages.
@@ -126,7 +144,7 @@
                 
                 <!-- Interactive CTA Button -->
                 <div class="hero-buttons flex justify-center items-center mb-12">
-                    <button class="btn-primary bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-4 px-8 rounded-xl text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl shadow-lg group">
+                    <button class="btn-primary bg-secondary-500 hover:bg-secondary-600 text-primary-600 font-bold py-4 px-8 rounded-xl text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl shadow-lg group">
                         <i class="fas fa-calendar-check mr-2 group-hover:rotate-12 transition-transform"></i>
                         <span>Explore Packages</span>
                         <div class="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 rounded-xl transition-opacity"></div>
@@ -136,15 +154,15 @@
                 <!-- Interactive Stats -->
                 <div class="hero-stats grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
                     <div class="stat-item text-center group cursor-pointer">
-                        <div class="stat-number text-3xl md:text-4xl font-bold text-yellow-300 group-hover:scale-110 transition-transform duration-300">500+</div>
+                        <div class="stat-number text-3xl md:text-4xl font-bold text-secondary-500 group-hover:scale-110 transition-transform duration-300">500+</div>
                         <div class="stat-label text-sm md:text-base opacity-90">Happy Travelers</div>
                     </div>
                     <div class="stat-item text-center group cursor-pointer">
-                        <div class="stat-number text-3xl md:text-4xl font-bold text-yellow-300 group-hover:scale-110 transition-transform duration-300">50+</div>
+                        <div class="stat-number text-3xl md:text-4xl font-bold text-secondary-500 group-hover:scale-110 transition-transform duration-300">50+</div>
                         <div class="stat-label text-sm md:text-base opacity-90">Destinations</div>
                     </div>
                     <div class="stat-item text-center group cursor-pointer">
-                        <div class="stat-number text-3xl md:text-4xl font-bold text-yellow-300 group-hover:scale-110 transition-transform duration-300">24/7</div>
+                        <div class="stat-number text-3xl md:text-4xl font-bold text-secondary-500 group-hover:scale-110 transition-transform duration-300">24/7</div>
                         <div class="stat-label text-sm md:text-base opacity-90">Support</div>
                     </div>
                 </div>
@@ -167,36 +185,36 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div class="feature-card group text-center p-8 bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100">
                     <div class="feature-icon bg-gradient-to-br from-primary-100 to-primary-200 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
-                        <i class="fas fa-shield-alt text-primary-600 text-3xl group-hover:rotate-12 transition-transform duration-300"></i>
+                        <i class="fas fa-shield-alt text-secondary-500 text-3xl group-hover:rotate-12 transition-transform duration-300"></i>
                     </div>
-                    <h3 class="text-2xl font-bold mb-4 text-gray-900 group-hover:text-primary-600 transition-colors">Safe & Secure</h3>
-                    <p class="text-gray-600 leading-relaxed">Your safety is our priority. All packages include comprehensive travel insurance and 24/7 support.</p>
+                    <h3 class="text-2xl font-bold mb-4 text-primary-600 group-hover:text-secondary-500 transition-colors">Safe & Secure</h3>
+                    <p class="text-primary-600 leading-relaxed">Your safety is our priority. All packages include comprehensive travel insurance and 24/7 support.</p>
                     <div class="mt-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <button class="text-primary-600 font-semibold hover:text-primary-700 transition-colors">
+                        <button class="text-secondary-500 font-semibold hover:text-secondary-600 transition-colors">
                             Learn More <i class="fas fa-arrow-right ml-1"></i>
                         </button>
                     </div>
                 </div>
                 <div class="feature-card group text-center p-8 bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100">
-                    <div class="feature-icon bg-gradient-to-br from-yellow-100 to-yellow-200 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
-                        <i class="fas fa-star text-yellow-600 text-3xl group-hover:rotate-12 transition-transform duration-300"></i>
+                    <div class="feature-icon bg-gradient-to-br from-secondary-100 to-secondary-200 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-star text-primary-600 text-3xl group-hover:rotate-12 transition-transform duration-300"></i>
                     </div>
-                    <h3 class="text-2xl font-bold mb-4 text-gray-900 group-hover:text-primary-600 transition-colors">Premium Quality</h3>
-                    <p class="text-gray-600 leading-relaxed">Handpicked accommodations, expert guides, and exclusive experiences for the ultimate luxury.</p>
+                    <h3 class="text-2xl font-bold mb-4 text-primary-600 group-hover:text-secondary-500 transition-colors">Premium Quality</h3>
+                    <p class="text-primary-600 leading-relaxed">Handpicked accommodations, expert guides, and exclusive experiences for the ultimate luxury.</p>
                     <div class="mt-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <button class="text-primary-600 font-semibold hover:text-primary-700 transition-colors">
+                        <button class="text-secondary-500 font-semibold hover:text-secondary-600 transition-colors">
                             Learn More <i class="fas fa-arrow-right ml-1"></i>
                         </button>
                     </div>
                 </div>
                 <div class="feature-card group text-center p-8 bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100">
-                    <div class="feature-icon bg-gradient-to-br from-pink-100 to-pink-200 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
-                        <i class="fas fa-heart text-pink-600 text-3xl group-hover:rotate-12 transition-transform duration-300"></i>
+                    <div class="feature-icon bg-gradient-to-br from-primary-100 to-primary-200 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-heart text-secondary-500 text-3xl group-hover:rotate-12 transition-transform duration-300"></i>
                     </div>
-                    <h3 class="text-2xl font-bold mb-4 text-gray-900 group-hover:text-primary-600 transition-colors">Memorable Experiences</h3>
-                    <p class="text-gray-600 leading-relaxed">Create lasting memories with our carefully curated itineraries and personalized service.</p>
+                    <h3 class="text-2xl font-bold mb-4 text-primary-600 group-hover:text-secondary-500 transition-colors">Memorable Experiences</h3>
+                    <p class="text-primary-600 leading-relaxed">Create lasting memories with our carefully curated itineraries and personalized service.</p>
                     <div class="mt-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <button class="text-primary-600 font-semibold hover:text-primary-700 transition-colors">
+                        <button class="text-secondary-500 font-semibold hover:text-secondary-600 transition-colors">
                             Learn More <i class="fas fa-arrow-right ml-1"></i>
                         </button>
                     </div>
@@ -209,10 +227,10 @@
     <section id="packages" class="py-20 bg-gradient-to-b from-gray-50 to-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16">
-                <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-                    Featured <span class="text-primary-600">Travel Packages</span>
+                <h2 class="text-4xl md:text-5xl font-bold text-primary-600 mb-6">
+                    Featured <span class="text-secondary-500">Travel Packages</span>
                 </h2>
-                <p class="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+                <p class="text-xl text-primary-600 max-w-3xl mx-auto leading-relaxed">
                     Discover our most popular destinations and exclusive travel experiences.
                 </p>
                 
@@ -220,10 +238,10 @@
                 <div class="mt-8 flex justify-center">
                     <div class="bg-white rounded-2xl shadow-lg p-6 inline-flex items-center space-x-6 border border-gray-100 hover:shadow-xl transition-shadow duration-300">
                         <div class="flex items-center space-x-2">
-                            <i class="fas fa-exchange-alt text-primary-600"></i>
-                            <span class="text-gray-700 font-semibold">View prices in:</span>
+                            <i class="fas fa-exchange-alt text-secondary-500"></i>
+                            <span class="text-primary-600 font-semibold">View prices in:</span>
                         </div>
-                        <select id="currency-selector" class="border-2 border-gray-200 rounded-xl px-4 py-2 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-300 bg-white hover:border-primary-300">
+                        <select id="currency-selector" class="border-2 border-gray-200 rounded-xl px-4 py-2 focus:ring-2 focus:ring-secondary-500 focus:border-secondary-500 transition-all duration-300 bg-white hover:border-secondary-300">
                             <option value="USD">USD - US Dollar</option>
                             <option value="EUR">EUR - Euro</option>
                             <option value="GBP">GBP - British Pound</option>
@@ -243,16 +261,16 @@
             <div class="flex justify-center mb-12">
                 <div class="bg-white rounded-2xl p-2 shadow-lg border border-gray-100">
                     <div class="flex space-x-2">
-                        <button class="filter-tab active px-6 py-3 rounded-xl font-semibold transition-all duration-300 bg-primary-600 text-white" data-filter="all">
+                        <button class="filter-tab active px-6 py-3 rounded-xl font-semibold transition-all duration-300 bg-primary-600 text-secondary-500" data-filter="all">
                             All Packages
                         </button>
-                        <button class="filter-tab px-6 py-3 rounded-xl font-semibold transition-all duration-300 text-gray-600 hover:text-primary-600 hover:bg-primary-50" data-filter="popular">
+                        <button class="filter-tab px-6 py-3 rounded-xl font-semibold transition-all duration-300 text-primary-600 hover:text-secondary-500 hover:bg-secondary-50" data-filter="popular">
                             Popular
                         </button>
-                        <button class="filter-tab px-6 py-3 rounded-xl font-semibold transition-all duration-300 text-gray-600 hover:text-primary-600 hover:bg-primary-50" data-filter="luxury">
+                        <button class="filter-tab px-6 py-3 rounded-xl font-semibold transition-all duration-300 text-primary-600 hover:text-secondary-500 hover:bg-secondary-50" data-filter="luxury">
                             Luxury
                         </button>
-                        <button class="filter-tab px-6 py-3 rounded-xl font-semibold transition-all duration-300 text-gray-600 hover:text-primary-600 hover:bg-primary-50" data-filter="budget">
+                        <button class="filter-tab px-6 py-3 rounded-xl font-semibold transition-all duration-300 text-primary-600 hover:text-secondary-500 hover:bg-secondary-50" data-filter="budget">
                             Budget
                         </button>
                     </div>
@@ -263,11 +281,11 @@
                 <!-- Packages will be loaded dynamically from Upstash -->
                 <div class="col-span-full text-center py-12">
                     <div class="animate-pulse">
-                        <div class="mx-auto w-20 h-20 bg-gradient-to-br from-primary-100 to-primary-200 rounded-2xl flex items-center justify-center mb-6">
+                        <div class="mx-auto w-20 h-20 bg-gradient-to-br from-secondary-100 to-secondary-200 rounded-2xl flex items-center justify-center mb-6">
                             <i class="fas fa-plane text-primary-600 text-3xl"></i>
                         </div>
-                        <h3 class="text-2xl font-semibold text-gray-600 mb-3">Loading Packages...</h3>
-                        <p class="text-gray-500 text-lg">Fetching your travel packages from the database</p>
+                        <h3 class="text-2xl font-semibold text-primary-600 mb-3">Loading Packages...</h3>
+                        <p class="text-primary-600 text-lg">Fetching your travel packages from the database</p>
                     </div>
                 </div>
             </div>
