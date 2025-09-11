@@ -24,7 +24,7 @@ async function initializeLogin() {
     // Focus on username field
     document.getElementById('username').focus();
     
-    console.log('Login page initialized');
+    
 }
 
 /**
