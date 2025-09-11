@@ -19,28 +19,10 @@
                 extend: {
                     colors: {
                         primary: {
-                            50: '#f0f4ff',
-                            100: '#e0e9ff',
-                            200: '#c7d7ff',
-                            300: '#a5b8ff',
-                            400: '#8190ff',
-                            500: '#052858',
-                            600: '#052858',
-                            700: '#052858',
-                            800: '#052858',
-                            900: '#052858',
-                        },
-                        secondary: {
-                            50: '#fff7ed',
-                            100: '#ffedd5',
-                            200: '#fed7aa',
-                            300: '#fdba74',
-                            400: '#fb923c',
-                            500: '#ffa200',
-                            600: '#ffa200',
-                            700: '#ffa200',
-                            800: '#ffa200',
-                            900: '#ffa200',
+                            50: '#eff6ff',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
                         }
                     }
                 }
@@ -61,7 +43,7 @@
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
-                        <h1 class="text-2xl font-bold text-primary-600 hover:text-secondary-500 transition-colors cursor-pointer flex items-center">
+                        <h1 class="text-2xl font-bold text-primary-600 hover:text-primary-700 transition-colors cursor-pointer flex items-center">
                             <img src="logo/logo123.png" alt="Travelbooks Logo" class="w-8 h-8 mr-2 transform hover:rotate-12 transition-transform">
                             Travelbooks
                         </h1>
@@ -69,26 +51,26 @@
                 </div>
                 <div class="hidden md:block">
                     <div class="ml-10 flex items-baseline space-x-1">
-                        <a href="#home" class="nav-link text-primary-600 hover:text-secondary-500 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:bg-secondary-50 relative group">
+                        <a href="#home" class="nav-link text-gray-900 hover:text-primary-600 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:bg-primary-50 relative group">
                             <span class="relative z-10">Home</span>
-                            <div class="absolute inset-0 bg-secondary-100 rounded-lg scale-0 group-hover:scale-100 transition-transform duration-300"></div>
+                            <div class="absolute inset-0 bg-primary-100 rounded-lg scale-0 group-hover:scale-100 transition-transform duration-300"></div>
                         </a>
-                        <a href="#packages" class="nav-link text-primary-600 hover:text-secondary-500 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:bg-secondary-50 relative group">
+                        <a href="#packages" class="nav-link text-gray-500 hover:text-primary-600 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:bg-primary-50 relative group">
                             <span class="relative z-10">Packages</span>
-                            <div class="absolute inset-0 bg-secondary-100 rounded-lg scale-0 group-hover:scale-100 transition-transform duration-300"></div>
+                            <div class="absolute inset-0 bg-primary-100 rounded-lg scale-0 group-hover:scale-100 transition-transform duration-300"></div>
                         </a>
-                        <a href="#about" class="nav-link text-primary-600 hover:text-secondary-500 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:bg-secondary-50 relative group">
+                        <a href="#about" class="nav-link text-gray-500 hover:text-primary-600 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:bg-primary-50 relative group">
                             <span class="relative z-10">About</span>
-                            <div class="absolute inset-0 bg-secondary-100 rounded-lg scale-0 group-hover:scale-100 transition-transform duration-300"></div>
+                            <div class="absolute inset-0 bg-primary-100 rounded-lg scale-0 group-hover:scale-100 transition-transform duration-300"></div>
                         </a>
-                        <a href="#contact" class="nav-link text-primary-600 hover:text-secondary-500 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:bg-secondary-50 relative group">
+                        <a href="#contact" class="nav-link text-gray-500 hover:text-primary-600 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:bg-primary-50 relative group">
                             <span class="relative z-10">Contact</span>
-                            <div class="absolute inset-0 bg-secondary-100 rounded-lg scale-0 group-hover:scale-100 transition-transform duration-300"></div>
+                            <div class="absolute inset-0 bg-primary-100 rounded-lg scale-0 group-hover:scale-100 transition-transform duration-300"></div>
                         </a>
                     </div>
                 </div>
                 <div class="md:hidden">
-                    <button id="mobile-menu-btn" type="button" class="text-primary-600 hover:text-secondary-500 focus:outline-none focus:text-secondary-500 transition-colors p-2" aria-label="Open menu">
+                    <button id="mobile-menu-btn" type="button" class="text-gray-500 hover:text-primary-600 focus:outline-none focus:text-primary-600 transition-colors p-2" aria-label="Open menu">
                         <i class="fas fa-bars text-xl transform transition-transform duration-300"></i>
                     </button>
                 </div>
@@ -103,22 +85,22 @@
                         <img src="logo/logo123.png" alt="Travelbooks Logo" class="w-6 h-6 mr-2">
                         Travelbooks
                     </h1>
-                    <button id="close-mobile-menu" class="text-primary-600 hover:text-secondary-500 p-2">
+                    <button id="close-mobile-menu" class="text-gray-500 hover:text-primary-600 p-2">
                         <i class="fas fa-times text-xl"></i>
                     </button>
                 </div>
                 <div class="flex-1 flex flex-col justify-center items-center space-y-8">
-                    <a href="#home" class="mobile-nav-link text-2xl font-medium text-primary-600 hover:text-secondary-500 transition-colors">Home</a>
-                    <a href="#packages" class="mobile-nav-link text-2xl font-medium text-primary-600 hover:text-secondary-500 transition-colors">Packages</a>
-                    <a href="#about" class="mobile-nav-link text-2xl font-medium text-primary-600 hover:text-secondary-500 transition-colors">About</a>
-                    <a href="#contact" class="mobile-nav-link text-2xl font-medium text-primary-600 hover:text-secondary-500 transition-colors">Contact</a>
+                    <a href="#home" class="mobile-nav-link text-2xl font-medium text-gray-700 hover:text-primary-600 transition-colors">Home</a>
+                    <a href="#packages" class="mobile-nav-link text-2xl font-medium text-gray-700 hover:text-primary-600 transition-colors">Packages</a>
+                    <a href="#about" class="mobile-nav-link text-2xl font-medium text-gray-700 hover:text-primary-600 transition-colors">About</a>
+                    <a href="#contact" class="mobile-nav-link text-2xl font-medium text-gray-700 hover:text-primary-600 transition-colors">Contact</a>
                 </div>
             </div>
         </div>
     </nav>
 
     <!-- Hero Section -->
-    <section id="home" class="relative h-screen flex items-center justify-center bg-gradient-to-br from-primary-600 via-primary-700 to-primary-800 overflow-hidden pt-16">
+    <section id="home" class="relative h-screen flex items-center justify-center bg-gradient-to-br from-primary-600 via-blue-700 to-blue-900 overflow-hidden pt-16">
         <!-- Animated Background Elements -->
         <div class="absolute inset-0">
             <div class="floating-shapes">
@@ -136,7 +118,7 @@
             <div class="hero-content">
                 <h1 class="hero-title text-5xl md:text-7xl font-bold mb-6 leading-tight">
                     Your Dream Destination
-                    <span class="block text-secondary-500 bg-gradient-to-r from-secondary-400 to-secondary-500 bg-clip-text text-transparent animate-pulse">Awaits</span>
+                    <span class="block text-yellow-300 bg-gradient-to-r from-yellow-300 to-yellow-400 bg-clip-text text-transparent animate-pulse">Awaits</span>
                 </h1>
                 <p class="hero-subtitle text-xl md:text-2xl mb-8 max-w-3xl mx-auto leading-relaxed">
                     Discover breathtaking destinations, luxury accommodations, and unforgettable experiences with our expertly crafted travel packages.
@@ -144,7 +126,7 @@
                 
                 <!-- Interactive CTA Button -->
                 <div class="hero-buttons flex justify-center items-center mb-12">
-                    <button class="btn-primary bg-secondary-500 hover:bg-secondary-600 text-primary-600 font-bold py-4 px-8 rounded-xl text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl shadow-lg group">
+                    <button class="btn-primary bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-4 px-8 rounded-xl text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl shadow-lg group">
                         <i class="fas fa-calendar-check mr-2 group-hover:rotate-12 transition-transform"></i>
                         <span>Explore Packages</span>
                         <div class="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 rounded-xl transition-opacity"></div>
@@ -154,15 +136,15 @@
                 <!-- Interactive Stats -->
                 <div class="hero-stats grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
                     <div class="stat-item text-center group cursor-pointer">
-                        <div class="stat-number text-3xl md:text-4xl font-bold text-secondary-500 group-hover:scale-110 transition-transform duration-300">500+</div>
+                        <div class="stat-number text-3xl md:text-4xl font-bold text-yellow-300 group-hover:scale-110 transition-transform duration-300">500+</div>
                         <div class="stat-label text-sm md:text-base opacity-90">Happy Travelers</div>
                     </div>
                     <div class="stat-item text-center group cursor-pointer">
-                        <div class="stat-number text-3xl md:text-4xl font-bold text-secondary-500 group-hover:scale-110 transition-transform duration-300">50+</div>
+                        <div class="stat-number text-3xl md:text-4xl font-bold text-yellow-300 group-hover:scale-110 transition-transform duration-300">50+</div>
                         <div class="stat-label text-sm md:text-base opacity-90">Destinations</div>
                     </div>
                     <div class="stat-item text-center group cursor-pointer">
-                        <div class="stat-number text-3xl md:text-4xl font-bold text-secondary-500 group-hover:scale-110 transition-transform duration-300">24/7</div>
+                        <div class="stat-number text-3xl md:text-4xl font-bold text-yellow-300 group-hover:scale-110 transition-transform duration-300">24/7</div>
                         <div class="stat-label text-sm md:text-base opacity-90">Support</div>
                     </div>
                 </div>
@@ -281,11 +263,11 @@
                 <!-- Packages will be loaded dynamically from Upstash -->
                 <div class="col-span-full text-center py-12">
                     <div class="animate-pulse">
-                        <div class="mx-auto w-20 h-20 bg-gradient-to-br from-secondary-100 to-secondary-200 rounded-2xl flex items-center justify-center mb-6">
+                        <div class="mx-auto w-20 h-20 bg-gradient-to-br from-primary-100 to-primary-200 rounded-2xl flex items-center justify-center mb-6">
                             <i class="fas fa-plane text-primary-600 text-3xl"></i>
                         </div>
-                        <h3 class="text-2xl font-semibold text-primary-600 mb-3">Loading Packages...</h3>
-                        <p class="text-primary-600 text-lg">Fetching your travel packages from the database</p>
+                        <h3 class="text-2xl font-semibold text-gray-600 mb-3">Loading Packages...</h3>
+                        <p class="text-gray-500 text-lg">Fetching your travel packages from the database</p>
                     </div>
                 </div>
             </div>
