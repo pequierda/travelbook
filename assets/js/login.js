@@ -4,16 +4,16 @@
  */
 
 // Wait for DOM to be fully loaded
-document.addEventListener('DOMContentLoaded', function() {
-    initializeLogin();
+document.addEventListener('DOMContentLoaded', async function() {
+    await initializeLogin();
 });
 
 /**
  * Initialize login page
  */
-function initializeLogin() {
-    // Check if already logged in
-    if (window.authManager.isAuthenticated()) {
+async function initializeLogin() {
+    // Check if already logged in (use sync version to avoid redirect loop)
+    if (window.authManager.isAuthenticatedSync()) {
         window.location.href = 'admin.html';
         return;
     }

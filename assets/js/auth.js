@@ -271,17 +271,13 @@ class AuthManager {
      * Require authentication for protected pages
      */
     requireAuth() {
-        console.log('requireAuth called, current page:', window.location.pathname);
-        
         // Prevent multiple redirects
         if (this.isRedirecting) {
-            console.log('Already redirecting, skipping check');
             return false;
         }
         
         // Don't check auth if we're already on login page
         if (this.isOnLoginPage()) {
-            console.log('On login page, skipping auth check');
             return true;
         }
         
@@ -290,16 +286,13 @@ class AuthManager {
             window.location.pathname === '/' || 
             window.location.pathname === '/travelbook/' ||
             window.location.pathname === '/travelbook/index.html') {
-            console.log('On public page, skipping auth check');
             return true;
         }
         
         // Simple sync check only
         const isAuth = this.isAuthenticatedSync();
-        console.log('Auth check result:', isAuth);
         
         if (!isAuth) {
-            console.log('Not authenticated, redirecting to login');
             this.isRedirecting = true;
             // Add a small delay to prevent rapid redirects
             setTimeout(() => {
@@ -308,7 +301,6 @@ class AuthManager {
             return false;
         }
         
-        console.log('Authentication successful');
         return true;
     }
     
@@ -617,27 +609,20 @@ class AuthManager {
     isAuthenticatedSync() {
         try {
             const sessionData = localStorage.getItem(this.sessionKey);
-            console.log('Session data from localStorage:', sessionData ? 'exists' : 'null');
             
             if (!sessionData) {
-                console.log('No session data found');
                 return false;
             }
             
             const session = JSON.parse(sessionData);
-            console.log('Session expires at:', session.expires_at);
-            console.log('Current time:', new Date().toISOString());
             
             // Check if session is expired
             if (new Date(session.expires_at) < new Date()) {
-                console.log('Session expired');
                 return false;
             }
             
-            console.log('Session is valid');
             return true;
         } catch (error) {
-            console.log('Error checking session:', error);
             return false;
         }
     }
@@ -649,18 +634,11 @@ class AuthManager {
         const currentPath = window.location.pathname;
         const currentHref = window.location.href;
         
-        console.log('Checking if on login page:');
-        console.log('  Current path:', currentPath);
-        console.log('  Current href:', currentHref);
-        
-        const isLoginPage = currentPath.includes('login.html') || 
+        return currentPath.includes('login.html') || 
                currentPath.endsWith('login.html') ||
                currentHref.includes('login.html') ||
                currentPath === '/login.html' ||
                currentPath === '/travelbook/login.html';
-        
-        console.log('  Is login page:', isLoginPage);
-        return isLoginPage;
     }
     
     /**
