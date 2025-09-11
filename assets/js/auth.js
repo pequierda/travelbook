@@ -23,12 +23,16 @@ class AuthManager {
         this.warningTimeoutId = null;
         this.isWarningShown = false;
         this.sessionValidationInterval = null;
+        this.isRedirecting = false;
         
         // Single session configuration
         this.allowMultipleSessions = true; // Temporarily disabled to fix redirect loop
         
         // Initialize default admin user if none exists
         this.initializeDefaultAdmin();
+        
+        // Reset redirect flag on page load
+        this.isRedirecting = false;
         
         // Initialize auto-logout system
         this.initializeAutoLogout();
@@ -269,9 +273,24 @@ class AuthManager {
     requireAuth() {
         console.log('requireAuth called, current page:', window.location.pathname);
         
+        // Prevent multiple redirects
+        if (this.isRedirecting) {
+            console.log('Already redirecting, skipping check');
+            return false;
+        }
+        
         // Don't check auth if we're already on login page
         if (this.isOnLoginPage()) {
             console.log('On login page, skipping auth check');
+            return true;
+        }
+        
+        // Don't check auth if we're on index.html (public page)
+        if (window.location.pathname.includes('index.html') || 
+            window.location.pathname === '/' || 
+            window.location.pathname === '/travelbook/' ||
+            window.location.pathname === '/travelbook/index.html') {
+            console.log('On public page, skipping auth check');
             return true;
         }
         
@@ -281,7 +300,11 @@ class AuthManager {
         
         if (!isAuth) {
             console.log('Not authenticated, redirecting to login');
-            window.location.href = 'login.html';
+            this.isRedirecting = true;
+            // Add a small delay to prevent rapid redirects
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 100);
             return false;
         }
         
