@@ -192,7 +192,6 @@ class AuthManager {
             
             // Check if session is expired
             if (new Date(session.expires_at) < new Date()) {
-                this.logout();
                 return false;
             }
             
@@ -200,7 +199,6 @@ class AuthManager {
             if (!this.allowMultipleSessions) {
                 const isActive = await this.isSessionActive(session.user_id, session.id);
                 if (!isActive) {
-                    this.logout();
                     return false;
                 }
             }
@@ -265,8 +263,22 @@ class AuthManager {
      * Require authentication for protected pages
      */
     async requireAuth() {
+        // Don't check auth if we're already on login page
+        if (this.isOnLoginPage()) {
+            return true;
+        }
+        
+        // First do a quick sync check to avoid redirect loops
+        if (!this.isAuthenticatedSync()) {
+            window.location.href = 'login.html';
+            return false;
+        }
+        
+        // Then do the full async check for session validation
         const isAuth = await this.isAuthenticated();
         if (!isAuth) {
+            // Clear the invalid session before redirecting
+            localStorage.removeItem(this.sessionKey);
             window.location.href = 'login.html';
             return false;
         }
@@ -567,6 +579,35 @@ class AuthManager {
         this.resetInactivityTimer();
         
         console.log('Auto-logout system initialized - 1 minute inactivity timeout');
+    }
+    
+    /**
+     * Check if user is authenticated (synchronous version for constructor)
+     */
+    isAuthenticatedSync() {
+        try {
+            const sessionData = localStorage.getItem(this.sessionKey);
+            if (!sessionData) return false;
+            
+            const session = JSON.parse(sessionData);
+            
+            // Check if session is expired
+            if (new Date(session.expires_at) < new Date()) {
+                return false;
+            }
+            
+            return true;
+        } catch (error) {
+            return false;
+        }
+    }
+    
+    /**
+     * Check if we're currently on the login page
+     */
+    isOnLoginPage() {
+        return window.location.pathname.includes('login.html') || 
+               window.location.pathname.endsWith('login.html');
     }
     
     /**
