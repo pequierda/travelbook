@@ -42,7 +42,34 @@ class AuthManager {
      * Initialize default admin user
      */
     async initializeDefaultAdmin() {
-        // No default admin creation - users must be created manually for security
+        try {
+            const users = await this.getStoredUsers();
+            
+            // If no users exist, create a default admin user
+            if (users.length === 0) {
+                const defaultAdmin = {
+                    id: 'admin_001',
+                    username: 'admin',
+                    password: this.hashPassword('admin123'),
+                    email: 'admin@travelbook.com',
+                    role: 'admin',
+                    is_active: true,
+                    created_at: new Date().toISOString(),
+                    updated_at: new Date().toISOString(),
+                    last_login: null
+                };
+                
+                users.push(defaultAdmin);
+                await this.saveUsers(users);
+                
+                console.log('Default admin user created:');
+                console.log('Username: admin');
+                console.log('Password: admin123');
+                console.log('Please change the password after first login!');
+            }
+        } catch (error) {
+            console.error('Error initializing default admin:', error);
+        }
     }
     
     /**
@@ -430,10 +457,17 @@ class AuthManager {
     }
     
     /**
-     * Save users to Upstash
+     * Save users to Upstash or localStorage
      */
     async saveUsers(users) {
         try {
+            // Check if Upstash is available
+            if (!window.UPSTASH_CONFIG || !window.UPSTASH_CONFIG.apiBase) {
+                // Use localStorage fallback
+                this.saveLocalStorageUsers(users);
+                return;
+            }
+            
             // Clear existing users
             await upstashRequest('del', [this.usersKey]);
             
@@ -442,7 +476,9 @@ class AuthManager {
                 await upstashRequest('hset', [this.usersKey, user.id, JSON.stringify(user)]);
             }
         } catch (error) {
-            throw error;
+            // Fallback to localStorage if Upstash fails
+            console.warn('Upstash save failed, using localStorage fallback:', error);
+            this.saveLocalStorageUsers(users);
         }
     }
     
