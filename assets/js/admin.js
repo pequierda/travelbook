@@ -56,6 +56,7 @@ function initEventListeners() {
     const addPackageBtn = document.getElementById('add-package-btn');
     if (addPackageBtn) {
         addPackageBtn.addEventListener('click', () => {
+            console.log('Add package button clicked');
             openPackageModal();
         });
     }
@@ -284,6 +285,8 @@ function openPackageModal(packageData = null) {
     const form = document.getElementById('package-form');
     const title = document.getElementById('modal-title');
     
+    console.log('Opening package modal with data:', packageData);
+    
     // Reset form and clear all fields
     form.reset();
     currentEditingPackage = null;
@@ -365,6 +368,14 @@ async function handlePackageSubmit(e) {
     const isEditMode = currentEditingPackage !== null;
     const packageId = document.getElementById('package-id').value;
     
+    // Debug information
+    console.log('Form submission debug:', {
+        isEditMode,
+        currentEditingPackage,
+        packageId,
+        packageData
+    });
+    
     try {
         let result;
         
@@ -376,7 +387,9 @@ async function handlePackageSubmit(e) {
             // Create new package - ensure package-id is empty
             document.getElementById('package-id').value = '';
             showAdminNotification('Creating new package...', 'info');
+            console.log('Calling createPackage with data:', packageData);
             result = await window.packageManager.createPackage(packageData);
+            console.log('createPackage result:', result);
         }
         
         if (result.success) {
