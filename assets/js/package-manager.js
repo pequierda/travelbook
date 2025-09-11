@@ -11,18 +11,9 @@ class PackageManager {
     }
     
     /**
-     * Check if we should use localStorage fallback
+     * Simple localStorage fallback for local development
      */
-    shouldUseLocalStorage() {
-        // Use localStorage if Upstash API is not available (local development)
-        return !window.UPSTASH_CONFIG || !window.UPSTASH_CONFIG.apiBase || 
-               window.UPSTASH_CONFIG.apiBase === '/api/upstash';
-    }
-    
-    /**
-     * localStorage fallback for package operations
-     */
-    localStoragePackageRequest(command, args = []) {
+    async localUpstashRequest(command, args = []) {
         const [key, ...otherArgs] = args;
         
         switch (command.toLowerCase()) {
@@ -85,15 +76,19 @@ class PackageManager {
     }
     
     /**
-     * Make package request (Upstash or localStorage)
+     * Make request with localStorage fallback
      */
-    async packageRequest(command, args = []) {
-        if (this.shouldUseLocalStorage()) {
-            return this.localStoragePackageRequest(command, args);
-        } else {
-            return await this.packageRequest(command, args);
+    async makeRequest(command, args = []) {
+        try {
+            // Try Upstash first
+            return await this.makeRequest(command, args);
+        } catch (error) {
+            // Fallback to localStorage for local development
+            console.log('Using localStorage fallback for:', command);
+            return this.localUpstashRequest(command, args);
         }
     }
+    
     
     /**
      * Create a new travel package
@@ -134,11 +129,11 @@ class PackageManager {
             };
             
             // Store package in Redis
-            await this.packageRequest('hset', [this.packagesKey, packageId, JSON.stringify(packageObj)]);
+            await this.makeRequest('hset', [this.packagesKey, packageId, JSON.stringify(packageObj)]);
             
             // Add to active packages list
             if (packageObj.is_active) {
-                await this.packageRequest('sadd', [this.activePackagesKey, packageId]);
+                await this.makeRequest('sadd', [this.activePackagesKey, packageId]);
             }
             
             return {
@@ -164,10 +159,10 @@ class PackageManager {
             let packageIds;
             
             if (activeOnly) {
-                packageIds = await this.packageRequest('smembers', [this.activePackagesKey]);
+                packageIds = await this.makeRequest('smembers', [this.activePackagesKey]);
             } else {
                 // Get all package IDs from hash keys using HGETALL
-                const allPackages = await this.packageRequest('hgetall', [this.packagesKey]);
+                const allPackages = await this.makeRequest('hgetall', [this.packagesKey]);
                 packageIds = [];
                 
                 // Handle the array format from Upstash HGETALL
@@ -185,7 +180,7 @@ class PackageManager {
             
             const packages = [];
             for (const packageId of packageIds) {
-                const packageData = await this.packageRequest('hget', [this.packagesKey, packageId]);
+                const packageData = await this.makeRequest('hget', [this.packagesKey, packageId]);
                 if (packageData) {
                     packages.push(JSON.parse(packageData));
                 }
@@ -219,7 +214,7 @@ class PackageManager {
      */
     async getPackage(packageId) {
         try {
-            const packageData = await this.packageRequest('hget', [this.packagesKey, packageId]);
+            const packageData = await this.makeRequest('hget', [this.packagesKey, packageId]);
             
             if (!packageData) {
                 return {
@@ -247,7 +242,7 @@ class PackageManager {
     async updatePackage(packageId, packageData) {
         try {
             // Check if package exists
-            const existingPackage = await this.packageRequest('hget', [this.packagesKey, packageId]);
+            const existingPackage = await this.makeRequest('hget', [this.packagesKey, packageId]);
             if (!existingPackage) {
                 return {
                     success: false,
@@ -263,13 +258,13 @@ class PackageManager {
             };
             
             // Update package in Redis
-            await this.packageRequest('hset', [this.packagesKey, packageId, JSON.stringify(packageObj)]);
+            await this.makeRequest('hset', [this.packagesKey, packageId, JSON.stringify(packageObj)]);
             
             // Update active packages list
             if (packageObj.is_active) {
-                await this.packageRequest('sadd', [this.activePackagesKey, packageId]);
+                await this.makeRequest('sadd', [this.activePackagesKey, packageId]);
             } else {
-                await this.packageRequest('srem', [this.activePackagesKey, packageId]);
+                await this.makeRequest('srem', [this.activePackagesKey, packageId]);
             }
             
             return {
@@ -292,7 +287,7 @@ class PackageManager {
     async deletePackage(packageId) {
         try {
             // Check if package exists
-            const packageData = await this.packageRequest('hget', [this.packagesKey, packageId]);
+            const packageData = await this.makeRequest('hget', [this.packagesKey, packageId]);
             if (!packageData) {
                 return {
                     success: false,
@@ -301,8 +296,8 @@ class PackageManager {
             }
             
             // Remove from storage
-            await this.packageRequest('hdel', [this.packagesKey, packageId]);
-            await this.packageRequest('srem', [this.activePackagesKey, packageId]);
+            await this.makeRequest('hdel', [this.packagesKey, packageId]);
+            await this.makeRequest('srem', [this.activePackagesKey, packageId]);
             
             return {
                 success: true,
@@ -322,7 +317,7 @@ class PackageManager {
      */
     async togglePackageStatus(packageId) {
         try {
-            const packageData = await this.packageRequest('hget', [this.packagesKey, packageId]);
+            const packageData = await this.makeRequest('hget', [this.packagesKey, packageId]);
             if (!packageData) {
                 return {
                     success: false,
@@ -334,12 +329,12 @@ class PackageManager {
             packageObj.is_active = !packageObj.is_active;
             packageObj.updated_at = new Date().toISOString();
             
-            await this.packageRequest('hset', [this.packagesKey, packageId, JSON.stringify(packageObj)]);
+            await this.makeRequest('hset', [this.packagesKey, packageId, JSON.stringify(packageObj)]);
             
             if (packageObj.is_active) {
-                await this.packageRequest('sadd', [this.activePackagesKey, packageId]);
+                await this.makeRequest('sadd', [this.activePackagesKey, packageId]);
             } else {
-                await this.packageRequest('srem', [this.activePackagesKey, packageId]);
+                await this.makeRequest('srem', [this.activePackagesKey, packageId]);
             }
             
             return {
@@ -442,12 +437,12 @@ class PackageManager {
     async generatePackageId() {
         try {
             // Get current counter
-            const counter = await this.packageRequest('get', [this.packageCounterKey]);
+            const counter = await this.makeRequest('get', [this.packageCounterKey]);
             const currentCounter = counter ? parseInt(counter) : 0;
             const newCounter = currentCounter + 1;
             
             // Update counter
-            await this.packageRequest('set', [this.packageCounterKey, newCounter.toString()]);
+            await this.makeRequest('set', [this.packageCounterKey, newCounter.toString()]);
             
             // Generate unique ID with timestamp and counter
             const timestamp = Date.now();
