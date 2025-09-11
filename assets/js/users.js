@@ -16,9 +16,12 @@ document.addEventListener('DOMContentLoaded', function() {
 async function initializeUsers() {
     try {
         // Check authentication first
-        if (!window.authManager.requireAuth()) {
+        if (!(await window.authManager.requireAuth())) {
             return; // Will redirect to login page
         }
+        
+        // Initialize auto-logout system for user management
+        await window.authManager.initializeAutoLogout();
         
         // Display user info
         displayUserInfo();
