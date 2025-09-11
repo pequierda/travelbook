@@ -56,7 +56,7 @@ function initEventListeners() {
     const addPackageBtn = document.getElementById('add-package-btn');
     if (addPackageBtn) {
         addPackageBtn.addEventListener('click', () => {
-            console.log('Add package button clicked');
+            
             openPackageModal();
         });
     }
@@ -319,7 +319,7 @@ function openPackageModal(packageData = null) {
     const form = document.getElementById('package-form');
     const title = document.getElementById('modal-title');
     
-    console.log('Opening package modal with data:', packageData);
+   
     
     // Reset form and clear all fields
     form.reset();
