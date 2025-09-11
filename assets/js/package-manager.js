@@ -11,6 +11,91 @@ class PackageManager {
     }
     
     /**
+     * Check if we should use localStorage fallback
+     */
+    shouldUseLocalStorage() {
+        // Use localStorage if Upstash API is not available (local development)
+        return !window.UPSTASH_CONFIG || !window.UPSTASH_CONFIG.apiBase || 
+               window.UPSTASH_CONFIG.apiBase === '/api/upstash';
+    }
+    
+    /**
+     * localStorage fallback for package operations
+     */
+    localStoragePackageRequest(command, args = []) {
+        const [key, ...otherArgs] = args;
+        
+        switch (command.toLowerCase()) {
+            case 'hset':
+                const [field, value] = otherArgs;
+                const existingData = JSON.parse(localStorage.getItem(key) || '{}');
+                existingData[field] = value;
+                localStorage.setItem(key, JSON.stringify(existingData));
+                return 1;
+                
+            case 'hget':
+                const data = JSON.parse(localStorage.getItem(key) || '{}');
+                return data[otherArgs[0]] || null;
+                
+            case 'hgetall':
+                return JSON.parse(localStorage.getItem(key) || '{}');
+                
+            case 'hdel':
+                const delData = JSON.parse(localStorage.getItem(key) || '{}');
+                const fieldsToDelete = otherArgs;
+                let deletedCount = 0;
+                fieldsToDelete.forEach(field => {
+                    if (delData.hasOwnProperty(field)) {
+                        delete delData[field];
+                        deletedCount++;
+                    }
+                });
+                localStorage.setItem(key, JSON.stringify(delData));
+                return deletedCount;
+                
+            case 'sadd':
+                const setKey = key;
+                const setData = JSON.parse(localStorage.getItem(setKey) || '[]');
+                const newMembers = otherArgs.filter(member => !setData.includes(member));
+                setData.push(...newMembers);
+                localStorage.setItem(setKey, JSON.stringify(setData));
+                return newMembers.length;
+                
+            case 'smembers':
+                return JSON.parse(localStorage.getItem(key) || '[]');
+                
+            case 'srem':
+                const sremKey = key;
+                const sremData = JSON.parse(localStorage.getItem(sremKey) || '[]');
+                const membersToRemove = otherArgs;
+                const filteredData = sremData.filter(member => !membersToRemove.includes(member));
+                localStorage.setItem(sremKey, JSON.stringify(filteredData));
+                return sremData.length - filteredData.length;
+                
+            case 'get':
+                return localStorage.getItem(key);
+                
+            case 'set':
+                localStorage.setItem(key, otherArgs[0]);
+                return 'OK';
+                
+            default:
+                throw new Error(`Unknown command: ${command}`);
+        }
+    }
+    
+    /**
+     * Make package request (Upstash or localStorage)
+     */
+    async packageRequest(command, args = []) {
+        if (this.shouldUseLocalStorage()) {
+            return this.localStoragePackageRequest(command, args);
+        } else {
+            return await this.packageRequest(command, args);
+        }
+    }
+    
+    /**
      * Create a new travel package
      */
     async createPackage(packageData) {
@@ -49,11 +134,11 @@ class PackageManager {
             };
             
             // Store package in Redis
-            await upstashRequest('hset', [this.packagesKey, packageId, JSON.stringify(packageObj)]);
+            await this.packageRequest('hset', [this.packagesKey, packageId, JSON.stringify(packageObj)]);
             
             // Add to active packages list
             if (packageObj.is_active) {
-                await upstashRequest('sadd', [this.activePackagesKey, packageId]);
+                await this.packageRequest('sadd', [this.activePackagesKey, packageId]);
             }
             
             return {
@@ -79,10 +164,10 @@ class PackageManager {
             let packageIds;
             
             if (activeOnly) {
-                packageIds = await upstashRequest('smembers', [this.activePackagesKey]);
+                packageIds = await this.packageRequest('smembers', [this.activePackagesKey]);
             } else {
                 // Get all package IDs from hash keys using HGETALL
-                const allPackages = await upstashRequest('hgetall', [this.packagesKey]);
+                const allPackages = await this.packageRequest('hgetall', [this.packagesKey]);
                 packageIds = [];
                 
                 // Handle the array format from Upstash HGETALL
@@ -100,7 +185,7 @@ class PackageManager {
             
             const packages = [];
             for (const packageId of packageIds) {
-                const packageData = await upstashRequest('hget', [this.packagesKey, packageId]);
+                const packageData = await this.packageRequest('hget', [this.packagesKey, packageId]);
                 if (packageData) {
                     packages.push(JSON.parse(packageData));
                 }
@@ -134,7 +219,7 @@ class PackageManager {
      */
     async getPackage(packageId) {
         try {
-            const packageData = await upstashRequest('hget', [this.packagesKey, packageId]);
+            const packageData = await this.packageRequest('hget', [this.packagesKey, packageId]);
             
             if (!packageData) {
                 return {
@@ -162,7 +247,7 @@ class PackageManager {
     async updatePackage(packageId, packageData) {
         try {
             // Check if package exists
-            const existingPackage = await upstashRequest('hget', [this.packagesKey, packageId]);
+            const existingPackage = await this.packageRequest('hget', [this.packagesKey, packageId]);
             if (!existingPackage) {
                 return {
                     success: false,
@@ -178,13 +263,13 @@ class PackageManager {
             };
             
             // Update package in Redis
-            await upstashRequest('hset', [this.packagesKey, packageId, JSON.stringify(packageObj)]);
+            await this.packageRequest('hset', [this.packagesKey, packageId, JSON.stringify(packageObj)]);
             
             // Update active packages list
             if (packageObj.is_active) {
-                await upstashRequest('sadd', [this.activePackagesKey, packageId]);
+                await this.packageRequest('sadd', [this.activePackagesKey, packageId]);
             } else {
-                await upstashRequest('srem', [this.activePackagesKey, packageId]);
+                await this.packageRequest('srem', [this.activePackagesKey, packageId]);
             }
             
             return {
@@ -207,7 +292,7 @@ class PackageManager {
     async deletePackage(packageId) {
         try {
             // Check if package exists
-            const packageData = await upstashRequest('hget', [this.packagesKey, packageId]);
+            const packageData = await this.packageRequest('hget', [this.packagesKey, packageId]);
             if (!packageData) {
                 return {
                     success: false,
@@ -215,9 +300,9 @@ class PackageManager {
                 };
             }
             
-            // Remove from Redis
-            await upstashRequest('hdel', [this.packagesKey, packageId]);
-            await upstashRequest('srem', [this.activePackagesKey, packageId]);
+            // Remove from storage
+            await this.packageRequest('hdel', [this.packagesKey, packageId]);
+            await this.packageRequest('srem', [this.activePackagesKey, packageId]);
             
             return {
                 success: true,
@@ -237,7 +322,7 @@ class PackageManager {
      */
     async togglePackageStatus(packageId) {
         try {
-            const packageData = await upstashRequest('hget', [this.packagesKey, packageId]);
+            const packageData = await this.packageRequest('hget', [this.packagesKey, packageId]);
             if (!packageData) {
                 return {
                     success: false,
@@ -249,12 +334,12 @@ class PackageManager {
             packageObj.is_active = !packageObj.is_active;
             packageObj.updated_at = new Date().toISOString();
             
-            await upstashRequest('hset', [this.packagesKey, packageId, JSON.stringify(packageObj)]);
+            await this.packageRequest('hset', [this.packagesKey, packageId, JSON.stringify(packageObj)]);
             
             if (packageObj.is_active) {
-                await upstashRequest('sadd', [this.activePackagesKey, packageId]);
+                await this.packageRequest('sadd', [this.activePackagesKey, packageId]);
             } else {
-                await upstashRequest('srem', [this.activePackagesKey, packageId]);
+                await this.packageRequest('srem', [this.activePackagesKey, packageId]);
             }
             
             return {
@@ -357,12 +442,12 @@ class PackageManager {
     async generatePackageId() {
         try {
             // Get current counter
-            const counter = await upstashRequest('get', [this.packageCounterKey]);
+            const counter = await this.packageRequest('get', [this.packageCounterKey]);
             const currentCounter = counter ? parseInt(counter) : 0;
             const newCounter = currentCounter + 1;
             
             // Update counter
-            await upstashRequest('set', [this.packageCounterKey, newCounter.toString()]);
+            await this.packageRequest('set', [this.packageCounterKey, newCounter.toString()]);
             
             // Generate unique ID with timestamp and counter
             const timestamp = Date.now();
