@@ -469,8 +469,8 @@ class PackageManager {
             {
                 title: 'European Adventure',
                 description: 'Explore the best of Europe with this 14-day journey through Paris, Rome, and Barcelona.',
-                price: 2499.00,
-                currency: 'USD',
+                price: 125000.00,
+                currency: 'PHP',
                 image_url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80',
                 destination: 'Europe',
                 duration: '14 days',
@@ -485,8 +485,8 @@ class PackageManager {
             {
                 title: 'Tropical Paradise',
                 description: 'Relax in luxury at the Maldives with crystal clear waters and pristine beaches.',
-                price: 3299.00,
-                currency: 'USD',
+                price: 165000.00,
+                currency: 'PHP',
                 image_url: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80',
                 destination: 'Maldives',
                 duration: '7 days',
@@ -501,8 +501,8 @@ class PackageManager {
             {
                 title: 'Mountain Explorer',
                 description: 'Adventure through the Swiss Alps with hiking, skiing, and breathtaking mountain views.',
-                price: 1899.00,
-                currency: 'USD',
+                price: 95000.00,
+                currency: 'PHP',
                 image_url: 'https://images.unsplash.com/photo-1501594907352-04cda38ebc29?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80',
                 destination: 'Switzerland',
                 duration: '10 days',
