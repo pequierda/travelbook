@@ -313,9 +313,12 @@ function openPackageModal(packageData = null) {
         
         showAdminNotification(`Edit mode activated. Package ID: ${packageData.id}`, 'success');
     } else {
-        // Add mode - ensure all fields are clear
+        // Add mode - ensure all fields are clear and currentEditingPackage is null
         showAdminNotification('Opening add new package modal', 'info');
         title.textContent = 'Add New Package';
+        currentEditingPackage = null; // Explicitly set to null
+        
+        // Clear all form fields
         document.getElementById('package-id').value = '';
         document.getElementById('title').value = '';
         document.getElementById('description').value = '';
@@ -329,7 +332,7 @@ function openPackageModal(packageData = null) {
         document.getElementById('badge_color').value = 'bg-blue-500';
         document.getElementById('is_active').checked = true;
         
-        showAdminNotification('Add mode activated', 'success');
+        showAdminNotification('Add mode activated - creating new package', 'success');
     }
     
     modal.classList.remove('hidden');
@@ -358,19 +361,20 @@ async function handlePackageSubmit(e) {
     packageData.rating = parseFloat(packageData.rating);
     packageData.is_active = packageData.is_active === 'on';
     
-    // Debug: Check if we're in edit mode
+    // Check if we're in edit mode - only edit if currentEditingPackage is set
     const isEditMode = currentEditingPackage !== null;
     const packageId = document.getElementById('package-id').value;
     
     try {
         let result;
         
-        if (isEditMode && packageId) {
+        if (isEditMode) {
             // Update existing package
-            showAdminNotification(`Updating package: ${packageId}`, 'info');
+            showAdminNotification(`Updating package: ${currentEditingPackage.id}`, 'info');
             result = await window.packageManager.updatePackage(currentEditingPackage.id, packageData);
         } else {
-            // Create new package
+            // Create new package - ensure package-id is empty
+            document.getElementById('package-id').value = '';
             showAdminNotification('Creating new package...', 'info');
             result = await window.packageManager.createPackage(packageData);
         }
