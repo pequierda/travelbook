@@ -24,7 +24,17 @@ class PackageManager {
             }
             
             // Generate unique ID
-            const packageId = await this.generatePackageId();
+            let packageId = await this.generatePackageId();
+            console.log('Generated package ID:', packageId);
+            
+            // Check if package already exists
+            const existingPackage = await upstashRequest('hget', [this.packagesKey, packageId]);
+            if (existingPackage) {
+                console.warn('Package ID already exists, generating new one...');
+                // Generate a new ID using timestamp
+                packageId = `package_${Date.now()}`;
+                console.log('Using timestamp-based ID:', packageId);
+            }
             
             // Prepare package data
             const packageObj = {
@@ -49,19 +59,26 @@ class PackageManager {
             };
             
             // Store package in Redis
+            console.log('Storing package in Redis with key:', this.packagesKey, 'and ID:', packageId);
             await upstashRequest('hset', [this.packagesKey, packageId, JSON.stringify(packageObj)]);
+            console.log('Package stored successfully in Redis');
             
             // Add to active packages list
             if (packageObj.is_active) {
+                console.log('Adding package to active packages list');
                 await upstashRequest('sadd', [this.activePackagesKey, packageId]);
+                console.log('Package added to active packages list');
             }
             
-            return {
+            const result = {
                 success: true,
                 message: 'Package created successfully',
                 package_id: packageId,
                 package: packageObj
             };
+            
+            console.log('Returning success result:', JSON.stringify(result, null, 2));
+            return result;
             
         } catch (error) {
             return {
@@ -379,7 +396,30 @@ class PackageManager {
         try {
             // Get current counter
             const counter = await upstashRequest('get', [this.packageCounterKey]);
-            const newCounter = counter ? parseInt(counter) + 1 : 1;
+            console.log('Current counter from database:', counter);
+            
+            let newCounter;
+            if (counter && !isNaN(parseInt(counter))) {
+                newCounter = parseInt(counter) + 1;
+            } else {
+                // If no counter exists, check existing packages to find the highest ID
+                const allPackages = await this.getAllPackages(false);
+                let maxId = 0;
+                
+                for (const pkg of allPackages.packages) {
+                    const idMatch = pkg.id.match(/package_(\d+)/);
+                    if (idMatch) {
+                        const idNum = parseInt(idMatch[1]);
+                        if (idNum > maxId) {
+                            maxId = idNum;
+                        }
+                    }
+                }
+                
+                newCounter = maxId + 1;
+            }
+            
+            console.log('Generated new counter:', newCounter);
             
             // Update counter
             await upstashRequest('set', [this.packageCounterKey, newCounter.toString()]);
@@ -387,6 +427,7 @@ class PackageManager {
             return `package_${newCounter}`;
             
         } catch (error) {
+            console.error('Error generating package ID:', error);
             // Fallback to timestamp-based ID
             return `package_${Date.now()}`;
         }

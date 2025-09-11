@@ -375,6 +375,7 @@ async function handlePackageSubmit(e) {
         packageId,
         packageData
     });
+    console.log('Package data details:', JSON.stringify(packageData, null, 2));
     
     try {
         let result;
@@ -389,7 +390,7 @@ async function handlePackageSubmit(e) {
             showAdminNotification('Creating new package...', 'info');
             console.log('Calling createPackage with data:', packageData);
             result = await window.packageManager.createPackage(packageData);
-            console.log('createPackage result:', result);
+            console.log('createPackage result:', JSON.stringify(result, null, 2));
         }
         
         if (result.success) {
