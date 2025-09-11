@@ -30,14 +30,9 @@ async function initializeAdmin() {
         displayUserInfo();
         
         // Check if Upstash is configured
-        if (!window.UPSTASH_CONFIG) {
-            showAdminNotification('Database configuration not found. Please check your configuration.', 'warning');
+        if (!window.UPSTASH_CONFIG || !window.UPSTASH_CONFIG.apiBase) {
+            showAdminNotification('Upstash not configured. Please update your credentials in upstash-config.js', 'warning');
             return;
-        }
-        
-        // Show notification about local storage mode
-        if (window.UPSTASH_CONFIG.useLocalStorage) {
-            showAdminNotification('Running in local storage mode (XAMPP). Data will be stored in browser localStorage.', 'info');
         }
         
         // Initialize event listeners
@@ -576,3 +571,4 @@ function handleLogout() {
         window.authManager.logout();
     }
 }
+
