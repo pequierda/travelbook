@@ -131,7 +131,7 @@ async function loadPackageStats() {
             document.getElementById('total-packages').textContent = stats.total_packages;
             document.getElementById('active-packages').textContent = stats.active_packages;
             document.getElementById('inactive-packages').textContent = stats.inactive_packages;
-            document.getElementById('average-price').textContent = '₱' + stats.average_price.toLocaleString();
+            document.getElementById('average-price').textContent = '$' + stats.average_price.toLocaleString();
         } else {
             showAdminNotification('Error loading statistics: ' + result.message, 'error');
         }
@@ -218,7 +218,7 @@ function createPackageTableRow(packageData) {
             ${packageData.destination}
         </td>
         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-            ₱${packageData.price.toLocaleString()} ${packageData.currency}
+            $${packageData.price.toLocaleString()} ${packageData.currency}
         </td>
         <td class="px-6 py-4 whitespace-nowrap">
             <div class="flex items-center">
@@ -320,7 +320,7 @@ function openPackageModal(packageData = null) {
         document.getElementById('title').value = '';
         document.getElementById('description').value = '';
         document.getElementById('price').value = '';
-        document.getElementById('currency').value = 'PHP';
+        document.getElementById('currency').value = 'USD';
         document.getElementById('image_url').value = '';
         document.getElementById('destination').value = '';
         document.getElementById('duration').value = '';

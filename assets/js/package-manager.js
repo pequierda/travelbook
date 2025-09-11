@@ -11,86 +11,6 @@ class PackageManager {
     }
     
     /**
-     * Simple localStorage fallback for local development
-     */
-    async localUpstashRequest(command, args = []) {
-        const [key, ...otherArgs] = args;
-        
-        switch (command.toLowerCase()) {
-            case 'hset':
-                const [field, value] = otherArgs;
-                const existingData = JSON.parse(localStorage.getItem(key) || '{}');
-                existingData[field] = value;
-                localStorage.setItem(key, JSON.stringify(existingData));
-                return 1;
-                
-            case 'hget':
-                const data = JSON.parse(localStorage.getItem(key) || '{}');
-                return data[otherArgs[0]] || null;
-                
-            case 'hgetall':
-                return JSON.parse(localStorage.getItem(key) || '{}');
-                
-            case 'hdel':
-                const delData = JSON.parse(localStorage.getItem(key) || '{}');
-                const fieldsToDelete = otherArgs;
-                let deletedCount = 0;
-                fieldsToDelete.forEach(field => {
-                    if (delData.hasOwnProperty(field)) {
-                        delete delData[field];
-                        deletedCount++;
-                    }
-                });
-                localStorage.setItem(key, JSON.stringify(delData));
-                return deletedCount;
-                
-            case 'sadd':
-                const setKey = key;
-                const setData = JSON.parse(localStorage.getItem(setKey) || '[]');
-                const newMembers = otherArgs.filter(member => !setData.includes(member));
-                setData.push(...newMembers);
-                localStorage.setItem(setKey, JSON.stringify(setData));
-                return newMembers.length;
-                
-            case 'smembers':
-                return JSON.parse(localStorage.getItem(key) || '[]');
-                
-            case 'srem':
-                const sremKey = key;
-                const sremData = JSON.parse(localStorage.getItem(sremKey) || '[]');
-                const membersToRemove = otherArgs;
-                const filteredData = sremData.filter(member => !membersToRemove.includes(member));
-                localStorage.setItem(sremKey, JSON.stringify(filteredData));
-                return sremData.length - filteredData.length;
-                
-            case 'get':
-                return localStorage.getItem(key);
-                
-            case 'set':
-                localStorage.setItem(key, otherArgs[0]);
-                return 'OK';
-                
-            default:
-                throw new Error(`Unknown command: ${command}`);
-        }
-    }
-    
-    /**
-     * Make request with localStorage fallback
-     */
-    async makeRequest(command, args = []) {
-        try {
-            // Try Upstash first
-            return await this.makeRequest(command, args);
-        } catch (error) {
-            // Fallback to localStorage for local development
-            console.log('Using localStorage fallback for:', command);
-            return this.localUpstashRequest(command, args);
-        }
-    }
-    
-    
-    /**
      * Create a new travel package
      */
     async createPackage(packageData) {
@@ -129,11 +49,11 @@ class PackageManager {
             };
             
             // Store package in Redis
-            await this.makeRequest('hset', [this.packagesKey, packageId, JSON.stringify(packageObj)]);
+            await upstashRequest('hset', [this.packagesKey, packageId, JSON.stringify(packageObj)]);
             
             // Add to active packages list
             if (packageObj.is_active) {
-                await this.makeRequest('sadd', [this.activePackagesKey, packageId]);
+                await upstashRequest('sadd', [this.activePackagesKey, packageId]);
             }
             
             return {
@@ -159,10 +79,10 @@ class PackageManager {
             let packageIds;
             
             if (activeOnly) {
-                packageIds = await this.makeRequest('smembers', [this.activePackagesKey]);
+                packageIds = await upstashRequest('smembers', [this.activePackagesKey]);
             } else {
                 // Get all package IDs from hash keys using HGETALL
-                const allPackages = await this.makeRequest('hgetall', [this.packagesKey]);
+                const allPackages = await upstashRequest('hgetall', [this.packagesKey]);
                 packageIds = [];
                 
                 // Handle the array format from Upstash HGETALL
@@ -180,7 +100,7 @@ class PackageManager {
             
             const packages = [];
             for (const packageId of packageIds) {
-                const packageData = await this.makeRequest('hget', [this.packagesKey, packageId]);
+                const packageData = await upstashRequest('hget', [this.packagesKey, packageId]);
                 if (packageData) {
                     packages.push(JSON.parse(packageData));
                 }
@@ -203,8 +123,9 @@ class PackageManager {
         } catch (error) {
             return {
                 success: false,
-                message: 'Error fetching packages: ' + error.message,
-                packages: []
+                message: 'Error loading packages: ' + error.message,
+                packages: [],
+                count: 0
             };
         }
     }
@@ -214,7 +135,7 @@ class PackageManager {
      */
     async getPackage(packageId) {
         try {
-            const packageData = await this.makeRequest('hget', [this.packagesKey, packageId]);
+            const packageData = await upstashRequest('hget', [this.packagesKey, packageId]);
             
             if (!packageData) {
                 return {
@@ -231,7 +152,7 @@ class PackageManager {
         } catch (error) {
             return {
                 success: false,
-                message: 'Error fetching package: ' + error.message
+                message: 'Error loading package: ' + error.message
             };
         }
     }
@@ -242,7 +163,7 @@ class PackageManager {
     async updatePackage(packageId, packageData) {
         try {
             // Check if package exists
-            const existingPackage = await this.makeRequest('hget', [this.packagesKey, packageId]);
+            const existingPackage = await upstashRequest('hget', [this.packagesKey, packageId]);
             if (!existingPackage) {
                 return {
                     success: false,
@@ -250,21 +171,36 @@ class PackageManager {
                 };
             }
             
-            // Merge with existing data
+            // Prepare updated package data
             const packageObj = {
-                ...JSON.parse(existingPackage),
-                ...packageData,
-                updated_at: new Date().toISOString()
+                id: packageId,
+                title: packageData.title.trim(),
+                description: packageData.description.trim(),
+                price: parseFloat(packageData.price),
+                currency: packageData.currency || 'USD',
+                image_url: packageData.image_url.trim(),
+                destination: packageData.destination.trim(),
+                duration: packageData.duration || '',
+                rating: parseFloat(packageData.rating || 5.0),
+                badge: packageData.badge || '',
+                badge_color: packageData.badge_color || 'bg-blue-500',
+                features: packageData.features || [],
+                included: packageData.included || [],
+                excluded: packageData.excluded || [],
+                created_at: JSON.parse(existingPackage).created_at,
+                updated_at: new Date().toISOString(),
+                is_active: packageData.is_active !== false,
+                sort_order: parseInt(packageData.sort_order || 0)
             };
             
             // Update package in Redis
-            await this.makeRequest('hset', [this.packagesKey, packageId, JSON.stringify(packageObj)]);
+            await upstashRequest('hset', [this.packagesKey, packageId, JSON.stringify(packageObj)]);
             
             // Update active packages list
             if (packageObj.is_active) {
-                await this.makeRequest('sadd', [this.activePackagesKey, packageId]);
+                await upstashRequest('sadd', [this.activePackagesKey, packageId]);
             } else {
-                await this.makeRequest('srem', [this.activePackagesKey, packageId]);
+                await upstashRequest('srem', [this.activePackagesKey, packageId]);
             }
             
             return {
@@ -287,7 +223,7 @@ class PackageManager {
     async deletePackage(packageId) {
         try {
             // Check if package exists
-            const packageData = await this.makeRequest('hget', [this.packagesKey, packageId]);
+            const packageData = await upstashRequest('hget', [this.packagesKey, packageId]);
             if (!packageData) {
                 return {
                     success: false,
@@ -295,9 +231,9 @@ class PackageManager {
                 };
             }
             
-            // Remove from storage
-            await this.makeRequest('hdel', [this.packagesKey, packageId]);
-            await this.makeRequest('srem', [this.activePackagesKey, packageId]);
+            // Remove from Redis
+            await upstashRequest('hdel', [this.packagesKey, packageId]);
+            await upstashRequest('srem', [this.activePackagesKey, packageId]);
             
             return {
                 success: true,
@@ -317,7 +253,7 @@ class PackageManager {
      */
     async togglePackageStatus(packageId) {
         try {
-            const packageData = await this.makeRequest('hget', [this.packagesKey, packageId]);
+            const packageData = await upstashRequest('hget', [this.packagesKey, packageId]);
             if (!packageData) {
                 return {
                     success: false,
@@ -329,17 +265,19 @@ class PackageManager {
             packageObj.is_active = !packageObj.is_active;
             packageObj.updated_at = new Date().toISOString();
             
-            await this.makeRequest('hset', [this.packagesKey, packageId, JSON.stringify(packageObj)]);
+            // Update package in Redis
+            await upstashRequest('hset', [this.packagesKey, packageId, JSON.stringify(packageObj)]);
             
+            // Update active packages list
             if (packageObj.is_active) {
-                await this.makeRequest('sadd', [this.activePackagesKey, packageId]);
+                await upstashRequest('sadd', [this.activePackagesKey, packageId]);
             } else {
-                await this.makeRequest('srem', [this.activePackagesKey, packageId]);
+                await upstashRequest('srem', [this.activePackagesKey, packageId]);
             }
             
             return {
                 success: true,
-                message: 'Package status updated',
+                message: 'Package status updated successfully',
                 is_active: packageObj.is_active
             };
             
@@ -369,18 +307,22 @@ class PackageManager {
             }
             
             // Apply additional filters
-            if (filters.min_price) {
-                packages = packages.filter(packageObj => packageObj.price >= filters.min_price);
-            }
-            
-            if (filters.max_price) {
-                packages = packages.filter(packageObj => packageObj.price <= filters.max_price);
-            }
-            
             if (filters.destination) {
                 packages = packages.filter(packageObj => 
                     packageObj.destination.toLowerCase().includes(filters.destination.toLowerCase())
                 );
+            }
+            
+            if (filters.minPrice !== undefined) {
+                packages = packages.filter(packageObj => packageObj.price >= filters.minPrice);
+            }
+            
+            if (filters.maxPrice !== undefined) {
+                packages = packages.filter(packageObj => packageObj.price <= filters.maxPrice);
+            }
+            
+            if (filters.isActive !== undefined) {
+                packages = packages.filter(packageObj => packageObj.is_active === filters.isActive);
             }
             
             return {
@@ -393,7 +335,8 @@ class PackageManager {
             return {
                 success: false,
                 message: 'Error searching packages: ' + error.message,
-                packages: []
+                packages: [],
+                count: 0
             };
         }
     }
@@ -415,18 +358,16 @@ class PackageManager {
             
             return {
                 success: true,
-                stats: {
-                    total_packages: totalPackages,
-                    active_packages: activeCount,
-                    inactive_packages: totalPackages - activeCount,
-                    average_price: Math.round(avgPrice * 100) / 100
-                }
+                total_packages: totalPackages,
+                active_packages: activeCount,
+                inactive_packages: totalPackages - activeCount,
+                average_price: avgPrice
             };
             
         } catch (error) {
             return {
                 success: false,
-                message: 'Error fetching statistics: ' + error.message
+                message: 'Error loading package statistics: ' + error.message
             };
         }
     }
@@ -437,22 +378,17 @@ class PackageManager {
     async generatePackageId() {
         try {
             // Get current counter
-            const counter = await this.makeRequest('get', [this.packageCounterKey]);
-            const currentCounter = counter ? parseInt(counter) : 0;
-            const newCounter = currentCounter + 1;
+            const counter = await upstashRequest('get', [this.packageCounterKey]);
+            const newCounter = counter ? parseInt(counter) + 1 : 1;
             
             // Update counter
-            await this.makeRequest('set', [this.packageCounterKey, newCounter.toString()]);
+            await upstashRequest('set', [this.packageCounterKey, newCounter.toString()]);
             
-            // Generate unique ID with timestamp and counter
-            const timestamp = Date.now();
-            const random = Math.random().toString(36).substr(2, 5);
-            return `pkg_${timestamp}_${newCounter}_${random}`;
+            return `package_${newCounter}`;
+            
         } catch (error) {
-            // Fallback to timestamp-based ID with random component
-            const timestamp = Date.now();
-            const random = Math.random().toString(36).substr(2, 9);
-            return `pkg_${timestamp}_${random}`;
+            // Fallback to timestamp-based ID
+            return `package_${Date.now()}`;
         }
     }
     
@@ -464,8 +400,8 @@ class PackageManager {
             {
                 title: 'European Adventure',
                 description: 'Explore the best of Europe with this 14-day journey through Paris, Rome, and Barcelona.',
-                price: 125000.00,
-                currency: 'PHP',
+                price: 2499.00,
+                currency: 'USD',
                 image_url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80',
                 destination: 'Europe',
                 duration: '14 days',
@@ -480,8 +416,8 @@ class PackageManager {
             {
                 title: 'Tropical Paradise',
                 description: 'Relax in luxury at the Maldives with crystal clear waters and pristine beaches.',
-                price: 165000.00,
-                currency: 'PHP',
+                price: 3299.00,
+                currency: 'USD',
                 image_url: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80',
                 destination: 'Maldives',
                 duration: '7 days',
@@ -496,8 +432,8 @@ class PackageManager {
             {
                 title: 'Mountain Explorer',
                 description: 'Adventure through the Swiss Alps with hiking, skiing, and breathtaking mountain views.',
-                price: 95000.00,
-                currency: 'PHP',
+                price: 1899.00,
+                currency: 'USD',
                 image_url: 'https://images.unsplash.com/photo-1501594907352-04cda38ebc29?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80',
                 destination: 'Switzerland',
                 duration: '10 days',
