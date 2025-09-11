@@ -127,11 +127,11 @@ async function loadPackageStats() {
         const result = await window.packageManager.getPackageStats();
         
         if (result.success) {
-            const stats = result.stats;
-            document.getElementById('total-packages').textContent = stats.total_packages;
-            document.getElementById('active-packages').textContent = stats.active_packages;
-            document.getElementById('inactive-packages').textContent = stats.inactive_packages;
-            document.getElementById('average-price').textContent = '$' + stats.average_price.toLocaleString();
+            // The statistics are returned directly in the result object
+            document.getElementById('total-packages').textContent = result.total_packages || 0;
+            document.getElementById('active-packages').textContent = result.active_packages || 0;
+            document.getElementById('inactive-packages').textContent = result.inactive_packages || 0;
+            document.getElementById('average-price').textContent = '$' + (result.average_price || 0).toLocaleString();
         } else {
             showAdminNotification('Error loading statistics: ' + result.message, 'error');
         }
