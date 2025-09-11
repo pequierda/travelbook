@@ -109,6 +109,27 @@ function initEventListeners() {
         logoutBtn.addEventListener('click', handleLogout);
     }
     
+    // Filter buttons
+    const filterAllBtn = document.getElementById('filter-all');
+    if (filterAllBtn) {
+        filterAllBtn.addEventListener('click', () => filterPackages('all'));
+    }
+    
+    const filterPopularBtn = document.getElementById('filter-popular');
+    if (filterPopularBtn) {
+        filterPopularBtn.addEventListener('click', () => filterPackages('popular'));
+    }
+    
+    const filterLuxuryBtn = document.getElementById('filter-luxury');
+    if (filterLuxuryBtn) {
+        filterLuxuryBtn.addEventListener('click', () => filterPackages('luxury'));
+    }
+    
+    const filterBudgetBtn = document.getElementById('filter-budget');
+    if (filterBudgetBtn) {
+        filterBudgetBtn.addEventListener('click', () => filterPackages('budget'));
+    }
+    
     // Close modal on outside click
     const packageModal = document.getElementById('package-modal');
     if (packageModal) {
@@ -176,7 +197,7 @@ function displayPackagesTable(packages) {
     if (packages.length === 0) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="6" class="px-6 py-4 text-center text-gray-500">
+                <td colspan="7" class="px-6 py-4 text-center text-gray-500">
                     No packages found. <button onclick="initializeSamplePackages()" class="text-primary-600 hover:text-primary-800 underline">Add sample packages</button>
                 </td>
             </tr>
@@ -203,6 +224,16 @@ function createPackageTableRow(packageData) {
     
     const ratingStars = generateStarRating(packageData.rating);
     
+    // Generate tag badge
+    const tagBadge = packageData.tag ? 
+        `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+            packageData.tag === 'popular' ? 'bg-red-100 text-red-800' :
+            packageData.tag === 'luxury' ? 'bg-purple-100 text-purple-800' :
+            packageData.tag === 'budget' ? 'bg-green-100 text-green-800' :
+            'bg-gray-100 text-gray-800'
+        }">${packageData.tag.charAt(0).toUpperCase() + packageData.tag.slice(1)}</span>` :
+        '<span class="text-gray-400 text-xs">No category</span>';
+    
     row.innerHTML = `
         <td class="px-6 py-4 whitespace-nowrap">
             <div class="flex items-center">
@@ -226,6 +257,9 @@ function createPackageTableRow(packageData) {
                 ${ratingStars}
                 <span class="ml-1 text-sm text-gray-500">(${packageData.rating})</span>
             </div>
+        </td>
+        <td class="px-6 py-4 whitespace-nowrap">
+            ${tagBadge}
         </td>
         <td class="px-6 py-4 whitespace-nowrap">
             ${statusBadge}
@@ -312,6 +346,7 @@ function openPackageModal(packageData = null) {
         document.getElementById('rating').value = packageData.rating;
         document.getElementById('badge').value = packageData.badge || '';
         document.getElementById('badge_color').value = packageData.badge_color || 'bg-blue-500';
+        document.getElementById('tag').value = packageData.tag || '';
         document.getElementById('is_active').checked = packageData.is_active;
         
         showAdminNotification(`Edit mode activated. Package ID: ${packageData.id}`, 'success');
@@ -333,6 +368,7 @@ function openPackageModal(packageData = null) {
         document.getElementById('rating').value = '5';
         document.getElementById('badge').value = '';
         document.getElementById('badge_color').value = 'bg-blue-500';
+        document.getElementById('tag').value = '';
         document.getElementById('is_active').checked = true;
         
         showAdminNotification('Add mode activated - creating new package', 'success');
@@ -583,6 +619,50 @@ function displayUserInfo() {
 function handleLogout() {
     if (confirm('Are you sure you want to logout?')) {
         window.authManager.logout();
+    }
+}
+
+/**
+ * Filter packages by tag
+ */
+async function filterPackages(tag) {
+    try {
+        // Update active filter button
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.classList.remove('active');
+            btn.classList.add('opacity-75');
+        });
+        
+        const activeBtn = document.getElementById(`filter-${tag}`);
+        if (activeBtn) {
+            activeBtn.classList.add('active');
+            activeBtn.classList.remove('opacity-75');
+        }
+        
+        // Update table header
+        const tableHeader = document.querySelector('.bg-white .px-6 h3');
+        if (tableHeader) {
+            const tagNames = {
+                'all': 'All Packages',
+                'popular': 'Popular Packages',
+                'luxury': 'Luxury Packages',
+                'budget': 'Budget Packages'
+            };
+            tableHeader.textContent = tagNames[tag] || 'All Packages';
+        }
+        
+        // Filter packages
+        const result = await window.packageManager.filterPackagesByTag(tag);
+        
+        if (result.success) {
+            displayPackagesTable(result.packages);
+            showAdminNotification(`Showing ${result.count} ${tag === 'all' ? '' : tag} packages`, 'info');
+        } else {
+            showAdminNotification('Error filtering packages: ' + result.message, 'error');
+        }
+        
+    } catch (error) {
+        showAdminNotification('Error filtering packages: ' + error.message, 'error');
     }
 }
 

@@ -544,38 +544,9 @@
                 }
             }
             
-            // Package filter tabs
-            const filterTabs = document.querySelectorAll('.filter-tab');
-            filterTabs.forEach(tab => {
-                tab.addEventListener('click', function() {
-                    // Remove active class from all tabs
-                    filterTabs.forEach(t => {
-                        t.classList.remove('active', 'bg-primary-600', 'text-white');
-                        t.classList.add('text-gray-600', 'hover:text-primary-600', 'hover:bg-primary-50');
-                    });
-                    
-                    // Add active class to clicked tab
-                    this.classList.add('active', 'bg-primary-600', 'text-white');
-                    this.classList.remove('text-gray-600', 'hover:text-primary-600', 'hover:bg-primary-50');
-                    
-                    // Filter packages (this would integrate with your existing package system)
-                    const filter = this.getAttribute('data-filter');
-                    filterPackages(filter);
-                });
-            });
+            // Package filter tabs are now handled in script.js
             
-            // Package filtering function
-            function filterPackages(filter) {
-                const packages = document.querySelectorAll('.package-card');
-                packages.forEach(package => {
-                    if (filter === 'all') {
-                        package.style.display = 'block';
-                    } else {
-                        // Add your filtering logic here based on package data
-                        package.style.display = 'block'; // Placeholder
-                    }
-                });
-            }
+            // Package filtering is now handled in script.js
             
             // Enhanced scroll events
             window.addEventListener('scroll', function() {

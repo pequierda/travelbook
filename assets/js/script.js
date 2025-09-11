@@ -521,6 +521,9 @@ function updatePackagesDisplay(packages) {
     // Re-initialize package card interactions
     initPackageCards();
     
+    // Initialize filter functionality
+    initPackageFilters();
+    
     // Convert prices to user's preferred currency
     const savedCurrency = localStorage.getItem('preferred-currency') || 'USD';
     setTimeout(() => {
@@ -534,6 +537,7 @@ function updatePackagesDisplay(packages) {
 function createPackageCard(packageData) {
     const card = document.createElement('div');
     card.className = 'package-card bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300';
+    card.setAttribute('data-tag', packageData.tag || '');
     
     const badgeHtml = packageData.badge ? 
         `<div class="package-badge absolute top-4 right-4 ${packageData.badge_color} text-white px-3 py-1 rounded-full text-sm font-semibold">
@@ -873,3 +877,84 @@ window.initializeSamplePackages = async function() {
         return { success: false, message: error.message };
     }
 };
+
+/**
+ * Initialize package filter functionality
+ */
+function initPackageFilters() {
+    const filterTabs = document.querySelectorAll('.filter-tab');
+    
+    filterTabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+            // Remove active class from all tabs
+            filterTabs.forEach(t => {
+                t.classList.remove('active', 'bg-primary-600', 'text-white');
+                t.classList.add('text-gray-600', 'hover:text-primary-600', 'hover:bg-primary-50');
+            });
+            
+            // Add active class to clicked tab
+            this.classList.add('active', 'bg-primary-600', 'text-white');
+            this.classList.remove('text-gray-600', 'hover:text-primary-600', 'hover:bg-primary-50');
+            
+            // Filter packages
+            const filter = this.getAttribute('data-filter');
+            filterPackages(filter);
+        });
+    });
+}
+
+/**
+ * Filter packages based on selected category
+ */
+function filterPackages(filter) {
+    const packages = document.querySelectorAll('.package-card');
+    let visibleCount = 0;
+    
+    packages.forEach(packageCard => {
+        const packageTag = packageCard.getAttribute('data-tag') || '';
+        
+        if (filter === 'all') {
+            packageCard.style.display = 'block';
+            packageCard.style.animation = 'fadeInUp 0.5s ease-out';
+            visibleCount++;
+        } else {
+            if (packageTag.toLowerCase() === filter.toLowerCase()) {
+                packageCard.style.display = 'block';
+                packageCard.style.animation = 'fadeInUp 0.5s ease-out';
+                visibleCount++;
+            } else {
+                packageCard.style.display = 'none';
+            }
+        }
+    });
+    
+    // Update package count display if it exists
+    updatePackageCount(visibleCount, filter);
+}
+
+/**
+ * Update package count display
+ */
+function updatePackageCount(count, filter) {
+    const packagesSection = document.querySelector('#packages');
+    if (!packagesSection) return;
+    
+    // Find or create count display
+    let countDisplay = packagesSection.querySelector('.package-count');
+    if (!countDisplay) {
+        countDisplay = document.createElement('div');
+        countDisplay.className = 'package-count text-center mb-8';
+        const packagesContainer = packagesSection.querySelector('#packages-container');
+        if (packagesContainer) {
+            packagesContainer.parentNode.insertBefore(countDisplay, packagesContainer);
+        }
+    }
+    
+    const filterText = filter === 'all' ? 'All' : filter.charAt(0).toUpperCase() + filter.slice(1);
+    countDisplay.innerHTML = `
+        <div class="inline-flex items-center px-4 py-2 bg-primary-100 text-primary-800 rounded-full text-sm font-medium">
+            <i class="fas fa-${filter === 'popular' ? 'fire' : filter === 'luxury' ? 'crown' : filter === 'budget' ? 'dollar-sign' : 'list'} mr-2"></i>
+            Showing ${count} ${filter === 'all' ? 'packages' : filter + ' packages'}
+        </div>
+    `;
+}

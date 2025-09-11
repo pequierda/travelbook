@@ -49,6 +49,7 @@ class PackageManager {
                 rating: parseFloat(packageData.rating || 5.0),
                 badge: packageData.badge || '',
                 badge_color: packageData.badge_color || 'bg-blue-500',
+                tag: packageData.tag || '',
                 features: packageData.features || [],
                 included: packageData.included || [],
                 excluded: packageData.excluded || [],
@@ -201,6 +202,7 @@ class PackageManager {
                 rating: parseFloat(packageData.rating || 5.0),
                 badge: packageData.badge || '',
                 badge_color: packageData.badge_color || 'bg-blue-500',
+                tag: packageData.tag || '',
                 features: packageData.features || [],
                 included: packageData.included || [],
                 excluded: packageData.excluded || [],
@@ -302,6 +304,36 @@ class PackageManager {
             return {
                 success: false,
                 message: 'Error updating package status: ' + error.message
+            };
+        }
+    }
+    
+    /**
+     * Filter packages by tag
+     */
+    async filterPackagesByTag(tag) {
+        try {
+            const allPackages = await this.getAllPackages(false);
+            let packages = allPackages.packages;
+            
+            if (tag && tag !== 'all') {
+                packages = packages.filter(packageObj => 
+                    packageObj.tag && packageObj.tag.toLowerCase() === tag.toLowerCase()
+                );
+            }
+            
+            return {
+                success: true,
+                packages: packages,
+                count: packages.length
+            };
+            
+        } catch (error) {
+            return {
+                success: false,
+                message: 'Error filtering packages: ' + error.message,
+                packages: [],
+                count: 0
             };
         }
     }
