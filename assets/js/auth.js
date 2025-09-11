@@ -22,6 +22,7 @@ class AuthManager {
         this.timeoutId = null;
         this.warningTimeoutId = null;
         this.isWarningShown = false;
+        this.sessionValidationInterval = null;
         
         // Single session configuration
         this.allowMultipleSessions = false; // Set to true if you want to allow multiple sessions
@@ -242,6 +243,9 @@ class AuthManager {
             // Clear auto-logout timers
             this.clearAutoLogoutTimers();
             
+            // Stop periodic session validation
+            this.stopPeriodicSessionValidation();
+            
             // Remove session from active sessions
             if (session && !this.allowMultipleSessions) {
                 await this.removeActiveSession(session.user_id, session.id);
@@ -262,26 +266,21 @@ class AuthManager {
     /**
      * Require authentication for protected pages
      */
-    async requireAuth() {
+    requireAuth() {
         // Don't check auth if we're already on login page
         if (this.isOnLoginPage()) {
             return true;
         }
         
-        // First do a quick sync check to avoid redirect loops
+        // Use only sync check to avoid redirect loops
         if (!this.isAuthenticatedSync()) {
             window.location.href = 'login.html';
             return false;
         }
         
-        // Then do the full async check for session validation
-        const isAuth = await this.isAuthenticated();
-        if (!isAuth) {
-            // Clear the invalid session before redirecting
-            localStorage.removeItem(this.sessionKey);
-            window.location.href = 'login.html';
-            return false;
-        }
+        // Start async session validation in background (non-blocking)
+        this.validateSessionInBackground();
+        
         return true;
     }
     
@@ -568,7 +567,7 @@ class AuthManager {
      */
     async initializeAutoLogout() {
         // Only initialize if user is authenticated
-        if (!(await this.isAuthenticated())) {
+        if (!this.isAuthenticatedSync()) {
             return;
         }
         
@@ -577,6 +576,9 @@ class AuthManager {
         
         // Start the inactivity timer
         this.resetInactivityTimer();
+        
+        // Start periodic session validation
+        this.startPeriodicSessionValidation();
         
         console.log('Auto-logout system initialized - 1 minute inactivity timeout');
     }
@@ -608,6 +610,48 @@ class AuthManager {
     isOnLoginPage() {
         return window.location.pathname.includes('login.html') || 
                window.location.pathname.endsWith('login.html');
+    }
+    
+    /**
+     * Validate session in background (non-blocking)
+     */
+    async validateSessionInBackground() {
+        try {
+            const isAuth = await this.isAuthenticated();
+            if (!isAuth) {
+                // Show notification and logout after a delay
+                this.showNotification(
+                    'Your session has been invalidated from another device. You will be logged out.',
+                    'warning'
+                );
+                
+                setTimeout(() => {
+                    this.logout();
+                }, 3000);
+            }
+        } catch (error) {
+            console.error('Error validating session:', error);
+        }
+    }
+    
+    /**
+     * Start periodic session validation
+     */
+    startPeriodicSessionValidation() {
+        // Validate session every 30 seconds
+        this.sessionValidationInterval = setInterval(() => {
+            this.validateSessionInBackground();
+        }, 30000);
+    }
+    
+    /**
+     * Stop periodic session validation
+     */
+    stopPeriodicSessionValidation() {
+        if (this.sessionValidationInterval) {
+            clearInterval(this.sessionValidationInterval);
+            this.sessionValidationInterval = null;
+        }
     }
     
     /**

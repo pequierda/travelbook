@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
 async function initializeAdmin() {
     try {
         // Check authentication first
-        if (!(await window.authManager.requireAuth())) {
+        if (!window.authManager.requireAuth()) {
             return; // Will redirect to login page
         }
         
