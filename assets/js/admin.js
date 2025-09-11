@@ -53,42 +53,70 @@ async function initializeAdmin() {
  */
 function initEventListeners() {
     // Add package button
-    document.getElementById('add-package-btn').addEventListener('click', () => {
-        openPackageModal();
-    });
+    const addPackageBtn = document.getElementById('add-package-btn');
+    if (addPackageBtn) {
+        addPackageBtn.addEventListener('click', () => {
+            openPackageModal();
+        });
+    }
     
-    // Initialize sample packages button
-    document.getElementById('init-sample-btn').addEventListener('click', async () => {
-        if (confirm('This will add sample packages to your database. Continue?')) {
-            await initializeSamplePackages();
-        }
-    });
+    // Initialize sample packages button (if exists)
+    const initSampleBtn = document.getElementById('init-sample-btn');
+    if (initSampleBtn) {
+        initSampleBtn.addEventListener('click', async () => {
+            if (confirm('This will add sample packages to your database. Continue?')) {
+                await initializeSamplePackages();
+            }
+        });
+    }
     
-    // Export packages button
-    document.getElementById('export-packages-btn').addEventListener('click', exportPackages);
+    // Export packages button (if exists)
+    const exportPackagesBtn = document.getElementById('export-packages-btn');
+    if (exportPackagesBtn) {
+        exportPackagesBtn.addEventListener('click', exportPackages);
+    }
     
     // Refresh packages button
-    document.getElementById('refresh-packages').addEventListener('click', async () => {
-        await loadPackageStats();
-        await loadPackages();
-    });
+    const refreshPackagesBtn = document.getElementById('refresh-packages');
+    if (refreshPackagesBtn) {
+        refreshPackagesBtn.addEventListener('click', async () => {
+            await loadPackageStats();
+            await loadPackages();
+        });
+    }
     
     // Modal controls
-    document.getElementById('close-modal').addEventListener('click', closePackageModal);
-    document.getElementById('cancel-btn').addEventListener('click', closePackageModal);
+    const closeModalBtn = document.getElementById('close-modal');
+    if (closeModalBtn) {
+        closeModalBtn.addEventListener('click', closePackageModal);
+    }
+    
+    const cancelBtn = document.getElementById('cancel-btn');
+    if (cancelBtn) {
+        cancelBtn.addEventListener('click', closePackageModal);
+    }
     
     // Package form submission
-    document.getElementById('package-form').addEventListener('submit', handlePackageSubmit);
+    const packageForm = document.getElementById('package-form');
+    if (packageForm) {
+        packageForm.addEventListener('submit', handlePackageSubmit);
+    }
     
     // Logout button
-    document.getElementById('logout-btn').addEventListener('click', handleLogout);
+    const logoutBtn = document.getElementById('logout-btn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', handleLogout);
+    }
     
     // Close modal on outside click
-    document.getElementById('package-modal').addEventListener('click', (e) => {
-        if (e.target.id === 'package-modal') {
-            closePackageModal();
-        }
-    });
+    const packageModal = document.getElementById('package-modal');
+    if (packageModal) {
+        packageModal.addEventListener('click', (e) => {
+            if (e.target.id === 'package-modal') {
+                closePackageModal();
+            }
+        });
+    }
 }
 
 /**
