@@ -231,15 +231,15 @@ function createPackageTableRow(packageData) {
         </td>
         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
             <button onclick="editPackage('${packageData.id}')" 
-                    class="text-primary-600 hover:text-primary-900">
+                    class="text-primary-600 hover:text-primary-900" title="Edit Package">
                 <i class="fas fa-edit"></i>
             </button>
             <button onclick="togglePackageStatus('${packageData.id}')" 
-                    class="text-yellow-600 hover:text-yellow-900">
+                    class="text-yellow-600 hover:text-yellow-900" title="Toggle Status">
                 <i class="fas fa-toggle-${packageData.is_active ? 'on' : 'off'}"></i>
             </button>
             <button onclick="deletePackage('${packageData.id}')" 
-                    class="text-red-600 hover:text-red-900">
+                    class="text-red-600 hover:text-red-900" title="Delete Package">
                 <i class="fas fa-trash"></i>
             </button>
         </td>
@@ -437,9 +437,25 @@ async function togglePackageStatus(packageId) {
  * Delete package
  */
 async function deletePackage(packageId) {
+    console.log('Delete package called with ID:', packageId);
+    
+    if (!packageId) {
+        showAdminNotification('Error: Package ID is missing', 'error');
+        return;
+    }
+    
     if (confirm('Are you sure you want to delete this package? This action cannot be undone.')) {
         try {
+            showAdminNotification('Deleting package...', 'info');
+            
+            // Check if package manager is available
+            if (!window.packageManager) {
+                showAdminNotification('Error: Package manager not available', 'error');
+                return;
+            }
+            
             const result = await window.packageManager.deletePackage(packageId);
+            console.log('Delete result:', result);
             
             if (result.success) {
                 showAdminNotification('Package deleted successfully!', 'success');
@@ -450,10 +466,16 @@ async function deletePackage(packageId) {
             }
             
         } catch (error) {
+            console.error('Delete package error:', error);
             showAdminNotification('Error deleting package: ' + error.message, 'error');
         }
     }
 }
+
+// Make functions globally accessible
+window.deletePackage = deletePackage;
+window.editPackage = editPackage;
+window.togglePackageStatus = togglePackageStatus;
 
 /**
  * Initialize sample packages
