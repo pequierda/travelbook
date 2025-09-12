@@ -86,8 +86,7 @@ function initPackageCards() {
                 e.preventDefault();
                 const packageName = card.querySelector('h3').textContent;
                 trackPackageClick(packageName);
-                // Make phone call instead of showing modal
-                window.location.href = 'tel:+639555143738';
+                showBookingModal(packageName);
             });
         }
     });
