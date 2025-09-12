@@ -294,7 +294,7 @@ function createPackageTableRow(packageData) {
             ${packageData.destination}
         </td>
         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-            $${packageData.price.toLocaleString()} ${packageData.currency}
+            ₱${packageData.price.toLocaleString()} ${packageData.currency}
         </td>
         <td class="px-6 py-4 whitespace-nowrap">
             <div class="flex items-center">
@@ -361,7 +361,7 @@ function createMobilePackageCard(packageData) {
                         <h3 class="text-sm font-medium text-gray-900 truncate">${packageData.title}</h3>
                         <p class="text-xs text-gray-500 mt-1">${packageData.destination}</p>
                         <div class="flex items-center mt-1">
-                            <span class="text-sm font-semibold text-gray-900">$${packageData.price.toLocaleString()} ${packageData.currency}</span>
+                            <span class="text-sm font-semibold text-gray-900">₱${packageData.price.toLocaleString()} ${packageData.currency}</span>
                         </div>
                     </div>
                     <div class="flex flex-col items-end space-y-1">
