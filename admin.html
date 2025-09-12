@@ -24,12 +24,16 @@
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
-                        <h1 class="text-2xl font-bold text-blue-600">
-                            <i class="fas fa-cog mr-2"></i>Travelbooks Admin
+                        <h1 class="text-lg sm:text-xl lg:text-2xl font-bold text-blue-600">
+                            <i class="fas fa-cog mr-1 sm:mr-2"></i>
+                            <span class="hidden sm:inline">Travelbooks Admin</span>
+                            <span class="sm:hidden">Admin</span>
                         </h1>
                     </div>
                 </div>
-                <div class="flex items-center space-x-4">
+                
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center space-x-4">
                     <a href="index.html" class="text-gray-500 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
                         <i class="fas fa-home mr-1"></i>View Site
                     </a>
@@ -46,6 +50,36 @@
                         </button>
                     </div>
                 </div>
+                
+                <!-- Mobile Navigation -->
+                <div class="md:hidden flex items-center space-x-2">
+                    <button id="refresh-packages-mobile" class="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-md text-sm font-medium transition-colors shadow-md">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                    <button id="mobile-menu-btn" class="text-gray-500 hover:text-blue-600 p-2 rounded-md">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="md:hidden hidden border-t border-gray-200 py-4">
+                <div class="space-y-2">
+                    <a href="index.html" class="block text-gray-500 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                        <i class="fas fa-home mr-2"></i>View Site
+                    </a>
+                    <a href="users.html" class="block text-gray-500 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                        <i class="fas fa-users mr-2"></i>Users
+                    </a>
+                    <div class="border-t border-gray-200 pt-2 mt-2">
+                        <div class="px-3 py-2">
+                            <span id="user-info-mobile" class="text-sm text-gray-600"></span>
+                        </div>
+                        <button id="logout-btn-mobile" class="w-full text-left bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                            <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </nav>
@@ -53,98 +87,107 @@
     <!-- Main Content -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <!-- Header -->
-        <div class="mb-8">
-            <h2 class="text-3xl font-bold text-gray-900 mb-2">Package Management</h2>
-            <p class="text-gray-600">Manage your travel packages and bookings</p>
+        <div class="mb-6 sm:mb-8">
+            <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Package Management</h2>
+            <p class="text-sm sm:text-base text-gray-600">Manage your travel packages and bookings</p>
         </div>
 
         <!-- Stats Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            <div class="bg-white rounded-lg shadow p-6">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
+            <div class="bg-white rounded-lg shadow p-3 sm:p-6">
                 <div class="flex items-center">
-                    <div class="p-2 bg-blue-100 rounded-lg">
-                        <i class="fas fa-box text-blue-600 text-xl"></i>
+                    <div class="p-1 sm:p-2 bg-blue-100 rounded-lg">
+                        <i class="fas fa-box text-blue-600 text-sm sm:text-xl"></i>
                     </div>
-                    <div class="ml-4">
-                        <p class="text-sm font-medium text-gray-600">Total Packages</p>
-                        <p class="text-2xl font-bold text-gray-900" id="total-packages">-</p>
+                    <div class="ml-2 sm:ml-4">
+                        <p class="text-xs sm:text-sm font-medium text-gray-600">Total Packages</p>
+                        <p class="text-lg sm:text-2xl font-bold text-gray-900" id="total-packages">-</p>
                     </div>
                 </div>
             </div>
-            <div class="bg-white rounded-lg shadow p-6">
+            <div class="bg-white rounded-lg shadow p-3 sm:p-6">
                 <div class="flex items-center">
-                    <div class="p-2 bg-green-100 rounded-lg">
-                        <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                    <div class="p-1 sm:p-2 bg-green-100 rounded-lg">
+                        <i class="fas fa-check-circle text-green-600 text-sm sm:text-xl"></i>
                     </div>
-                    <div class="ml-4">
-                        <p class="text-sm font-medium text-gray-600">Active Packages</p>
-                        <p class="text-2xl font-bold text-gray-900" id="active-packages">-</p>
+                    <div class="ml-2 sm:ml-4">
+                        <p class="text-xs sm:text-sm font-medium text-gray-600">Active Packages</p>
+                        <p class="text-lg sm:text-2xl font-bold text-gray-900" id="active-packages">-</p>
                     </div>
                 </div>
             </div>
-            <div class="bg-white rounded-lg shadow p-6">
+            <div class="bg-white rounded-lg shadow p-3 sm:p-6">
                 <div class="flex items-center">
-                    <div class="p-2 bg-yellow-100 rounded-lg">
-                        <i class="fas fa-pause-circle text-yellow-600 text-xl"></i>
+                    <div class="p-1 sm:p-2 bg-yellow-100 rounded-lg">
+                        <i class="fas fa-pause-circle text-yellow-600 text-sm sm:text-xl"></i>
                     </div>
-                    <div class="ml-4">
-                        <p class="text-sm font-medium text-gray-600">Inactive Packages</p>
-                        <p class="text-2xl font-bold text-gray-900" id="inactive-packages">-</p>
+                    <div class="ml-2 sm:ml-4">
+                        <p class="text-xs sm:text-sm font-medium text-gray-600">Inactive Packages</p>
+                        <p class="text-lg sm:text-2xl font-bold text-gray-900" id="inactive-packages">-</p>
                     </div>
                 </div>
             </div>
-            <div class="bg-white rounded-lg shadow p-6">
+            <div class="bg-white rounded-lg shadow p-3 sm:p-6">
                 <div class="flex items-center">
-                    <div class="p-2 bg-purple-100 rounded-lg">
-                        <i class="fas fa-dollar-sign text-purple-600 text-xl"></i>
+                    <div class="p-1 sm:p-2 bg-purple-100 rounded-lg">
+                        <i class="fas fa-dollar-sign text-purple-600 text-sm sm:text-xl"></i>
                     </div>
-                    <div class="ml-4">
-                        <p class="text-sm font-medium text-gray-600">Average Price</p>
-                        <p class="text-2xl font-bold text-gray-900" id="average-price">-</p>
+                    <div class="ml-2 sm:ml-4">
+                        <p class="text-xs sm:text-sm font-medium text-gray-600">Average Price</p>
+                        <p class="text-lg sm:text-2xl font-bold text-gray-900" id="average-price">-</p>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Action Buttons -->
-        <div class="flex flex-wrap gap-4 mb-8">
-            <button id="add-package-btn" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium transition-colors">
-                <i class="fas fa-plus mr-2"></i>Add New Package
+        <div class="flex flex-wrap gap-3 sm:gap-4 mb-6 sm:mb-8">
+            <button id="add-package-btn" class="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white px-4 sm:px-6 py-3 rounded-lg font-medium transition-colors text-sm sm:text-base">
+                <i class="fas fa-plus mr-1 sm:mr-2"></i>Add New Package
             </button>
         </div>
 
         <!-- Filter Buttons -->
-        <div class="flex flex-wrap gap-3 mb-6">
-            <button id="filter-all" class="filter-btn active bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
-                <i class="fas fa-list mr-2"></i>All Packages
+        <div class="flex flex-wrap gap-2 sm:gap-3 mb-4 sm:mb-6">
+            <button id="filter-all" class="filter-btn active bg-blue-600 hover:bg-blue-700 text-white px-3 sm:px-4 py-2 rounded-lg font-medium transition-colors text-xs sm:text-sm">
+                <i class="fas fa-list mr-1 sm:mr-2"></i><span class="hidden sm:inline">All Packages</span><span class="sm:hidden">All</span>
             </button>
-            <button id="filter-popular" class="filter-btn bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
-                <i class="fas fa-fire mr-2"></i>Popular
+            <button id="filter-popular" class="filter-btn bg-red-600 hover:bg-red-700 text-white px-3 sm:px-4 py-2 rounded-lg font-medium transition-colors text-xs sm:text-sm">
+                <i class="fas fa-fire mr-1 sm:mr-2"></i>Popular
             </button>
-            <button id="filter-luxury" class="filter-btn bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
-                <i class="fas fa-crown mr-2"></i>Luxury
+            <button id="filter-luxury" class="filter-btn bg-purple-600 hover:bg-purple-700 text-white px-3 sm:px-4 py-2 rounded-lg font-medium transition-colors text-xs sm:text-sm">
+                <i class="fas fa-crown mr-1 sm:mr-2"></i>Luxury
             </button>
-            <button id="filter-budget" class="filter-btn bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
-                <i class="fas fa-dollar-sign mr-2"></i>Budget
+            <button id="filter-budget" class="filter-btn bg-green-600 hover:bg-green-700 text-white px-3 sm:px-4 py-2 rounded-lg font-medium transition-colors text-xs sm:text-sm">
+                <i class="fas fa-dollar-sign mr-1 sm:mr-2"></i>Budget
             </button>
         </div>
 
         <!-- Packages Table -->
         <div class="bg-white rounded-lg shadow overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-200">
-                <h3 class="text-lg font-medium text-gray-900">All Packages</h3>
+            <div class="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200">
+                <h3 class="text-base sm:text-lg font-medium text-gray-900">All Packages</h3>
             </div>
-            <div class="overflow-x-auto">
+            
+            <!-- Mobile Card View (hidden on desktop) -->
+            <div id="mobile-packages-view" class="md:hidden">
+                <div id="mobile-packages-container" class="divide-y divide-gray-200">
+                    <!-- Mobile package cards will be inserted here -->
+                </div>
+            </div>
+            
+            <!-- Desktop Table View -->
+            <div class="hidden md:block overflow-x-auto">
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Package</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Destination</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rating</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            <th class="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Package</th>
+                            <th class="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Destination</th>
+                            <th class="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
+                            <th class="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rating</th>
+                            <th class="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                            <th class="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                            <th class="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="packages-table-body" class="bg-white divide-y divide-gray-200">
@@ -157,47 +200,47 @@
 
     <!-- Add/Edit Package Modal -->
     <div id="package-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
-        <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white">
-            <div class="mt-3">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-medium text-gray-900" id="modal-title">Add New Package</h3>
-                    <button id="close-modal" class="text-gray-400 hover:text-gray-600">
-                        <i class="fas fa-times text-xl"></i>
+        <div class="relative top-4 sm:top-10 lg:top-20 mx-auto p-3 sm:p-5 border w-11/12 sm:w-5/6 md:w-3/4 lg:w-1/2 xl:w-2/5 shadow-lg rounded-md bg-white max-h-[95vh] overflow-y-auto">
+            <div class="mt-1 sm:mt-3">
+                <div class="flex justify-between items-center mb-3 sm:mb-4">
+                    <h3 class="text-base sm:text-lg font-medium text-gray-900" id="modal-title">Add New Package</h3>
+                    <button id="close-modal" class="text-gray-400 hover:text-gray-600 p-1">
+                        <i class="fas fa-times text-lg sm:text-xl"></i>
                     </button>
                 </div>
                 
-                <form id="package-form" class="space-y-4">
+                <form id="package-form" class="space-y-3 sm:space-y-4">
                     <input type="hidden" id="package-id" name="id">
                     
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                         <div>
-                            <label for="title" class="block text-sm font-medium text-gray-700">Title *</label>
+                            <label for="title" class="block text-xs sm:text-sm font-medium text-gray-700">Title *</label>
                             <input type="text" id="title" name="title" required 
-                                   class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500">
+                                   class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 text-sm sm:text-base">
                         </div>
                         <div>
-                            <label for="destination" class="block text-sm font-medium text-gray-700">Destination *</label>
+                            <label for="destination" class="block text-xs sm:text-sm font-medium text-gray-700">Destination *</label>
                             <input type="text" id="destination" name="destination" required 
-                                   class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500">
+                                   class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 text-sm sm:text-base">
                         </div>
                     </div>
                     
                     <div>
-                        <label for="description" class="block text-sm font-medium text-gray-700">Description *</label>
+                        <label for="description" class="block text-xs sm:text-sm font-medium text-gray-700">Description *</label>
                         <textarea id="description" name="description" rows="3" required 
-                                  class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500"></textarea>
+                                  class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 text-sm sm:text-base"></textarea>
                     </div>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                         <div>
-                            <label for="price" class="block text-sm font-medium text-gray-700">Price *</label>
+                            <label for="price" class="block text-xs sm:text-sm font-medium text-gray-700">Price *</label>
                             <input type="number" id="price" name="price" step="0.01" required 
-                                   class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500">
+                                   class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 text-sm sm:text-base">
                         </div>
                         <div>
-                            <label for="currency" class="block text-sm font-medium text-gray-700">Currency</label>
+                            <label for="currency" class="block text-xs sm:text-sm font-medium text-gray-700">Currency</label>
                             <select id="currency" name="currency" 
-                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500">
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 text-sm sm:text-base">
                                 <option value="USD">USD - US Dollar</option>
                                 <option value="EUR">EUR - Euro</option>
                                 <option value="GBP">GBP - British Pound</option>
@@ -208,36 +251,36 @@
                                 <option value="SGD">SGD - Singapore Dollar</option>
                             </select>
                         </div>
-                        <div>
-                            <label for="rating" class="block text-sm font-medium text-gray-700">Rating</label>
+                        <div class="sm:col-span-2 lg:col-span-1">
+                            <label for="rating" class="block text-xs sm:text-sm font-medium text-gray-700">Rating</label>
                             <input type="number" id="rating" name="rating" step="0.1" min="0" max="5" value="5" 
-                                   class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500">
+                                   class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 text-sm sm:text-base">
                         </div>
                     </div>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                         <div>
-                            <label for="image_url" class="block text-sm font-medium text-gray-700">Image URL *</label>
+                            <label for="image_url" class="block text-xs sm:text-sm font-medium text-gray-700">Image URL *</label>
                             <input type="url" id="image_url" name="image_url" required 
-                                   class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500">
+                                   class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 text-sm sm:text-base">
                         </div>
                         <div>
-                            <label for="duration" class="block text-sm font-medium text-gray-700">Duration</label>
+                            <label for="duration" class="block text-xs sm:text-sm font-medium text-gray-700">Duration</label>
                             <input type="text" id="duration" name="duration" placeholder="e.g., 7 days" 
-                                   class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500">
+                                   class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 text-sm sm:text-base">
                         </div>
                     </div>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                         <div>
-                            <label for="badge" class="block text-sm font-medium text-gray-700">Badge</label>
+                            <label for="badge" class="block text-xs sm:text-sm font-medium text-gray-700">Badge</label>
                             <input type="text" id="badge" name="badge" placeholder="e.g., Best Seller" 
-                                   class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500">
+                                   class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 text-sm sm:text-base">
                         </div>
                         <div>
-                            <label for="badge_color" class="block text-sm font-medium text-gray-700">Badge Color</label>
+                            <label for="badge_color" class="block text-xs sm:text-sm font-medium text-gray-700">Badge Color</label>
                             <select id="badge_color" name="badge_color" 
-                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500">
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 text-sm sm:text-base">
                                 <option value="bg-blue-500">Blue</option>
                                 <option value="bg-green-500">Green</option>
                                 <option value="bg-yellow-500">Yellow</option>
@@ -248,9 +291,9 @@
                     </div>
                     
                     <div>
-                        <label for="tag" class="block text-sm font-medium text-gray-700">Package Category</label>
+                        <label for="tag" class="block text-xs sm:text-sm font-medium text-gray-700">Package Category</label>
                         <select id="tag" name="tag" 
-                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500">
+                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 text-sm sm:text-base">
                             <option value="">Select Category</option>
                             <option value="popular">Popular</option>
                             <option value="luxury">Luxury</option>
@@ -261,16 +304,16 @@
                     <div class="flex items-center">
                         <input type="checkbox" id="is_active" name="is_active" checked 
                                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                        <label for="is_active" class="ml-2 block text-sm text-gray-900">Active Package</label>
+                        <label for="is_active" class="ml-2 block text-xs sm:text-sm text-gray-900">Active Package</label>
                     </div>
                     
-                    <div class="flex justify-end space-x-3 pt-4">
+                    <div class="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-3 pt-3 sm:pt-4">
                         <button type="button" id="cancel-btn" 
-                                class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded">
+                                class="w-full sm:w-auto bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded text-sm sm:text-base">
                             Cancel
                         </button>
                         <button type="submit" 
-                                class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg">
+                                class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 sm:py-3 px-4 sm:px-6 rounded-lg shadow-lg text-sm sm:text-base">
                             Save Package
                         </button>
                     </div>

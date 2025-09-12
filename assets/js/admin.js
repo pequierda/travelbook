@@ -86,6 +86,30 @@ function initEventListeners() {
         });
     }
     
+    // Mobile refresh packages button
+    const refreshPackagesMobileBtn = document.getElementById('refresh-packages-mobile');
+    if (refreshPackagesMobileBtn) {
+        refreshPackagesMobileBtn.addEventListener('click', async () => {
+            await loadPackageStats();
+            await loadPackages();
+        });
+    }
+    
+    // Mobile menu toggle
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    if (mobileMenuBtn && mobileMenu) {
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+    }
+    
+    // Mobile logout button
+    const logoutMobileBtn = document.getElementById('logout-btn-mobile');
+    if (logoutMobileBtn) {
+        logoutMobileBtn.addEventListener('click', handleLogout);
+    }
+    
     // Modal controls
     const closeModalBtn = document.getElementById('close-modal');
     if (closeModalBtn) {
@@ -192,7 +216,13 @@ async function loadPackages() {
  */
 function displayPackagesTable(packages) {
     const tbody = document.getElementById('packages-table-body');
+    const mobileContainer = document.getElementById('mobile-packages-container');
+    
+    // Clear both desktop and mobile views
     tbody.innerHTML = '';
+    if (mobileContainer) {
+        mobileContainer.innerHTML = '';
+    }
     
     if (packages.length === 0) {
         tbody.innerHTML = `
@@ -202,12 +232,26 @@ function displayPackagesTable(packages) {
                 </td>
             </tr>
         `;
+        
+        if (mobileContainer) {
+            mobileContainer.innerHTML = `
+                <div class="p-6 text-center text-gray-500">
+                    No packages found. <button onclick="initializeSamplePackages()" class="text-primary-600 hover:text-primary-800 underline">Add sample packages</button>
+                </div>
+            `;
+        }
         return;
     }
     
     packages.forEach(packageData => {
         const row = createPackageTableRow(packageData);
         tbody.appendChild(row);
+        
+        // Also create mobile card
+        if (mobileContainer) {
+            const mobileCard = createMobilePackageCard(packageData);
+            mobileContainer.appendChild(mobileCard);
+        }
     });
 }
 
@@ -281,6 +325,78 @@ function createPackageTableRow(packageData) {
     `;
     
     return row;
+}
+
+/**
+ * Create mobile package card
+ */
+function createMobilePackageCard(packageData) {
+    const card = document.createElement('div');
+    card.className = 'p-4 bg-white border-b border-gray-200';
+    
+    const statusBadge = packageData.is_active 
+        ? '<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">Active</span>'
+        : '<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">Inactive</span>';
+    
+    const ratingStars = generateStarRating(packageData.rating);
+    
+    // Generate tag badge
+    const tagBadge = packageData.tag ? 
+        `<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+            packageData.tag === 'popular' ? 'bg-red-100 text-red-800' :
+            packageData.tag === 'luxury' ? 'bg-purple-100 text-purple-800' :
+            packageData.tag === 'budget' ? 'bg-green-100 text-green-800' :
+            'bg-gray-100 text-gray-800'
+        }">${packageData.tag.charAt(0).toUpperCase() + packageData.tag.slice(1)}</span>` :
+        '<span class="text-gray-400 text-xs">No category</span>';
+    
+    card.innerHTML = `
+        <div class="flex items-start space-x-3">
+            <div class="flex-shrink-0">
+                <img class="h-16 w-16 rounded-lg object-cover" src="${packageData.image_url}" alt="${packageData.title}">
+            </div>
+            <div class="flex-1 min-w-0">
+                <div class="flex items-start justify-between">
+                    <div class="flex-1">
+                        <h3 class="text-sm font-medium text-gray-900 truncate">${packageData.title}</h3>
+                        <p class="text-xs text-gray-500 mt-1">${packageData.destination}</p>
+                        <div class="flex items-center mt-1">
+                            <span class="text-sm font-semibold text-gray-900">$${packageData.price.toLocaleString()} ${packageData.currency}</span>
+                        </div>
+                    </div>
+                    <div class="flex flex-col items-end space-y-1">
+                        ${statusBadge}
+                        ${tagBadge}
+                    </div>
+                </div>
+                
+                <div class="flex items-center justify-between mt-2">
+                    <div class="flex items-center">
+                        ${ratingStars}
+                        <span class="ml-1 text-xs text-gray-500">(${packageData.rating})</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button onclick="editPackage('${packageData.id}')" 
+                                class="text-primary-600 hover:text-primary-900 p-1">
+                            <i class="fas fa-edit text-sm"></i>
+                        </button>
+                        <button onclick="togglePackageStatus('${packageData.id}')" 
+                                class="text-yellow-600 hover:text-yellow-900 p-1">
+                            <i class="fas fa-toggle-${packageData.is_active ? 'on' : 'off'} text-sm"></i>
+                        </button>
+                        <button onclick="deletePackage('${packageData.id}')" 
+                                class="text-red-600 hover:text-red-900 p-1">
+                            <i class="fas fa-trash text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                ${packageData.duration ? `<p class="text-xs text-gray-500 mt-1">Duration: ${packageData.duration}</p>` : ''}
+            </div>
+        </div>
+    `;
+    
+    return card;
 }
 
 /**
@@ -606,10 +722,20 @@ function displayUserInfo() {
     const session = window.authManager.getCurrentSession();
     if (session) {
         const userInfoElement = document.getElementById('user-info');
-        userInfoElement.innerHTML = `
+        const userInfoMobileElement = document.getElementById('user-info-mobile');
+        
+        const userInfoHTML = `
             <i class="fas fa-user mr-1"></i>
             Welcome, <strong>${session.username}</strong>
         `;
+        
+        if (userInfoElement) {
+            userInfoElement.innerHTML = userInfoHTML;
+        }
+        
+        if (userInfoMobileElement) {
+            userInfoMobileElement.innerHTML = userInfoHTML;
+        }
     }
 }
 
