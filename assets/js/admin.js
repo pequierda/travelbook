@@ -177,7 +177,7 @@ async function loadPackageStats() {
             document.getElementById('total-packages').textContent = result.total_packages || 0;
             document.getElementById('active-packages').textContent = result.active_packages || 0;
             document.getElementById('inactive-packages').textContent = result.inactive_packages || 0;
-            document.getElementById('average-price').textContent = '$' + (result.average_price || 0).toLocaleString();
+            document.getElementById('average-price').textContent = '₱' + (result.average_price || 0).toLocaleString();
         } else {
             showAdminNotification('Error loading statistics: ' + result.message, 'error');
         }
