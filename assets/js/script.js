@@ -279,12 +279,12 @@ function showBookingModal(packageName) {
                 <h3 class="text-2xl font-bold mb-4">Book ${packageName}</h3>
                 <p class="text-gray-600 mb-6">Ready to start your adventure? Contact us to book this amazing package!</p>
                 <div class="space-y-3">
-                    <button class="w-full bg-primary-600 hover:bg-primary-700 text-white py-3 px-6 rounded-lg transition-colors">
+                    <a href="tel:+639555143738" class="w-full bg-primary-600 hover:bg-primary-700 text-white py-3 px-6 rounded-lg transition-colors block text-center">
                         <i class="fas fa-phone mr-2"></i>Call Now: (+639)555-143-738
-                    </button>
-                    <button class="w-full border border-primary-600 text-primary-600 hover:bg-primary-600 hover:text-white py-3 px-6 rounded-lg transition-colors">
-                        <i class="fas fa-envelope mr-2"></i>Email Us
-                    </button>
+                    </a>
+                    <a href="mailto:e.pequierda@yahoo.com" class="w-full border border-primary-600 text-primary-600 hover:bg-primary-600 hover:text-white py-3 px-6 rounded-lg transition-colors block text-center">
+                        <i class="fas fa-envelope mr-2"></i>Email Us: e.pequierda@yahoo.com
+                    </a>
                     <button class="w-full text-gray-500 hover:text-gray-700 py-2" onclick="this.closest('.fixed').remove()">
                         Close
                     </button>
