@@ -418,6 +418,9 @@ a:focus {
     padding: 12px 20px;
     border-radius: 8px;
     margin: 4px 0;
+    display: block;
+    width: 100%;
+    text-align: center;
 }
 
 .mobile-nav-link::before {
@@ -446,6 +449,20 @@ a:focus {
 
 .mobile-nav-link:focus {
     background: rgba(255, 255, 255, 1) !important;
+}
+
+/* Ensure all mobile nav links have solid background */
+#mobile-menu .mobile-nav-link {
+    background: rgba(255, 255, 255, 1) !important;
+    opacity: 1 !important;
+}
+
+#mobile-menu .mobile-nav-link:hover,
+#mobile-menu .mobile-nav-link:active,
+#mobile-menu .mobile-nav-link:focus,
+#mobile-menu .mobile-nav-link:visited {
+    background: rgba(255, 255, 255, 1) !important;
+    opacity: 1 !important;
 }
 
 /* Enhanced Button Styles */
