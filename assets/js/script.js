@@ -89,6 +89,16 @@ function initPackageCards() {
                 showBookingModal(packageName);
             });
         }
+        
+        // Add event listener for "Show More" buttons
+        const showMoreButton = card.querySelector('.show-more-btn');
+        if (showMoreButton) {
+            showMoreButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                const packageId = this.getAttribute('data-package-id');
+                toggleDescription(packageId);
+            });
+        }
     });
 }
 
@@ -563,7 +573,7 @@ function createPackageCard(packageData) {
                     ${packageData.description.length > 150 ? `
                         <div class="description-full hidden">${formatDescription(packageData.description)}</div>
                         <button class="text-primary-600 hover:text-primary-700 text-sm font-medium mt-2 show-more-btn" 
-                                onclick="toggleDescription('${packageData.id}')">
+                                data-package-id="${packageData.id}">
                             Show More
                         </button>
                     ` : ''}
