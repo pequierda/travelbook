@@ -550,13 +550,25 @@ function createPackageCard(packageData) {
         <div class="relative">
             <img src="${packageData.image_url}" 
                  alt="${packageData.title}" 
-                 class="w-full h-48 object-cover"
-                 loading="lazy">
+                 class="w-full h-48 object-cover cursor-pointer hover:opacity-90 transition-opacity"
+                 loading="lazy"
+                 onclick="showFullscreenImage('${packageData.image_url}', '${packageData.title}')">
             ${badgeHtml}
         </div>
         <div class="p-6">
             <h3 class="text-xl font-bold mb-2">${packageData.title}</h3>
-            <div class="text-gray-600 mb-4 whitespace-pre-line">${formatDescription(packageData.description)}</div>
+            <div class="text-gray-600 mb-4">
+                <div class="description-content" id="desc-${packageData.id}">
+                    <div class="description-preview">${formatDescription(packageData.description, 150)}</div>
+                    ${packageData.description.length > 150 ? `
+                        <div class="description-full hidden">${formatDescription(packageData.description)}</div>
+                        <button class="text-primary-600 hover:text-primary-700 text-sm font-medium mt-2 show-more-btn" 
+                                onclick="toggleDescription('${packageData.id}')">
+                            Show More
+                        </button>
+                    ` : ''}
+                </div>
+            </div>
             <div class="flex items-center mb-4">
                 ${ratingStars}
                 <span class="ml-2 text-gray-600">(${packageData.rating}/5)</span>
@@ -584,14 +596,14 @@ function createPackageCard(packageData) {
 /**
  * Format description with proper line breaks after emojis
  */
-function formatDescription(description) {
+function formatDescription(description, maxLength = null) {
     if (!description) return '';
     
     // Split the description by emojis and add line breaks
     // This regex matches common emoji patterns
     const emojiRegex = /([\u{1F600}-\u{1F64F}]|[\u{1F300}-\u{1F5FF}]|[\u{1F680}-\u{1F6FF}]|[\u{1F1E0}-\u{1F1FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}])/gu;
     
-    return description
+    let formatted = description
         .split(emojiRegex)
         .map((part, index, array) => {
             // If this part is an emoji and there's text after it
@@ -602,6 +614,13 @@ function formatDescription(description) {
         })
         .join('')
         .trim();
+    
+    // Truncate if maxLength is specified
+    if (maxLength && formatted.length > maxLength) {
+        formatted = formatted.substring(0, maxLength) + '...';
+    }
+    
+    return formatted;
 }
 
 /**
@@ -957,4 +976,71 @@ function updatePackageCount(count, filter) {
             Showing ${count} ${filter === 'all' ? 'packages' : filter + ' packages'}
         </div>
     `;
+}
+
+/**
+ * Show fullscreen image modal
+ */
+function showFullscreenImage(imageUrl, title) {
+    const modal = document.createElement('div');
+    modal.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-90';
+    modal.innerHTML = `
+        <div class="relative max-w-7xl max-h-full p-4">
+            <button class="absolute top-4 right-4 text-white hover:text-gray-300 text-3xl z-10" 
+                    onclick="this.closest('.fixed').remove()">
+                <i class="fas fa-times"></i>
+            </button>
+            <img src="${imageUrl}" 
+                 alt="${title}" 
+                 class="max-w-full max-h-full object-contain rounded-lg"
+                 onclick="event.stopPropagation()">
+            <div class="absolute bottom-4 left-4 right-4 text-center">
+                <p class="text-white text-lg font-medium bg-black bg-opacity-50 px-4 py-2 rounded-lg">${title}</p>
+            </div>
+        </div>
+    `;
+    
+    // Close modal when clicking outside the image
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            modal.remove();
+        }
+    });
+    
+    // Close modal with Escape key
+    const handleEscape = function(e) {
+        if (e.key === 'Escape') {
+            modal.remove();
+            document.removeEventListener('keydown', handleEscape);
+        }
+    };
+    document.addEventListener('keydown', handleEscape);
+    
+    document.body.appendChild(modal);
+}
+
+/**
+ * Toggle description visibility
+ */
+function toggleDescription(packageId) {
+    const descContainer = document.getElementById(`desc-${packageId}`);
+    if (!descContainer) return;
+    
+    const preview = descContainer.querySelector('.description-preview');
+    const full = descContainer.querySelector('.description-full');
+    const button = descContainer.querySelector('.show-more-btn');
+    
+    if (!preview || !full || !button) return;
+    
+    if (full.classList.contains('hidden')) {
+        // Show full description
+        preview.classList.add('hidden');
+        full.classList.remove('hidden');
+        button.textContent = 'Show Less';
+    } else {
+        // Show preview
+        preview.classList.remove('hidden');
+        full.classList.add('hidden');
+        button.textContent = 'Show More';
+    }
 }
