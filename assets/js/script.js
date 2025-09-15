@@ -15,27 +15,6 @@ document.addEventListener('DOMContentLoaded', function() {
     initAnimations();
     initLazyLoading();
     
-    // Use event delegation for "Show More" buttons
-    document.addEventListener('click', function(e) {
-        console.log('Click detected on:', e.target);
-        
-        // Check if the clicked element or any parent has the show-more-btn class
-        let targetElement = e.target;
-        while (targetElement && targetElement !== document) {
-            if (targetElement.classList && targetElement.classList.contains('show-more-btn')) {
-                console.log('Show More button clicked!');
-                e.preventDefault();
-                e.stopPropagation();
-                const packageId = targetElement.getAttribute('data-package-id');
-                console.log('Package ID:', packageId);
-                if (packageId) {
-                    toggleDescription(packageId);
-                }
-                return;
-            }
-            targetElement = targetElement.parentElement;
-        }
-    });
     
     // Delay Upstash integration to ensure all scripts are loaded
     setTimeout(() => {
@@ -613,6 +592,19 @@ function createPackageCard(packageData) {
         </div>
     `;
     
+    // Add event listener for "Show More" button directly
+    const showMoreButton = card.querySelector('.show-more-btn');
+    if (showMoreButton) {
+        showMoreButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('Show More button clicked directly!');
+            const packageId = this.getAttribute('data-package-id');
+            console.log('Package ID:', packageId);
+            toggleDescription(packageId);
+        });
+    }
+    
     return card;
 }
 
@@ -1046,33 +1038,22 @@ function showFullscreenImage(imageUrl, title) {
  * Toggle description visibility
  */
 function toggleDescription(packageId) {
-    console.log('toggleDescription called with packageId:', packageId);
     const descContainer = document.getElementById(`desc-${packageId}`);
-    console.log('descContainer found:', descContainer);
-    if (!descContainer) {
-        console.log('No descContainer found for packageId:', packageId);
-        return;
-    }
+    if (!descContainer) return;
     
     const preview = descContainer.querySelector('.description-preview');
     const full = descContainer.querySelector('.description-full');
     const button = descContainer.querySelector('.show-more-btn');
     
-    console.log('Elements found:', { preview, full, button });
-    if (!preview || !full || !button) {
-        console.log('Missing elements:', { preview: !!preview, full: !!full, button: !!button });
-        return;
-    }
+    if (!preview || !full || !button) return;
     
     if (full.classList.contains('hidden')) {
         // Show full description
-        console.log('Showing full description');
         preview.classList.add('hidden');
         full.classList.remove('hidden');
         button.textContent = 'Show Less';
     } else {
         // Show preview
-        console.log('Showing preview');
         preview.classList.remove('hidden');
         full.classList.add('hidden');
         button.textContent = 'Show More';
