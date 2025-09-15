@@ -564,9 +564,10 @@ function createPackageCard(packageData) {
                     <div class="description-preview">${formatDescription(packageData.description, 150)}</div>
                     ${packageData.description.length > 150 ? `
                         <div class="description-full hidden">${formatDescription(packageData.description)}</div>
-                        <button class="text-primary-600 hover:text-primary-700 text-sm font-medium mt-2 show-more-btn" 
+                        <button class="flex items-center text-primary-600 hover:text-primary-700 text-sm font-medium mt-2 show-more-btn transition-all duration-200" 
                                 data-package-id="${packageData.id}">
-                            Show More
+                            <span class="mr-1">Read More</span>
+                            <i class="fas fa-chevron-down transform transition-transform duration-200"></i>
                         </button>
                     ` : ''}
                 </div>
@@ -1044,18 +1045,24 @@ function toggleDescription(packageId) {
     const preview = descContainer.querySelector('.description-preview');
     const full = descContainer.querySelector('.description-full');
     const button = descContainer.querySelector('.show-more-btn');
+    const buttonText = button.querySelector('span');
+    const buttonIcon = button.querySelector('i');
     
-    if (!preview || !full || !button) return;
+    if (!preview || !full || !button || !buttonText || !buttonIcon) return;
     
     if (full.classList.contains('hidden')) {
         // Show full description
         preview.classList.add('hidden');
         full.classList.remove('hidden');
-        button.textContent = 'Show Less';
+        buttonText.textContent = 'Read Less';
+        buttonIcon.classList.remove('fa-chevron-down');
+        buttonIcon.classList.add('fa-chevron-up');
     } else {
         // Show preview
         preview.classList.remove('hidden');
         full.classList.add('hidden');
-        button.textContent = 'Show More';
+        buttonText.textContent = 'Read More';
+        buttonIcon.classList.remove('fa-chevron-up');
+        buttonIcon.classList.add('fa-chevron-down');
     }
 }
