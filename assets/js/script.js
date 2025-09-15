@@ -601,9 +601,9 @@ function createPackageCard(packageData) {
             e.preventDefault();
             e.stopPropagation();
             e.stopImmediatePropagation();
-            console.log('Show More button clicked directly!');
+        
             const packageId = this.getAttribute('data-package-id');
-            console.log('Package ID:', packageId);
+           
             toggleDescription(packageId);
         });
         

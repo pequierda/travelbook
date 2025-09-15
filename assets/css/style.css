@@ -397,13 +397,14 @@ a:focus {
 /* Mobile Menu Enhancements */
 .mobile-menu {
     backdrop-filter: blur(10px);
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 1) !important;
     transform: translateX(-100%);
     transition: transform 0.3s ease;
 }
 
 .mobile-menu.active {
     transform: translateX(0);
+    background: rgba(255, 255, 255, 1) !important;
 }
 
 .mobile-menu.hidden {
