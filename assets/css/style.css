@@ -414,6 +414,10 @@ a:focus {
 .mobile-nav-link {
     position: relative;
     transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 1) !important;
+    padding: 12px 20px;
+    border-radius: 8px;
+    margin: 4px 0;
 }
 
 .mobile-nav-link::before {
@@ -430,6 +434,18 @@ a:focus {
 
 .mobile-nav-link:hover::before {
     width: 15px;
+}
+
+.mobile-nav-link:hover {
+    background: rgba(255, 255, 255, 1) !important;
+}
+
+.mobile-nav-link:active {
+    background: rgba(255, 255, 255, 1) !important;
+}
+
+.mobile-nav-link:focus {
+    background: rgba(255, 255, 255, 1) !important;
 }
 
 /* Enhanced Button Styles */
