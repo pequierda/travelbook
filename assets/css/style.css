@@ -454,7 +454,12 @@ a:focus {
 }
 
 /* Ensure all mobile nav links have solid background */
-#mobile-menu .mobile-nav-link {
+#mobile-menu .mobile-nav-link,
+#mobile-menu .mobile-nav-link:link,
+#mobile-menu .mobile-nav-link:visited,
+#mobile-menu .mobile-nav-link:hover,
+#mobile-menu .mobile-nav-link:active,
+#mobile-menu .mobile-nav-link:focus {
     background: rgba(255, 255, 255, 1) !important;
     opacity: 1 !important;
     padding: 16px 24px !important;
@@ -463,12 +468,16 @@ a:focus {
     border-radius: 12px !important;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
     border: 1px solid rgba(0, 0, 0, 0.05) !important;
+    display: block !important;
+    text-decoration: none !important;
+    color: #1e40af !important;
+    font-weight: 500 !important;
 }
 
-#mobile-menu .mobile-nav-link:hover,
-#mobile-menu .mobile-nav-link:active,
-#mobile-menu .mobile-nav-link:focus,
-#mobile-menu .mobile-nav-link:visited {
+/* Override any active or selected states */
+#mobile-menu .mobile-nav-link.active,
+#mobile-menu .mobile-nav-link[aria-current="page"],
+#mobile-menu .mobile-nav-link.current {
     background: rgba(255, 255, 255, 1) !important;
     opacity: 1 !important;
     padding: 16px 24px !important;
