@@ -80,11 +80,12 @@ function initPackageCards() {
             this.style.transform = 'translateY(0)';
         });
         
-        // Add click tracking for analytics
-        const bookButton = card.querySelector('button');
+        // Add click tracking for analytics - only for Book Now button
+        const bookButton = card.querySelector('.btn-primary');
         if (bookButton) {
             bookButton.addEventListener('click', function(e) {
                 e.preventDefault();
+                e.stopPropagation();
                 const packageName = card.querySelector('h3').textContent;
                 trackPackageClick(packageName);
                 showBookingModal(packageName);
@@ -599,10 +600,20 @@ function createPackageCard(packageData) {
         showMoreButton.addEventListener('click', function(e) {
             e.preventDefault();
             e.stopPropagation();
+            e.stopImmediatePropagation();
             console.log('Show More button clicked directly!');
             const packageId = this.getAttribute('data-package-id');
             console.log('Package ID:', packageId);
             toggleDescription(packageId);
+        });
+        
+        // Also add mouse events to prevent card hover when hovering over button
+        showMoreButton.addEventListener('mouseenter', function(e) {
+            e.stopPropagation();
+        });
+        
+        showMoreButton.addEventListener('mouseleave', function(e) {
+            e.stopPropagation();
         });
     }
     
