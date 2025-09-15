@@ -15,6 +15,20 @@ document.addEventListener('DOMContentLoaded', function() {
     initAnimations();
     initLazyLoading();
     
+    // Use event delegation for "Show More" buttons
+    document.addEventListener('click', function(e) {
+        console.log('Click detected on:', e.target);
+        if (e.target.classList.contains('show-more-btn')) {
+            console.log('Show More button clicked!');
+            e.preventDefault();
+            const packageId = e.target.getAttribute('data-package-id');
+            console.log('Package ID:', packageId);
+            if (packageId) {
+                toggleDescription(packageId);
+            }
+        }
+    });
+    
     // Delay Upstash integration to ensure all scripts are loaded
     setTimeout(() => {
         initUpstashIntegration();
@@ -89,17 +103,8 @@ function initPackageCards() {
                 showBookingModal(packageName);
             });
         }
-        
-        // Add event listener for "Show More" buttons
-        const showMoreButton = card.querySelector('.show-more-btn');
-        if (showMoreButton) {
-            showMoreButton.addEventListener('click', function(e) {
-                e.preventDefault();
-                const packageId = this.getAttribute('data-package-id');
-                toggleDescription(packageId);
-            });
-        }
     });
+    
 }
 
 /**
@@ -1033,22 +1038,33 @@ function showFullscreenImage(imageUrl, title) {
  * Toggle description visibility
  */
 function toggleDescription(packageId) {
+    console.log('toggleDescription called with packageId:', packageId);
     const descContainer = document.getElementById(`desc-${packageId}`);
-    if (!descContainer) return;
+    console.log('descContainer found:', descContainer);
+    if (!descContainer) {
+        console.log('No descContainer found for packageId:', packageId);
+        return;
+    }
     
     const preview = descContainer.querySelector('.description-preview');
     const full = descContainer.querySelector('.description-full');
     const button = descContainer.querySelector('.show-more-btn');
     
-    if (!preview || !full || !button) return;
+    console.log('Elements found:', { preview, full, button });
+    if (!preview || !full || !button) {
+        console.log('Missing elements:', { preview: !!preview, full: !!full, button: !!button });
+        return;
+    }
     
     if (full.classList.contains('hidden')) {
         // Show full description
+        console.log('Showing full description');
         preview.classList.add('hidden');
         full.classList.remove('hidden');
         button.textContent = 'Show Less';
     } else {
         // Show preview
+        console.log('Showing preview');
         preview.classList.remove('hidden');
         full.classList.add('hidden');
         button.textContent = 'Show More';
