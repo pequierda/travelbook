@@ -18,14 +18,22 @@ document.addEventListener('DOMContentLoaded', function() {
     // Use event delegation for "Show More" buttons
     document.addEventListener('click', function(e) {
         console.log('Click detected on:', e.target);
-        if (e.target.classList.contains('show-more-btn')) {
-            console.log('Show More button clicked!');
-            e.preventDefault();
-            const packageId = e.target.getAttribute('data-package-id');
-            console.log('Package ID:', packageId);
-            if (packageId) {
-                toggleDescription(packageId);
+        
+        // Check if the clicked element or any parent has the show-more-btn class
+        let targetElement = e.target;
+        while (targetElement && targetElement !== document) {
+            if (targetElement.classList && targetElement.classList.contains('show-more-btn')) {
+                console.log('Show More button clicked!');
+                e.preventDefault();
+                e.stopPropagation();
+                const packageId = targetElement.getAttribute('data-package-id');
+                console.log('Package ID:', packageId);
+                if (packageId) {
+                    toggleDescription(packageId);
+                }
+                return;
             }
+            targetElement = targetElement.parentElement;
         }
     });
     
