@@ -488,6 +488,66 @@ a:focus {
     border: 1px solid rgba(0, 0, 0, 0.05) !important;
 }
 
+/* Override Tailwind classes specifically */
+#mobile-menu a.mobile-nav-link.text-2xl.font-medium.text-gray-700 {
+    background: rgba(255, 255, 255, 1) !important;
+    opacity: 1 !important;
+    padding: 16px 24px !important;
+    margin: 8px 16px !important;
+    width: calc(100% - 32px) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+    border: 1px solid rgba(0, 0, 0, 0.05) !important;
+    display: block !important;
+    text-decoration: none !important;
+    color: #1e40af !important;
+    font-weight: 500 !important;
+    font-size: 1.125rem !important;
+}
+
+/* Force all mobile nav links to have the same styling */
+#mobile-menu .flex-1 .mobile-nav-link {
+    background: rgba(255, 255, 255, 1) !important;
+    opacity: 1 !important;
+    padding: 16px 24px !important;
+    margin: 8px 16px !important;
+    width: calc(100% - 32px) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+    border: 1px solid rgba(0, 0, 0, 0.05) !important;
+    display: block !important;
+    text-decoration: none !important;
+    color: #1e40af !important;
+    font-weight: 500 !important;
+}
+
+/* Uniform navigation button styling */
+.uniform-nav-btn {
+    background: rgba(255, 255, 255, 1) !important;
+    padding: 16px 24px !important;
+    margin: 8px 16px !important;
+    width: calc(100% - 32px) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+    border: 1px solid rgba(0, 0, 0, 0.05) !important;
+    display: block !important;
+    text-decoration: none !important;
+    color: #1e40af !important;
+    font-weight: 500 !important;
+    font-size: 1.125rem !important;
+    text-align: center !important;
+    transition: all 0.3s ease !important;
+}
+
+.uniform-nav-btn:hover,
+.uniform-nav-btn:active,
+.uniform-nav-btn:focus,
+.uniform-nav-btn:visited {
+    background: rgba(255, 255, 255, 1) !important;
+    color: #1e40af !important;
+    text-decoration: none !important;
+}
+
 /* Enhanced Button Styles */
 .btn-primary {
     position: relative;
