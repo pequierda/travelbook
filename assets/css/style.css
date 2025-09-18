@@ -411,6 +411,23 @@ a:focus {
     display: none !important;
 }
 
+/* Mobile menu stacking and background hardening */
+#mobile-menu {
+    z-index: 60 !important; /* Ensure above site navbar/content */
+    background: #ffffff !important;
+    opacity: 1 !important;
+    overflow-y: auto;
+}
+#mobile-menu.active {
+    opacity: 1 !important;
+}
+
+/* Disable slide transform to avoid layout glitches when reopening */
+#mobile-menu,
+#mobile-menu.active {
+    transform: none !important;
+}
+
 .mobile-nav-link {
     position: relative;
     transition: all 0.3s ease;

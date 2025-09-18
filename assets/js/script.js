@@ -99,20 +99,70 @@ function initPackageCards() {
  * Mobile menu functionality
  */
 function initMobileMenu() {
-    const mobileMenuButton = document.querySelector('.md\\:hidden button');
-    const mobileMenu = document.querySelector('.mobile-menu');
-    
-    if (mobileMenuButton) {
-        mobileMenuButton.addEventListener('click', function() {
-            // Toggle mobile menu
-            if (mobileMenu) {
-                mobileMenu.classList.toggle('active');
-            } else {
-                // Create mobile menu if it doesn't exist
-                createMobileMenu();
-            }
+    const toggleButton = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const closeButton = document.getElementById('close-mobile-menu');
+    const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+
+    if (!toggleButton || !mobileMenu) return;
+
+    // Setup ARIA
+    toggleButton.setAttribute('aria-controls', 'mobile-menu');
+    toggleButton.setAttribute('aria-expanded', 'false');
+
+    const setMenuOpen = (isOpen) => {
+        toggleButton.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        document.body.style.overflow = isOpen ? 'hidden' : 'auto';
+        mobileMenu.classList.toggle('hidden', !isOpen);
+        mobileMenu.classList.toggle('active', isOpen);
+        if (isOpen) {
+            try { mobileMenu.scrollTop = 0; } catch (_) {}
+        }
+    };
+
+    toggleButton.addEventListener('click', function() {
+        const isOpen = !mobileMenu.classList.contains('hidden');
+        setMenuOpen(!isOpen);
+    });
+
+    if (closeButton) {
+        closeButton.addEventListener('click', function() {
+            setMenuOpen(false);
         });
     }
+
+    // Close when clicking outside (on overlay background)
+    mobileMenu.addEventListener('click', function(e) {
+        if (e.target === mobileMenu) {
+            setMenuOpen(false);
+        }
+    });
+
+    // Close on Esc
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') setMenuOpen(false);
+    });
+
+    // Close after navigating and perform smooth scroll with header offset
+    mobileNavLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            const targetId = this.getAttribute('href');
+            if (targetId && targetId.startsWith('#')) {
+                e.preventDefault();
+                e.stopPropagation();
+                if (typeof e.stopImmediatePropagation === 'function') e.stopImmediatePropagation();
+                setMenuOpen(false);
+                setTimeout(() => {
+                    const target = document.querySelector(targetId);
+                    if (!target) return;
+                    const headerOffset = 80;
+                    const elementPosition = target.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                    window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+                }, 50);
+            }
+        });
+    });
 }
 
 /**
@@ -378,9 +428,13 @@ function debounce(func, wait) {
  */
 window.addEventListener('resize', debounce(function() {
     // Close mobile menu on resize to desktop
-    const mobileMenu = document.querySelector('.mobile-menu');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const toggleButton = document.getElementById('mobile-menu-btn');
     if (window.innerWidth >= 768 && mobileMenu) {
+        mobileMenu.classList.add('hidden');
         mobileMenu.classList.remove('active');
+        document.body.style.overflow = 'auto';
+        if (toggleButton) toggleButton.setAttribute('aria-expanded', 'false');
     }
 }, 250));
 
