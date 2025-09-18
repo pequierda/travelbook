@@ -16,7 +16,7 @@ class AuthManager {
         this.sessionDuration = 24 * 60 * 60 * 1000; // 24 hours
         
         // Auto-logout configuration
-        this.inactivityTimeout = 1 * 60 * 1000; // 1 minute of inactivity
+        this.inactivityTimeout = 15 * 60 * 1000; // 15 minutes of inactivity
         this.warningTimeout = 30 * 1000; // 30 seconds warning before logout
         this.lastActivity = Date.now();
         this.timeoutId = null;
@@ -121,9 +121,18 @@ class AuthManager {
                 throw new Error('Invalid username or password');
             }
             
-            // Verify password (support both hashed and plain text for backward compatibility)
+            // Verify password with transparent migration from plaintext -> hash
             const hashedPassword = this.hashPassword(password);
-            if (user.password !== hashedPassword && user.password !== password) {
+            let isValid = false;
+            if (user.password === hashedPassword) {
+                isValid = true;
+            } else if (user.password === password) {
+                // Migrate legacy plaintext to hashed
+                user.password = hashedPassword;
+                try { await this.saveUsers(users); } catch (_) {}
+                isValid = true;
+            }
+            if (!isValid) {
                 this.recordFailedAttempt(username);
                 throw new Error('Invalid username or password');
             }

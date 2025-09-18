@@ -4,14 +4,25 @@
  */
 
 module.exports = async function handler(req, res) {
-    // Set CORS headers
-    res.setHeader('Access-Control-Allow-Origin', '*');
+    // Set CORS headers with allowlist
+    const allowlist = (process.env.ORIGIN_ALLOWLIST || '').split(',').map(s => s.trim()).filter(Boolean);
+    const origin = req.headers.origin || '';
+    if (allowlist.length && origin && !allowlist.includes(origin)) {
+        return res.status(403).json({ success: false, message: 'Forbidden origin' });
+    }
+    if (origin) res.setHeader('Access-Control-Allow-Origin', origin);
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
     
     if (req.method === 'OPTIONS') {
         res.status(200).end();
         return;
+    }
+
+    // Optional API key check
+    const apiKey = process.env.INTERNAL_API_KEY;
+    if (apiKey && req.headers['x-internal-api-key'] !== apiKey) {
+        return res.status(401).json({ success: false, message: 'Unauthorized' });
     }
 
     // Only allow POST requests

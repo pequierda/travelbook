@@ -4,6 +4,18 @@
  */
 
 module.exports = async function handler(req, res) {
+    // Basic origin allowlist (set Vercel env ORIGIN_ALLOWLIST to comma-separated list)
+    const allowlist = (process.env.ORIGIN_ALLOWLIST || '').split(',').map(s => s.trim()).filter(Boolean);
+    const origin = req.headers.origin || '';
+    if (allowlist.length && origin && !allowlist.includes(origin)) {
+        return res.status(403).json({ success: false, message: 'Forbidden origin' });
+    }
+
+    // Optional API key check
+    const apiKey = process.env.INTERNAL_API_KEY;
+    if (apiKey && req.headers['x-internal-api-key'] !== apiKey) {
+        return res.status(401).json({ success: false, message: 'Unauthorized' });
+    }
     // Only allow POST requests
     if (req.method !== 'POST') {
         return res.status(405).json({ 
