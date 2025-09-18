@@ -538,6 +538,32 @@ a:focus {
     font-weight: 500 !important;
 }
 
+/* Normalize Flowbite mobile collapse menu inside navbar */
+@media (max-width: 767.98px) {
+    nav #mobile-menu {
+        position: static !important;
+        inset: auto !important;
+        width: 100% !important;
+        max-height: none !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+        z-index: auto !important;
+        overflow: visible !important;
+    }
+
+    nav #mobile-menu ul li a {
+        box-shadow: none !important;
+        border: 0 !important;
+        margin: 0 !important;
+        width: auto !important;
+        text-align: left !important;
+        background: transparent !important;
+        padding: 0.5rem 1rem !important;
+    }
+}
+
 /* Uniform navigation button styling */
 .uniform-nav-btn {
     background: rgba(255, 255, 255, 1) !important;
