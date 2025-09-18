@@ -541,8 +541,10 @@ a:focus {
 /* Normalize Flowbite mobile collapse menu inside navbar */
 @media (max-width: 767.98px) {
     nav #mobile-menu {
-        position: static !important;
-        inset: auto !important;
+        position: absolute !important;
+        top: 100% !important;
+        left: 0 !important;
+        right: 0 !important;
         width: 100% !important;
         max-height: none !important;
         background: #ffffff !important;
