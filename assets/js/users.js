@@ -218,14 +218,25 @@ function openUserModal(user = null) {
         document.getElementById('user-is-active').checked = user.is_active;
         
         // Hide password field for editing (use key icon instead)
-        document.getElementById('user-password').closest('div').style.display = 'none';
+        const pwdInput = document.getElementById('user-password');
+        const pwdWrapper = pwdInput.closest('div');
+        if (pwdWrapper) pwdWrapper.style.display = 'none';
+        // Prevent browser validation on hidden field
+        try { pwdInput.disabled = true; } catch(_) {}
+        try { pwdInput.removeAttribute('required'); } catch(_) {}
+        pwdInput.value = '';
     } else {
         // Add mode
         title.textContent = 'Add New User';
         document.getElementById('user-is-active').checked = true;
         
         // Show password field for new users
-        document.getElementById('user-password').closest('div').style.display = 'block';
+        const pwdInput = document.getElementById('user-password');
+        const pwdWrapper = pwdInput.closest('div');
+        if (pwdWrapper) pwdWrapper.style.display = 'block';
+        try { pwdInput.disabled = false; } catch(_) {}
+        try { pwdInput.setAttribute('required', ''); } catch(_) {}
+        pwdInput.value = '';
     }
     
     modal.classList.remove('hidden');
