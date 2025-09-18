@@ -179,6 +179,14 @@ function createUserTableRow(user) {
             ${statusBadge}
         </td>
         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+            <button onclick="editUser('${user.id}')" 
+                    class="text-primary-600 hover:text-primary-900">
+                <i class="fas fa-edit"></i>
+            </button>
+            <button onclick="openAdminPasswordModal('${user.username}')" 
+                    class="text-blue-600 hover:text-blue-900">
+                <i class="fas fa-key"></i>
+            </button>
             <button onclick="toggleUserStatus('${user.id}')" 
                     class="text-yellow-600 hover:text-yellow-900">
                 <i class="fas fa-toggle-${user.is_active ? 'on' : 'off'}"></i>
@@ -212,7 +220,7 @@ function openUserModal(user = null) {
         document.getElementById('user-role').value = user.role;
         document.getElementById('user-is-active').checked = user.is_active;
         
-        // Hide password field for editing
+        // Hide password field for editing (use key icon instead)
         document.getElementById('user-password').closest('div').style.display = 'none';
     } else {
         // Add mode
@@ -244,6 +252,13 @@ function openPasswordModal() {
     
     // Reset form
     form.reset();
+    // Ensure current password field visible for self-change
+    const currentField = document.getElementById('current-password');
+    if (currentField) {
+        const wrapper = currentField.closest('div');
+        if (wrapper) wrapper.style.display = 'block';
+    }
+    modal.dataset.targetUser = '';
     
     modal.classList.remove('hidden');
 }
@@ -254,6 +269,7 @@ function openPasswordModal() {
 function closePasswordModal() {
     const modal = document.getElementById('password-modal');
     modal.classList.add('hidden');
+    modal.dataset.targetUser = '';
 }
 
 /**
@@ -280,12 +296,20 @@ async function handleUserSubmit(e) {
         let result;
         
         if (currentEditingUser) {
-            // Update existing user (password change handled separately)
-            showUserNotification('User editing not implemented yet. Use password change for password updates.', 'info');
-            return;
+            // Update existing user (username, email, role, active)
+            const users = await window.authManager.getStoredUsers();
+            const idx = users.findIndex(u => u.id === currentEditingUser.id);
+            if (idx === -1) throw new Error('User not found');
+            users[idx].username = userData.username;
+            users[idx].email = userData.email;
+            users[idx].role = userData.role || users[idx].role;
+            users[idx].is_active = userData.is_active === 'on';
+            users[idx].updated_at = new Date().toISOString();
+            await window.authManager.saveUsers(users);
+            result = { success: true };
         } else {
             // Create new user
-            result = window.authManager.createUser(userData);
+            result = await window.authManager.createUser(userData);
         }
         
         if (result.success) {
@@ -311,8 +335,11 @@ async function handlePasswordSubmit(e) {
     const formData = new FormData(e.target);
     const passwordData = Object.fromEntries(formData);
     
+    const modal = document.getElementById('password-modal');
+    const targetUser = modal.dataset.targetUser;
+    
     // Validate inputs
-    if (!passwordData.current_password || !passwordData.new_password || !passwordData.confirm_password) {
+    if ((!targetUser && !passwordData.current_password) || !passwordData.new_password || !passwordData.confirm_password) {
         showUserNotification('Please fill in all fields', 'error');
         return;
     }
@@ -328,12 +355,17 @@ async function handlePasswordSubmit(e) {
     }
     
     try {
-        const session = window.authManager.getCurrentSession();
-        const result = window.authManager.updatePassword(
-            session.username,
-            passwordData.current_password,
-            passwordData.new_password
-        );
+        let result;
+        if (targetUser) {
+            result = await window.authManager.adminSetPassword(targetUser, passwordData.new_password);
+        } else {
+            const session = window.authManager.getCurrentSession();
+            result = await window.authManager.updatePassword(
+                session.username,
+                passwordData.current_password,
+                passwordData.new_password
+            );
+        }
         
         if (result.success) {
             showUserNotification('Password changed successfully!', 'success');
@@ -345,6 +377,36 @@ async function handlePasswordSubmit(e) {
     } catch (error) {
         console.error('Error changing password:', error);
         showUserNotification('Error changing password: ' + error.message, 'error');
+    }
+}
+
+// Open password modal to set a user's password as admin (no current password required)
+function openAdminPasswordModal(username) {
+    const modal = document.getElementById('password-modal');
+    const form = document.getElementById('password-form');
+    if (!modal || !form) return;
+    form.reset();
+    modal.dataset.targetUser = username;
+    const currentField = document.getElementById('current-password');
+    if (currentField) {
+        const wrapper = currentField.closest('div');
+        if (wrapper) wrapper.style.display = 'none';
+    }
+    modal.classList.remove('hidden');
+}
+
+// Edit user (populate modal)
+async function editUser(userId) {
+    try {
+        const users = await window.authManager.getStoredUsers();
+        const user = users.find(u => u.id === userId);
+        if (!user) {
+            showUserNotification('User not found', 'error');
+            return;
+        }
+        openUserModal(user);
+    } catch (e) {
+        showUserNotification('Error loading user for editing', 'error');
     }
 }
 

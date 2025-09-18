@@ -543,6 +543,32 @@ class AuthManager {
     }
     
     /**
+     * Admin: set password for another user (no current password required)
+     */
+    async adminSetPassword(target, newPassword) {
+        try {
+            const session = this.getCurrentSession();
+            if (!session || session.role !== 'admin') {
+                throw new Error('Unauthorized: admin role required');
+            }
+            if (!newPassword || newPassword.length < 6) {
+                throw new Error('New password must be at least 6 characters long');
+            }
+            const users = await this.getStoredUsers();
+            const userIndex = users.findIndex(u => u && (u.username === target || u.id === target));
+            if (userIndex === -1) {
+                throw new Error('User not found');
+            }
+            users[userIndex].password = this.hashPassword(newPassword);
+            users[userIndex].updated_at = new Date().toISOString();
+            await this.saveUsers(users);
+            return { success: true };
+        } catch (error) {
+            return { success: false, message: error.message };
+        }
+    }
+    
+    /**
      * Get all users (admin only)
      */
     async getAllUsers() {
