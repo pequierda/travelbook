@@ -254,6 +254,9 @@ function openPasswordModal() {
     if (currentField) {
         const wrapper = currentField.closest('div');
         if (wrapper) wrapper.style.display = 'block';
+        currentField.disabled = false;
+        currentField.required = true;
+        currentField.value = '';
     }
     modal.dataset.targetUser = '';
     
@@ -388,6 +391,9 @@ function openAdminPasswordModal(username) {
     if (currentField) {
         const wrapper = currentField.closest('div');
         if (wrapper) wrapper.style.display = 'none';
+        currentField.disabled = true;
+        currentField.required = false;
+        currentField.value = '';
     }
     modal.classList.remove('hidden');
 }
