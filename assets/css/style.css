@@ -835,6 +835,55 @@ input:focus, textarea:focus, select:focus {
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
 }
 
+/* Floating slanted sale ribbon */
+.sale-ribbon {
+    position: fixed;
+    top: 18px;
+    right: -40px;
+    z-index: 70;
+    pointer-events: none; /* allow only link to get clicks */
+}
+
+.sale-ribbon .tape {
+    display: inline-block;
+    pointer-events: auto; /* clickable */
+    background: linear-gradient(135deg, #f43f5e, #be123c);
+    color: #fff !important;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 10px 60px;
+    box-shadow: 0 10px 25px rgba(190, 18, 60, 0.35);
+    transform: rotate(35deg);
+    border-radius: 10px;
+    position: relative;
+}
+
+.sale-ribbon .tape::before,
+.sale-ribbon .tape::after {
+    content: '';
+    position: absolute;
+    width: 18px;
+    height: 24px;
+    background: rgba(255, 255, 255, 0.25);
+    top: -8px;
+    transform: rotate(-12deg);
+    filter: blur(0.3px);
+}
+
+.sale-ribbon .tape::before {
+    left: 14px;
+}
+
+.sale-ribbon .tape::after {
+    right: 14px;
+}
+
+@media (max-width: 640px) {
+    .sale-ribbon { top: 14px; right: -52px; }
+    .sale-ribbon .tape { padding: 8px 52px; font-size: 12px; }
+}
+
 /* Enhanced Text Gradients */
 .text-gradient {
     background: linear-gradient(135deg, var(--primary-600), var(--primary-700));

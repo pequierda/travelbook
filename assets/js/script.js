@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initFormHandling();
     initAnimations();
     initLazyLoading();
+    initSaleRibbon();
     
     
     // Delay Upstash integration to ensure all scripts are loaded
@@ -344,6 +345,63 @@ function showBookingModal(packageName) {
             modal.remove();
         }
     });
+}
+
+/**
+ * Sale ribbon modal
+ */
+function initSaleRibbon() {
+    const ribbonLink = document.querySelector('#sale-ribbon .tape');
+    if (!ribbonLink) return;
+    ribbonLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        showSaleModal();
+    });
+}
+
+function showSaleModal() {
+    const modal = document.createElement('div');
+    modal.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50';
+    modal.innerHTML = `
+        <div class="bg-white rounded-2xl p-6 md:p-8 max-w-lg w-full mx-4 relative">
+            <button class="absolute top-3 right-3 text-gray-400 hover:text-gray-600" aria-label="Close" onclick="this.closest('.fixed').remove()">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+            <div class="flex items-center mb-4">
+                <span class="inline-flex items-center justify-center w-10 h-10 bg-red-100 text-red-600 rounded-lg mr-3"><i class="fas fa-bullhorn"></i></span>
+                <h3 class="text-xl font-bold text-gray-900">Website For Sale</h3>
+            </div>
+            <p class="text-gray-700 mb-4">Fully featured site with an Admin Panel. Not limited to travel tours — use it for:</p>
+            <ul class="list-disc list-inside space-y-1 text-gray-700 mb-6">
+                <li>Travel packages and tours</li>
+                <li>Car rentals</li>
+                <li>Accommodations and experiences</li>
+                <li>Any items you want to endorse or manage</li>
+            </ul>
+            <div class="flex flex-col sm:flex-row sm:justify-end gap-2">
+                <a href="tel:+639293575217" class="bg-primary-600 hover:bg-primary-700 text-white px-5 py-2 rounded-lg font-semibold text-center">Call 09293575217</a>
+                <a href="mailto:e.pequierda@yahoo.com" class="border border-gray-300 text-gray-700 hover:bg-gray-50 px-5 py-2 rounded-lg font-semibold text-center">Email e.pequierda@yahoo.com</a>
+                <button class="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50" onclick="this.closest('.fixed').remove()">Close</button>
+            </div>
+        </div>
+    `;
+
+    // Close on overlay click
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) modal.remove();
+    });
+
+    // Close on Esc
+    const escHandler = function(e) {
+        if (e.key === 'Escape') {
+            modal.remove();
+            document.removeEventListener('keydown', escHandler);
+        }
+    };
+    document.addEventListener('keydown', escHandler);
+
+    document.body.appendChild(modal);
 }
 
 /**
