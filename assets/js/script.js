@@ -101,66 +101,50 @@ function initPackageCards() {
 function initMobileMenu() {
     const toggleButton = document.getElementById('mobile-menu-btn');
     const mobileMenu = document.getElementById('mobile-menu');
-    const closeButton = document.getElementById('close-mobile-menu');
-    const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
-
     if (!toggleButton || !mobileMenu) return;
 
     // Setup ARIA
     toggleButton.setAttribute('aria-controls', 'mobile-menu');
-    toggleButton.setAttribute('aria-expanded', 'false');
+    if (!toggleButton.hasAttribute('aria-expanded')) {
+        toggleButton.setAttribute('aria-expanded', 'false');
+    }
 
-    const setMenuOpen = (isOpen) => {
-        toggleButton.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-        document.body.style.overflow = isOpen ? 'hidden' : 'auto';
-        mobileMenu.classList.toggle('hidden', !isOpen);
-        mobileMenu.classList.toggle('active', isOpen);
-        if (isOpen) {
-            try { mobileMenu.scrollTop = 0; } catch (_) {}
-        }
-    };
+    const isUsingFlowbite = toggleButton.hasAttribute('data-collapse-toggle');
 
-    toggleButton.addEventListener('click', function() {
-        const isOpen = !mobileMenu.classList.contains('hidden');
-        setMenuOpen(!isOpen);
-    });
-
-    if (closeButton) {
-        closeButton.addEventListener('click', function() {
-            setMenuOpen(false);
+    // Only attach our own toggle if Flowbite isn't managing it
+    if (!isUsingFlowbite) {
+        toggleButton.addEventListener('click', function() {
+            const willOpen = mobileMenu.classList.contains('hidden');
+            mobileMenu.classList.toggle('hidden');
+            toggleButton.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
         });
     }
 
-    // Close when clicking outside (on overlay background)
-    mobileMenu.addEventListener('click', function(e) {
-        if (e.target === mobileMenu) {
-            setMenuOpen(false);
-        }
-    });
-
-    // Close on Esc
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') setMenuOpen(false);
-    });
-
-    // Close after navigating and perform smooth scroll with header offset
-    mobileNavLinks.forEach(link => {
+    // Auto-close on link click (mobile only) and smooth scroll with header offset
+    const navLinks = mobileMenu.querySelectorAll('a[href^="#"]');
+    navLinks.forEach(link => {
         link.addEventListener('click', function(e) {
             const targetId = this.getAttribute('href');
-            if (targetId && targetId.startsWith('#')) {
-                e.preventDefault();
-                e.stopPropagation();
-                if (typeof e.stopImmediatePropagation === 'function') e.stopImmediatePropagation();
-                setMenuOpen(false);
-                setTimeout(() => {
-                    const target = document.querySelector(targetId);
-                    if (!target) return;
-                    const headerOffset = 80;
-                    const elementPosition = target.getBoundingClientRect().top;
-                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-                    window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
-                }, 50);
+            if (!targetId || !targetId.startsWith('#')) return;
+
+            e.preventDefault();
+            e.stopPropagation();
+
+            // Close menu on small screens
+            if (window.innerWidth < 768) {
+                mobileMenu.classList.add('hidden');
+                toggleButton.setAttribute('aria-expanded', 'false');
             }
+
+            // Smooth scroll with offset
+            setTimeout(() => {
+                const target = document.querySelector(targetId);
+                if (!target) return;
+                const headerOffset = 80;
+                const elementPosition = target.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+            }, 50);
         });
     });
 }

@@ -41,7 +41,7 @@
     <!-- Navigation -->
     <nav id="navbar" class="bg-white shadow-lg fixed w-full z-50 transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
+            <div class="flex flex-wrap justify-between items-center h-16">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
                         <h1 class="text-2xl font-bold text-primary-600 hover:text-primary-700 transition-colors cursor-pointer flex items-center">
@@ -50,51 +50,26 @@
                         </h1>
                     </div>
                 </div>
-                <div class="hidden md:block">
-                    <div class="ml-10 flex items-baseline space-x-1">
-                        <a href="#home" class="nav-link text-gray-900 hover:text-primary-600 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:bg-primary-50 relative group">
-                            <span class="relative z-10">Home</span>
-                            <div class="absolute inset-0 bg-primary-100 rounded-lg scale-0 group-hover:scale-100 transition-transform duration-300"></div>
-                        </a>
-                        <a href="#packages" class="nav-link text-gray-500 hover:text-primary-600 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:bg-primary-50 relative group">
-                            <span class="relative z-10">Packages</span>
-                            <div class="absolute inset-0 bg-primary-100 rounded-lg scale-0 group-hover:scale-100 transition-transform duration-300"></div>
-                        </a>
-                        <a href="#about" class="nav-link text-gray-500 hover:text-primary-600 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:bg-primary-50 relative group">
-                            <span class="relative z-10">About</span>
-                            <div class="absolute inset-0 bg-primary-100 rounded-lg scale-0 group-hover:scale-100 transition-transform duration-300"></div>
-                        </a>
-                        <a href="#contact" class="nav-link text-gray-500 hover:text-primary-600 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:bg-primary-50 relative group">
-                            <span class="relative z-10">Contact</span>
-                            <div class="absolute inset-0 bg-primary-100 rounded-lg scale-0 group-hover:scale-100 transition-transform duration-300"></div>
-                        </a>
-                    </div>
-                </div>
                 <div class="md:hidden">
-                    <button id="mobile-menu-btn" type="button" class="text-gray-500 hover:text-primary-600 focus:outline-none focus:text-primary-600 transition-colors p-2" aria-label="Open menu">
+                    <button id="mobile-menu-btn" type="button" data-collapse-toggle="mobile-menu" class="text-gray-500 hover:text-primary-600 focus:outline-none focus:text-primary-600 transition-colors p-2" aria-controls="mobile-menu" aria-expanded="false" aria-label="Open menu">
                         <i class="fas fa-bars text-xl transform transition-transform duration-300"></i>
                     </button>
                 </div>
-            </div>
-        </div>
-        
-        <!-- Mobile Menu -->
-        <div id="mobile-menu" class="mobile-menu fixed inset-0 bg-white z-40 md:hidden hidden">
-            <div class="flex flex-col h-full">
-                <div class="flex justify-between items-center p-4 border-b">
-                    <h1 class="text-xl font-bold text-primary-600 flex items-center">
-                        <img src="logo/logo123.png" alt="Travelbooks Logo" class="w-6 h-6 mr-2">
-                        Travelbooks
-                    </h1>
-                    <button id="close-mobile-menu" class="text-gray-500 hover:text-primary-600 p-2">
-                        <i class="fas fa-times text-xl"></i>
-                    </button>
-                </div>
-                <div class="flex-1 flex flex-col justify-center items-center space-y-8">
-                    <a href="#home" class="mobile-nav-link uniform-nav-btn">Home</a>
-                    <a href="#packages" class="mobile-nav-link uniform-nav-btn">Packages</a>
-                    <a href="#about" class="mobile-nav-link uniform-nav-btn">About</a>
-                    <a href="#contact" class="mobile-nav-link uniform-nav-btn">Contact</a>
+                <div id="mobile-menu" class="hidden w-full md:block md:w-auto">
+                    <ul class="flex flex-col items-center mt-4 space-y-2 p-4 border-t border-gray-200 md:mt-0 md:flex-row md:space-y-0 md:space-x-1 md:p-0 md:border-0">
+                        <li>
+                            <a href="#home" class="nav-link block px-4 py-2 rounded-lg text-sm font-medium text-gray-900 hover:text-primary-600 hover:bg-primary-50 transition-all duration-300">Home</a>
+                        </li>
+                        <li>
+                            <a href="#packages" class="nav-link block px-4 py-2 rounded-lg text-sm font-medium text-gray-500 hover:text-primary-600 hover:bg-primary-50 transition-all duration-300">Packages</a>
+                        </li>
+                        <li>
+                            <a href="#about" class="nav-link block px-4 py-2 rounded-lg text-sm font-medium text-gray-500 hover:text-primary-600 hover:bg-primary-50 transition-all duration-300">About</a>
+                        </li>
+                        <li>
+                            <a href="#contact" class="nav-link block px-4 py-2 rounded-lg text-sm font-medium text-gray-500 hover:text-primary-600 hover:bg-primary-50 transition-all duration-300">Contact</a>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
