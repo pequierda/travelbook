@@ -19,7 +19,7 @@
 </head>
 <body class="bg-gray-100">
     <!-- Navigation -->
-    <nav class="bg-white shadow-lg">
+    <nav class="bg-white shadow-lg relative">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center">
@@ -56,14 +56,14 @@
                     <button id="refresh-packages-mobile" class="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-md text-sm font-medium transition-colors shadow-md">
                         <i class="fas fa-sync-alt"></i>
                     </button>
-                    <button id="mobile-menu-btn" class="text-gray-500 hover:text-blue-600 p-2 rounded-md">
+                    <button id="mobile-menu-btn" data-collapse-toggle="mobile-menu" aria-controls="mobile-menu" aria-expanded="false" class="text-gray-500 hover:text-blue-600 p-2 rounded-md">
                         <i class="fas fa-bars text-xl"></i>
                     </button>
                 </div>
             </div>
             
             <!-- Mobile Menu -->
-            <div id="mobile-menu" class="md:hidden hidden border-t border-gray-200 py-4">
+            <div id="mobile-menu" class="md:hidden hidden border-t border-gray-200 py-4 absolute left-0 right-0 bg-white z-40">
                 <div class="space-y-2">
                     <a href="index.html" class="block text-gray-500 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
                         <i class="fas fa-home mr-2"></i>View Site
