@@ -879,9 +879,50 @@ input:focus, textarea:focus, select:focus {
     right: 14px;
 }
 
+.sale-ribbon .hint {
+    position: absolute;
+    top: 60px;
+    right: 50%;
+    transform: translateX(50%);
+    transform: rotate(0deg);
+    background: transparent;
+    color: #be123c;
+    border: 0;
+    padding: 0;
+    border-radius: 0;
+    box-shadow: none;
+    font-weight: 800;
+    font-size: 12px;
+    cursor: pointer;
+    pointer-events: auto;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    animation: hintBounce 1.6s infinite ease-in-out;
+    z-index: 75;
+}
+
+.sale-ribbon .hint i {
+    font-size: 22px;
+    line-height: 1;
+}
+
+.sale-ribbon .hint .hint-text {
+    font-size: 10px;
+}
+
+@keyframes hintBounce {
+    0%, 100% { transform: translateX(50%) translateY(0); }
+    50% { transform: translateX(50%) translateY(4px); }
+}
+
 @media (max-width: 640px) {
     .sale-ribbon { top: 14px; right: -52px; }
     .sale-ribbon .tape { padding: 8px 52px; font-size: 12px; }
+    .sale-ribbon .hint { top: 52px; right: 50%; transform: translateX(50%); font-size: 11px; }
 }
 
 /* Enhanced Text Gradients */

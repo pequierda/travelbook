@@ -352,12 +352,15 @@ function showBookingModal(packageName) {
  */
 function initSaleRibbon() {
     const ribbonLink = document.querySelector('#sale-ribbon .tape');
+    const hint = document.querySelector('#sale-ribbon .hint');
     if (!ribbonLink) return;
-    ribbonLink.addEventListener('click', function(e) {
+    const open = function(e) {
         e.preventDefault();
         e.stopPropagation();
         showSaleModal();
-    });
+    };
+    ribbonLink.addEventListener('click', open);
+    if (hint) hint.addEventListener('click', open);
 }
 
 function showSaleModal() {
