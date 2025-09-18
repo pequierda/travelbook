@@ -49,10 +49,7 @@ function initEventListeners() {
         openUserModal();
     });
     
-    // Change password button
-    document.getElementById('change-password-btn').addEventListener('click', () => {
-        openPasswordModal();
-    });
+    // Removed global "Change My Password" button
     
     // Logout button
     document.getElementById('logout-btn').addEventListener('click', handleLogout);
@@ -367,11 +364,11 @@ async function handlePasswordSubmit(e) {
             );
         }
         
-        if (result.success) {
+        if (result && result.success) {
             showUserNotification('Password changed successfully!', 'success');
             closePasswordModal();
         } else {
-            showUserNotification('Error: ' + result.message, 'error');
+            showUserNotification('Error: ' + (result && result.message ? result.message : 'Unknown error'), 'error');
         }
         
     } catch (error) {
