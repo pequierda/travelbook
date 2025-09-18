@@ -545,22 +545,37 @@ a:focus {
         inset: auto !important;
         width: 100% !important;
         max-height: none !important;
-        background: transparent !important;
-        box-shadow: none !important;
+        background: #ffffff !important;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08) !important;
+        border-bottom-left-radius: 0.75rem !important;
+        border-bottom-right-radius: 0.75rem !important;
+        border-top: 1px solid #eef2f7 !important;
         opacity: 1 !important;
         transform: none !important;
-        z-index: auto !important;
+        z-index: 60 !important;
         overflow: visible !important;
     }
 
+    nav #mobile-menu ul {
+        padding: 0.5rem 0.5rem 0.75rem !important;
+    }
+
     nav #mobile-menu ul li a {
-        box-shadow: none !important;
+        display: block !important;
         border: 0 !important;
-        margin: 0 !important;
+        margin: 0.125rem 0.25rem !important;
         width: auto !important;
         text-align: left !important;
         background: transparent !important;
-        padding: 0.5rem 1rem !important;
+        padding: 0.625rem 0.75rem !important;
+        border-radius: 0.75rem !important;
+        color: var(--primary-color) !important;
+    }
+
+    nav #mobile-menu ul li a:hover,
+    nav #mobile-menu ul li a:focus {
+        background-color: rgba(5, 40, 88, 0.06) !important;
+        color: var(--primary-color) !important;
     }
 }
 
