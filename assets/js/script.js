@@ -293,7 +293,7 @@ function showNotification(message, type = 'info') {
  */
 function trackPackageClick(packageName) {
     // In a real application, you would send this data to your analytics service
-    console.log(`Package clicked: ${packageName}`);
+   // console.log(`Package clicked: ${packageName}`);
     
     // Example: Google Analytics event tracking
     if (typeof gtag !== 'undefined') {
