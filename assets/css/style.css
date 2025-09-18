@@ -839,7 +839,8 @@ input:focus, textarea:focus, select:focus {
 .sale-ribbon {
     position: fixed;
     top: 18px;
-    right: -40px;
+    left: -40px;
+    right: auto;
     z-index: 70;
     pointer-events: none; /* allow only link to get clicks */
 }
@@ -854,7 +855,7 @@ input:focus, textarea:focus, select:focus {
     text-transform: uppercase;
     padding: 10px 60px;
     box-shadow: 0 10px 25px rgba(190, 18, 60, 0.35);
-    transform: rotate(35deg);
+    transform: rotate(-35deg);
     border-radius: 10px;
     position: relative;
 }
@@ -882,9 +883,8 @@ input:focus, textarea:focus, select:focus {
 .sale-ribbon .hint {
     position: absolute;
     top: 60px;
-    right: 50%;
-    transform: translateX(50%);
-    transform: rotate(0deg);
+    left: 50%;
+    transform: translateX(-50%);
     background: transparent;
     color: #be123c;
     border: 0;
@@ -915,14 +915,14 @@ input:focus, textarea:focus, select:focus {
 }
 
 @keyframes hintBounce {
-    0%, 100% { transform: translateX(50%) translateY(0); }
-    50% { transform: translateX(50%) translateY(4px); }
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(4px); }
 }
 
 @media (max-width: 640px) {
-    .sale-ribbon { top: 14px; right: -52px; }
+    .sale-ribbon { top: 14px; left: -52px; right: auto; }
     .sale-ribbon .tape { padding: 8px 52px; font-size: 12px; }
-    .sale-ribbon .hint { top: 52px; right: 50%; transform: translateX(50%); font-size: 11px; }
+    .sale-ribbon .hint { top: 52px; left: 50%; transform: translateX(-50%); font-size: 11px; }
 }
 
 /* Enhanced Text Gradients */
